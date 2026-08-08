@@ -38,10 +38,10 @@
 
         function updateBalance() {
             document.getElementById('balance').innerText = score;
-            localStorage.setItem('clicker_balance', score); // Бесплатно сохраняем баланс внутри Telegram
+            localStorage.setItem('clicker_balance', score);
         }
 
-        // Логика рекламы (вместо ВАШ_БЛОК_ID вставим ваш номер позже)
+        // Исправленная логика рекламы с вашим ID
         function showAd() {
             if (window.Adsgram) {
                 const AdController = window.Adsgram.init({ blockId: "41911" });
@@ -53,10 +53,9 @@
                     alert("Реклама не загрузилась или была закрыта раньше времени.");
                 });
             } else {
-                // Тестовое начисление если запускать просто в браузере без сети Adsgram
                 score += 100;
                 updateBalance();
-                alert("Тестовый режим: +100 монет (Реклама не подключена).");
+                alert("Ошибка: Сеть Adsgram недоступна.");
             }
         }
     </script>
