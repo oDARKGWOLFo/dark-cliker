@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Темный Кликер</title>
+    <style>
+        body { background: #151515; color: white; text-align: center; font-family: sans-serif; padding-top: 40px; margin: 0; user-select: none; }
+        .score-container { font-size: 42px; font-weight: bold; margin-bottom: 5px; color: #fff; }
+        .text-label { color: #888; font-size: 14px; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px; }
+        #coin { width: 220px; height: 220px; background: linear-gradient(135deg, #ffcc00, #ff9900); border-radius: 50%; display: inline-block; cursor: pointer; border: 8px solid #252525; box-shadow: 0 0 30px rgba(255,153,0,0.4); transition: transform 0.05s; }
+        #coin:active { transform: scale(0.92); }
+        .btn { background: #007bff; color: white; border: none; padding: 16px 32px; font-size: 16px; font-weight: bold; border-radius: 12px; margin-top: 40px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,123,255,0.3); width: 85%; max-width: 300px; }
+        .btn:active { transform: scale(0.98); }
+    </style>
+    <!-- Подключение бесплатной рекламы Adsgram -->
+    <script src="https://adsgram.ai"></script>
+</head>
+<body>
+
+    <div class="score-container" id="balance">0</div>
+    <div class="text-label">Монет накоплено</div>
+    
+    <div id="coin" onclick="clickCoin()"></div>
+    
+    <br>
+    <button class="btn" onclick="showAd()">Смотреть видео (+100 🪙)</button>
+
+    <script>
+        // Простая система сохранения баланса на телефоне игрока
+        let score = localStorage.getItem('clicker_balance') ? parseInt(localStorage.getItem('clicker_balance')) : 0;
+        document.getElementById('balance').innerText = score;
+
+        function clickCoin() {
+            score++;
+            updateBalance();
+        }
+
+        function updateBalance() {
+            document.getElementById('balance').innerText = score;
+            localStorage.setItem('clicker_balance', score); // Бесплатно сохраняем баланс внутри Telegram
+        }
+
+        // Логика рекламы (вместо ВАШ_БЛОК_ID вставим ваш номер позже)
+        function showAd() {
+            if (window.Adsgram) {
+                const AdController = window.Adsgram.init({ blockId: "ВАШ_БЛОК_ID" });
+                AdController.show().then((result) => {
+                    score += 100;
+                    updateBalance();
+                    alert("Успешно! Вам начислено 100 монет.");
+                }).catch((result) => {
+                    alert("Реклама не загрузилась или была закрыта раньше времени.");
+                });
+            } else {
+                // Тестовое начисление если запускать просто в браузере без сети Adsgram
+                score += 100;
+                updateBalance();
+                alert("Тестовый режим: +100 монет (Реклама не подключена).");
+            }
+        }
+    </script>
+</body>
+</html>
