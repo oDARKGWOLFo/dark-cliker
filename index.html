@@ -179,12 +179,29 @@
         <h2 style="text-align: left; margin-top: 10px; color: #fff;">Разделы игры</h2>
 
         <div class="menu-grid">
-            
-            <!-- Карточка: Рейтинг -->
-            <div class="menu-card" onclick="alert('Тут в будущем сделаем Топ игроков')">
-                <h3>🏆 Топ игроков</h3>
-                <p>Посмотреть лидеров по монетам</p>
-            </div>
+
+            <!-- Карточка: Рейтинг (Теперь она разворачивается) -->
+<div class="menu-card" onclick="openLeaderboard()">
+    <h3>🏆 Топ игроков</h3>
+    <p id="leaderboard-summary">Посмотреть лидеров по монетам</p>
+    
+    <!-- Сама таблица лидеров (по умолчанию display: none, то есть скрыта) -->
+    <div id="leaderboard-list-container" style="display: none; margin-top: 20px; border-top: 1px solid #252525; padding-top: 15px;">
+        <div style="display: flex; justify-content: space-between; padding: 10px 5px; border-bottom: 1px solid #222; color: #ffcc00; font-weight: bold;">
+            <span>1. Dark_Lord 👑</span><span>154,200 🟡</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 10px 5px; border-bottom: 1px solid #222; color: #e5e7eb;">
+            <span>2. Crypto_Shark</span><span>98,550 🟡</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 10px 5px; border-bottom: 1px solid #222; color: #e5e7eb;">
+            <span>3. Telegram_User</span><span>42,100 🟡</span>
+        </div>
+        <!-- Строка для текущего игрока, куда код сам подставит ваш баланс -->
+        <div style="display: flex; justify-content: space-between; padding: 12px 5px; background: #222; border-radius: 8px; margin-top: 8px; font-weight: bold; color: #34d399;">
+            <span>4. Вы (dark_user)</span><span id="player-leaderboard-score">0 🟡</span>
+        </div>
+    </div>
+</div>
 
             <!-- Карточка: Вывод средств -->
             <div class="menu-card" onclick="alert('Тут в будущем сделаем вывод на СБП')">
