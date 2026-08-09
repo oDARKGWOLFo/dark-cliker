@@ -262,6 +262,23 @@
                 menu.classList.remove('active'); // Прячем окно и возвращаемся к монете
             }
         }
+// Команда для открытия и обновления Топа игроков
+function openLeaderboard() {
+    // Берём ваши текущие накликанные монеты и вставляем в таблицу
+    document.getElementById('player-leaderboard-score').innerText = `${score} 🟡`;
+    
+    // Находим блок с таблицей лидеров
+    const container = document.getElementById('leaderboard-list-container');
+    
+    // Если она скрыта — показываем, если открыта — прячем обратно
+    if (container.style.display === 'none') {
+        container.style.display = 'block';
+        document.getElementById('leaderboard-summary').innerText = 'Таблица лидеров кликера:';
+    } else {
+        container.style.display = 'none';
+        document.getElementById('leaderboard-summary').innerText = 'Посмотреть лидеров по монетам';
+    }
+}    
     </script>
 
 </body>
