@@ -257,6 +257,37 @@
                 alert("Ошибка: Сеть Adsgram недоступна.");
             }
         }
+function openExchangeModal() {
+    // Проверяем, сохранены ли монеты в переменной score
+    if (typeof score === 'undefined') return;
+
+    if (score < 100) {
+        alert(`У вас ${score} монет. Минимальная сумма для обмена — 100 монет!`);
+        return;
+    }
+
+    // Считаем доступные для обмена монеты (кратные 100)
+    const exchangeableCoins = Math.floor(score / 100) * 100;
+    const rublesGained = (exchangeableCoins / 100) * 0.05;
+
+    // Спрашиваем подтверждение у игрока
+    const confirmExchange = confirm(`Вы хотите обменять ${exchangeableCoins} монет на ${rublesGained.toFixed(2)} ₽?`);
+    
+    if (confirmExchange) {
+        score -= exchangeableCoins; // Списываем монеты
+        
+        // Создаем или обновляем баланс рублей в localStorage
+        let currentMoney = parseFloat(localStorage.getItem('user_money') || '0');
+        currentMoney += rublesGained;
+        localStorage.setItem('user_money', currentMoney.toString());
+        
+        // Обновляем баланс монет на экране и в памяти
+        updateBalance();
+        
+        alert(`Успешно обменено! На ваш баланс зачислено ${rublesGained.toFixed(2)} ₽.`);
+    }
+            }
+        
 
         // ЛОГИКА ОТКРЫТИЯ И ЗАКРЫТИЯ ОКНА МЕНЮ
         function toggleMenu(show) {
