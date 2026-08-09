@@ -8,7 +8,7 @@
     <script src="https://adsgram.ai"></script>
     
     <style>
-        /* ВАШИ СТАРЫЕ СТИЛИ КЛИКЕРА */
+        /* БАЗОВЫЕ СТИЛИ ПРИЛОЖЕНИЯ */
         body {
             background-color: #0d0d0d;
             color: white;
@@ -16,6 +16,7 @@
             text-align: center;
             margin: 0;
             padding: 0;
+            overflow: hidden; /* Запрещаем лишнюю прокрутку главного экрана */
         }
         .score-container {
             font-size: 48px;
@@ -39,7 +40,9 @@
         #coin:active {
             transform: scale(0.95);
         }
-        .btn {
+
+        /* КНОПКА РЕКЛАМЫ (СИНЯЯ) */
+        .btn-ad {
             background: #007bff;
             color: white;
             border: none;
@@ -47,93 +50,163 @@
             font-size: 18px;
             border-radius: 12px;
             cursor: pointer;
+            width: 85%;
+            max-width: 340px;
+            font-weight: bold;
+            margin-bottom: 20px;
         }
-        .btn:active {
+        .btn-ad:active {
             transform: scale(0.98);
         }
 
-        /* НОВЫЕ СТИЛИ ДЛЯ МЕНЮ И ЭКРАНОВ */
-        .app-screen {
-            display: none; 
-            width: 100%;
-            box-sizing: border-box;
-            padding-bottom: 90px;
-        }
-        .app-screen.active {
-            display: block; 
-        }
-        .bottom-nav {
+        /* КРУПНАЯ И ЗАМЕТНАЯ КНОПКА МЕНЮ ВНИЗУ ГЛАВНОГО ЭКРАНА */
+        .bottom-menu-container {
             position: fixed;
-            bottom: 0;
+            bottom: 30px; /* Отступ от самого низа экрана телефона */
             left: 0;
             width: 100%;
-            height: 70px;
-            background-color: #151515;
-            border-top: 1px solid #252525;
             display: flex;
-            justify-content: space-around;
-            align-items: center;
+            justify-content: center;
             z-index: 1000;
         }
-        .nav-item {
-            background: none;
-            border: none;
-            color: #888888;
-            font-size: 13px;
-            font-weight: bold;
+        .btn-menu-large {
+            background: #1e1e1e;
+            color: #ffcc00; /* Желтый текст */
+            border: 2px solid #ffcc00; /* Золотая рамка */
+            padding: 18px 0; /* Высокая кнопка */
+            font-size: 20px; /* Крупный шрифт */
+            border-radius: 16px;
             cursor: pointer;
+            width: 85%; /* Широкая кнопка */
+            max-width: 340px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.2); /* Свечение */
+            transition: transform 0.1s, background 0.2s;
+        }
+        .btn-menu-large:active {
+            transform: scale(0.97);
+            background: #252525;
+        }
+
+        /* ПОЛНОЭКРАННОЕ ОКНО МЕНЮ (ОТКРЫВАЕТСЯ ПОВЕРХ ИГРЫ) */
+        .overlay-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0d0d0d; /* Полностью темный фон */
+            z-index: 2000;
+            display: none; /* По умолчанию скрыто */
+            box-sizing: border-box;
+            padding: 25px;
+            overflow-y: auto; /* Разрешаем листать меню вниз */
+        }
+        .overlay-menu.active {
+            display: block; /* Показываем меню, когда нажали кнопку */
+        }
+
+        /* КНОПКА НАЗАД ВНУТРИ МЕНЮ */
+        .close-menu-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: bold;
+            float: right;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* СПИСОК КАРТОЧЕК ВНУТРИ МЕНЮ */
+        .menu-grid {
+            margin-top: 80px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 4px;
+            gap: 15px;
         }
-        .nav-item.active {
+        .menu-card {
+            background: #151515;
+            border: 1px solid #252525;
+            border-radius: 14px;
+            padding: 20px;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .menu-card:active {
+            background: #1e1e1e;
+            transform: scale(0.98);
+        }
+        .menu-card h3 {
+            margin: 0 0 5px 0;
             color: #ffcc00;
+            font-size: 18px;
+        }
+        .menu-card p {
+            margin: 0;
+            color: #888;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
 
-    <main class="content">
-        <!-- ЭКРАН 1: ИГРА (Ваш старый кликер теперь живет тут) -->
-        <section id="screen-game" class="app-screen active">
-            <div class="score-container" id="balance">0</div>
-            <div class="text-label">Монет накоплено</div>
+    <!-- ========================================== -->
+    <!-- ЭКРАН 1: ГЛАВНЫЙ ЭКРАН КЛИКЕРА             -->
+    <!-- ========================================== -->
+    <div class="score-container" id="balance">0</div>
+    <div class="text-label">Монет накоплено</div>
+    
+    <div id="coin" onclick="clickCoin()"></div>
+    
+    <br>
+    <!-- Кнопка рекламы -->
+    <button class="btn-ad" onclick="showAd()">Смотреть видео (+100 🟡)</button>
+    
+    <!-- Одна крупная кнопка меню в самом низу -->
+    <div class="bottom-menu-container">
+        <button class="btn-menu-large" onclick="toggleMenu(true)">⚙️ МЕНЮ ИГРЫ</button>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- ЭКРАН 2: ПОЛНОЭКРАННОЕ ОКНО МЕНЮ          -->
+    <!-- ========================================== -->
+    <div id="main-menu-overlay" class="overlay-menu">
+        <button class="close-menu-btn" onclick="toggleMenu(false)">❌ Назад</button>
+        <h2 style="text-align: left; margin-top: 10px; color: #fff;">Разделы игры</h2>
+
+        <div class="menu-grid">
             
-            <div id="coin" onclick="clickCoin()"></div>
-            <br>
-            <button class="btn" onclick="showAd()">Смотреть видео (+100 🟡)</button>
-        </section>
+            <!-- Карточка: Рейтинг -->
+            <div class="menu-card" onclick="alert('Тут в будущем сделаем Топ игроков')">
+                <h3>🏆 Топ игроков</h3>
+                <p>Посмотреть лидеров по монетам</p>
+            </div>
 
-        <!-- ЭКРАН 2: ТОП ИГРОКОВ (Заготовка) -->
-        <section id="screen-leaderboard" class="app-screen">
-            <h2 style="margin-top: 50px;">🏆 Топ игроков</h2>
-            <p style="color: #888;">Раздел находится в разработке...</p>
-        </section>
+            <!-- Карточка: Вывод средств -->
+            <div class="menu-card" onclick="alert('Тут в будущем сделаем вывод на СБП')">
+                <h3>💰 Вывод средств</h3>
+                <p>Обменять накопленные монеты на реальные рубли</p>
+            </div>
 
-        <!-- ЭКРАН 3: КВЕСТЫ (Заготовка) -->
-        <section id="screen-tasks" class="app-screen">
-            <h2 style="margin-top: 50px;">🚀 Задания</h2>
-            <p style="color: #888;">Раздел находится в разработке...</p>
-        </section>
+            <!-- Карточка: Задания -->
+            <div class="menu-card" onclick="alert('Тут в будущем сделаем квесты')">
+                <h3>🚀 Задания и квесты</h3>
+                <p>Дополнительный заработок монет за подписки</p>
+            </div>
 
-        <!-- ЭКРАН 4: ВЫВОД (Заготовка) -->
-        <section id="screen-wallet" class="app-screen">
-            <h2 style="margin-top: 50px;">💰 Вывод средств</h2>
-            <p style="color: #888;">Раздел находится в разработке...</p>
-        </section>
-    </main>
+        </div>
+    </div>
 
-    <!-- ПАНЕЛЬ КНОПОК МЕНЮ -->
-    <nav class="bottom-nav">
-        <button class="nav-item active" onclick="switchScreen('screen-game', this)">🎮 Игра</button>
-        <button class="nav-item" onclick="switchScreen('screen-leaderboard', this)">🏆 Топ</button>
-        <button class="nav-item" onclick="switchScreen('screen-tasks', this)">🚀 Квесты</button>
-        <button class="nav-item" onclick="switchScreen('screen-wallet', this)">💰 Вывод</button>
-    </nav>
 
+    <!-- ========================================== -->
+    <!-- СКРИПТЫ И ЛОГИКА ПРИЛОЖЕНИЯ                -->
+    <!-- ========================================== -->
     <script>
-        // ВАША СТАРАЯ ЛОГИКА ИГРЫ
+        // ЛОГИКА КЛИКЕРА И КЛЮЧЕВОГО БАЛАНСА
         let score = localStorage.getItem('clicker_balance') ? parseInt(localStorage.getItem('clicker_balance')) : 0;
         document.getElementById('balance').innerText = score;
 
@@ -164,16 +237,14 @@
             }
         }
 
-        // НОВАЯ ФУНКЦИЯ ДЛЯ ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК МЕНЮ
-        function switchScreen(screenId, buttonElement) {
-            const screens = document.querySelectorAll('.app-screen');
-            screens.forEach(screen => screen.classList.remove('active'));
-
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(item => item.classList.remove('active'));
-
-            document.getElementById(screenId).classList.add('active');
-            buttonElement.classList.add('active');
+        // ЛОГИКА ОТКРЫТИЯ И ЗАКРЫТИЯ ОКНА МЕНЮ
+        function toggleMenu(show) {
+            const menu = document.getElementById('main-menu-overlay');
+            if (show) {
+                menu.classList.add('active'); // Показываем окно меню поверх кликера
+            } else {
+                menu.classList.remove('active'); // Прячем окно и возвращаемся к монете
+            }
         }
     </script>
 
