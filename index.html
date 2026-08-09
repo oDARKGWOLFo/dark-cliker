@@ -179,7 +179,12 @@
         <h2 style="text-align: left; margin-top: 10px; color: #fff;">Разделы игры</h2>
 
 <div class="menu-grid">
-            
+<!-- Карточка Профиль -->
+<div class="menu-card" id="card-profile" onclick="openProfileModal()">
+    <h3>👤 Мой Профиль</h3>
+    <p>Баланс рублей, статистика и ID аккаунта</p>
+</div>
+    
             <!-- Карточка 1: Рейтинг -->
             <div class="menu-card" id="card-leaderboard" onclick="openLeaderboard()">
                 <h3>🏆 Топ игроков</h3>
@@ -314,8 +319,31 @@ function openLeaderboard() {
         container.style.display = 'none';
         document.getElementById('leaderboard-summary').innerText = 'Посмотреть лидеров по монетам';
     }
-}    
+}
+function openProfileModal() {
+    let currentMoney = parseFloat(localStorage.getItem('user_money') || '0');
+    document.getElementById('profile-money').innerText = currentMoney.toFixed(2);
+    document.getElementById('stat-current-coins').innerText = score;
+    document.getElementById('profile-modal').style.display = 'block';
+}
+function closeProfileModal() {
+    document.getElementById('profile-modal').style.display = 'none';
+    }        
     </script>
-
+<!-- Модальное окно Профиля -->
+<div id="profile-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center;">
+    <div style="background: #222; color: #fff; padding: 20px; border-radius: 15px; width: 85%; max-width: 340px; margin: 30% auto; text-align: center; border: 2px solid #4caf50; box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);">
+        <h2 style="margin-top: 0; color: #4caf50;">👤 Профиль</h2>
+        <div style="background: #333; padding: 10px; border-radius: 10px; margin: 15px 0;">
+            <p style="margin: 0; font-size: 14px; color: #aaa;">Баланс для вывода:</p>
+            <h2 style="margin: 5px 0 0 0; color: #4caf50; font-size: 28px;"><span id="profile-money">0.00</span> ₽</h2>
+        </div>
+        <div style="text-align: left; background: #2a2a2a; padding: 12px; border-radius: 10px; font-size: 14px;">
+            <p style="margin: 0 0 8px 0;">🟡 Монеты на счету: <b id="stat-current-coins" style="color: #ffeb3b;">0</b></p>
+            <p style="margin: 0;">🆔 Аккаунт: <span style="color: #888;">Игрок #1</span></p>
+        </div>
+        <button onclick="closeProfileModal()" style="margin-top: 20px; background: #e53935; color: white; border: none; padding: 10px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%;">Закрыть</button>
+    </div>
+</div>
 </body>
     </html>
