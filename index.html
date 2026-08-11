@@ -333,30 +333,38 @@
             updateUI();
         }
 
-        // [ ФУНКЦИЯ ПОКУПКИ ЭВОЛЮЦИИ ]
-        function buyNextEvolutionStep() {
+// [ ФУНКЦИЯ ПОКУПКИ ЭВОЛЮЦИИ ]
+function buyNextEvolutionStep() {
+    // Если здесь должен быть код для покупки эволюции, верните его сюда.
+    // Пример: let activeEvo = evolutionTree[currentEvoIndex];
+} // <-- ОБЯЗАТЕЛЬНО ЗАКРЫВАЕМ ФУНКЦИЮ ПЕРЕД НАЧАЛОМ НОВОЙ
+
 // [ ФУНКЦИЯ ПОКУПКИ АМИНОКИСЛОТ ПРЯМО НА КАРТЕ ]
-        function buyAminoAcids() {
-            if (dna >= 40) {
-                dna -= 40;
-                autoDnaPerSecond += 1; // [ Запускаем пассивный доход +1/сек ]
-                
-                // [ Делаем карточку яркой, показывая, что она куплена ]
-                const icon = document.getElementById('amino-icon');
-                const costText = document.getElementById('amino-cost');
-                if (icon) {
-                    icon.style.opacity = "1";
-                    icon.style.borderColor = "#00d2ff";
-                    icon.style.boxShadow = "0 0 20px rgba(0,210,255,0.4)";
-                }
-                if (costText) costText.innerText = "Куплено (+1/с)";
-                
-                updateUI();
-                alert("Вы успешно открыли Аминокислоты! Теперь ДНК генерируется пассивно.");
-            } else {
-                alert("Недостаточно молекул ДНК. Нужно 40 ДНК.");
-            }
-        }            
+function buyAminoAcids() {
+    if (dna >= 40) {
+        dna -= 40;
+        autoDnaPerSecond += 1; 
+
+        // Корректное получение элементов (допишите правильные ID карт)
+        const icon = document.getElementById("aminoAcidIcon"); 
+        const costText = document.getElementById("aminoAcidCost");
+
+        if (icon) {
+            icon.style.opacity = "1";
+            icon.style.borderColor = "#fff"; // Ваш цвет
+            icon.style.boxShadow = "0 0 10px rgba(255,255,255,0.5)"; 
+        }
+        
+        if (costText) {
+            costText.innerText = "Куплено";
+        }
+
+        updateUI();
+        alert("Вы успешно открыли Аминокислоты!");
+    } else {
+        alert("Недостаточно молекул ДНК!");
+    }
+}            
             let activeEvo = evolutionTree[currentEvolutionIndex];
             if (!activeEvo) return;
 
