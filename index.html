@@ -4,14 +4,121 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Эволюция: Вертикальное Древо</title>
-    <!-- Официальный скрипт рекламной сети Adsgram -->
+    <!-- [ Официальный скрипт рекламной сети Adsgram ] -->
     <script src="https://adsgram.ai"></script>
     <style>
-/* [ СТИЛЬ ДЛЯ ГЛАВНОЙ СФЕРЫ ЖИЗНИ (КЛИКЕРА) ] */
+        /* [ ========================================================================== ] */
+        /* [ 1. СБРОС СТИЛЕЙ БРАУЗЕРА (ЭКРАН СМАРТФОНА) ] */
+        /* [ ========================================================================== ] */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #05060c;
+            font-family: Arial, sans-serif;
+            color: #fff;
+        }
+
+        #viewport {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* [ ========================================================================== ] */
+        /* [ 2. ИГРОВАЯ КАРТА КОСМОСА ] */
+        /* [ ========================================================================== ] */
+        #game-map {
+            position: absolute;
+            width: 100%;       
+            height: 3000px;    
+            left: 0;
+            top: -2200px;      
+            background: linear-gradient(to top, #0a0b1e 0%, #121435 50%, #1a1c4b 100%);
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px);
+            background-size: 350px 350px, 200px 200px;
+            background-position: 0 0, 40px 60px;
+            transform: translate3d(0, 0, 0);
+            will-change: transform;
+        }
+
+        /* [ ========================================================================== ] */
+        /* [ 3. СТИЛИ ИНТЕРФЕЙСА ХУД И КНОПОК ] */
+        /* [ ========================================================================== ] */
+        .top-hud {
+            position: absolute;
+            top: 20px;
+            left: 5%;
+            width: 90%;
+            background: rgba(13, 16, 37, 0.85);
+            border: 2px solid #23295c;
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 10;
+        }
+
+        .hud-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .hud-label {
+            font-size: 10px;
+            color: #8da2fb;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+        }
+        .hud-value {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        #dna-balance { color: #00d2ff; text-shadow: 0 0 10px rgba(0, 210, 255, 0.4); }
+        #crystals-val { color: #ff3366; text-shadow: 0 0 10px rgba(255, 51, 102, 0.4); }
+
+        .bottom-hud {
+            position: absolute;
+            bottom: 20px;
+            left: 5%;
+            width: 90%;
+            z-index: 10;
+        }
+
+        .btn-ads {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(90deg, #10b981, #059669);
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+        }
+
+        /* [ СТИЛЬ ДЛЯ ГЛАВНОЙ СФЕРЫ ЖИЗНИ ] */
         .click-sphere {
             position: absolute;
-            bottom: 180px; /* [ Ставим в самый низ нашей длинной карты ] */
-            left: calc(50% - 90px); /* [ Выравниваем ровно по центру экрана ] */
+            bottom: 180px; 
+            left: calc(50% - 90px); 
             width: 180px;
             height: 180px;
             background: radial-gradient(circle, #00f0ff 0%, #0040c0 100%);
@@ -24,16 +131,16 @@
             justify-content: center;
             font-size: 60px;
             transition: transform 0.05s ease;
+            outline: none;
             z-index: 5;
         }
         .click-sphere:active {
-            transform: scale(0.93); /* [ Эффект пружины при нажатии пальцем ] */
+            transform: scale(0.93);
         }
 
-        /* [ ПАНЕЛЬ С КНОПКОЙ ЭВОЛЮЦИИ СУЩЕСТВ ] */
         .evo-panel {
             position: absolute;
-            bottom: 400px; /* [ Стоит чуть выше сферы кликера ] */
+            bottom: 400px; 
             left: 10%;
             width: 80%;
             z-index: 5;
@@ -53,291 +160,138 @@
             justify-content: space-between;
             align-items: center;
         }
-        .btn-next-step:active {
-            opacity: 0.9;
-        }        
-        /* ==========================================================================
-           1. СБРОС СТИЛЕЙ БРАУЗЕРА (ЭКРАН СМАРТФОНА)
-           ========================================================================== */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: none;
-        }
-
-        body, html {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #05060c;
-            font-family: Arial, sans-serif;
-            color: #fff;
-        }
-
-        /* Главное окно телефона, через которое мы видим игру */
-        #viewport {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* ==========================================================================
-           2. ИГРОВАЯ КАРТА: КОСМИЧЕСКОЕ ПРОСТРАНСТВО (Движение строго вверх/вниз)
-           ========================================================================== */
-        #game-map {
-            position: absolute;
-            width: 100%;       /* Ширина ровно под экран телефона (без скролла влево/вправо) */
-            height: 3000px;    /* Карта очень длинная, уходит далеко вверх */
-            left: 0;
-            top: -2200px;      /* Стартуем в самом низу карты (3000px минус высота экрана) */
-            
-            /* Космический неоновый фон с эффектом звездной пыли */
-            background: linear-gradient(to top, #0a0b1e 0%, #121435 50%, #1a1c4b 100%);
-            background-image: 
-                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
-                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px);
-            background-size: 350px 350px, 200px 200px;
-            background-position: 0 0, 40px 60px;
-            
-            transform: translate3d(0, 0, 0);
-            will-change: transform;
-        }
-
-        /* Инструкция на карте для теста */
-        .map-info-text {
-            position: absolute;
-            bottom: 100px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.3);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* ==========================================================================
-           3. ИНТЕРФЕЙС УПРАВЛЕНИЯ: ПАНЕЛИ БАЛАНСА И КНОПКИ (Прибиты к экрану сверху и снизу)
-           ========================================================================== */
-        /* Верхняя плашка для вывода баланса */
-        .top-hud {
-            position: absolute;
-            top: 20px;
-            left: 5%;
-            width: 90%;
-            background: rgba(13, 16, 37, 0.85);
-            border: 2px solid #23295c;
-            border-radius: 16px;
-            padding: 12px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            z-index: 10;
-        }
-
-        /* Общий стиль для каждого ресурса в плашке */
-        .hud-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .hud-label {
-            font-size: 10px;
-            color: #8da2fb;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 2px;
-        }
-        .hud-value {
-            font-size: 20px;
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
-        }
-        /* Цвета цифр ресурсов */
-        #dna-val { color: #00d2ff; }
-        #crystals-val { color: #ff3366; }
-
-        /* Нижняя панель для кнопки рекламы */
-        .bottom-hud {
-            position: absolute;
-            bottom: 20px;
-            left: 5%;
-            width: 90%;
-            z-index: 10;
-        }
-
-        /* Кнопка рекламы Adsgram */
-        .btn-ads {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(90deg, #10b981, #059669);
-            border: none;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
-            transition: opacity 0.2s;
-        }
-        .btn-ads:active {
-            opacity: 0.8;
-        }
     </style>
 </head>
+
 <body>
 
     <div id="viewport">
         
-        <!-- ВЕРХНИЙ ИНТЕРФЕЙС: БАЛАНС ДНК И АЛМАЗОВ (Прибит к экрану) -->
+        <!-- [ ВЕРХНИЙ ИНТЕРФЕЙС: БАЛАНС ДНК И КРИСТАЛЛОВ ] -->
         <div class="top-hud">
             <div class="hud-item">
                 <span class="hud-label">Молекулы ДНК</span>
-                <span id="dna-val" class="hud-value">0</span>
+                <span id="dna-balance" class="hud-value">0</span>
             </div>
-            <div class="hud-item" style="width: 2px; height: 30px; background: #23295c;"></div >
+            <div class="hud-item" style="width: 2px; height: 30px; background: #23295c;"></div>
             <div class="hud-item">
                 <span class="hud-label">Кристаллы</span>
                 <span id="crystals-val" class="hud-value">0</span>
             </div>
         </div>
 
-        <!-- ==========================================================================
-             ИГРОВАЯ КАРТА КОСМОСА (Двигается пальцем строго по вертикали)
-             ========================================================================== -->
+        <!-- ========================================================================== -->
+        <!-- [ ИГРОВАЯ КАРТА С ПРЯМЫМИ КЛИКАМИ ONCLICK ] -->
+        <!-- ========================================================================== -->
         <div id="game-map">
-            <!-- [ 1. Текущая эра игрока (Текст над кнопкой) ] -->
+            
             <div id="current-stage" style="position: absolute; bottom: 470px; left: 0; width: 100%; text-align: center; color: #a4b3e6; font-size: 14px; font-weight: bold;">
                 Текущий вид: Бульон аминокислот
             </div>
 
-            <!-- [ 2. Кнопка создания следующего существа ] -->
             <div class="evo-panel">
-                <button class="btn-next-step" id="evo-upgrade-btn">
+                <!-- [ Прямой запуск функции покупки при клике ] -->
+                <button class="btn-next-step" id="evo-upgrade-btn" onclick="buyNextEvolutionStep()">
                     <span id="evo-name">Создать: Первую клетку 🦠</span>
                     <span id="evo-cost">Цена: 40 ДНК</span>
                 </button>
             </div>
 
-            <!-- [ 3. Главная сфера жизни для кликов ] -->
-            <button class="click-sphere" id="clicker-core">🧬</button>
-            <!-- Сюда в следующих шагах мы будем добавлять сферы жизни и цепочки существ -->
+            <!-- [ Прямой запуск функции клика при нажатии на сферу ] -->
+            <button class="click-sphere" id="clicker-core" onclick="coreClickAction()">🧬</button>
+
         </div>
 
-        <!-- НИЖНИЙ ИНТЕРФЕЙС: КНОПКА ПОЛУЧЕНИЯ АЛМАЗОВ -->
         <div class="bottom-hud">
-            <button class="btn-ads" id="ads-bonus-btn">Получить 1 Кристалл за просмотр</button>
+            <!-- [ Прямой запуск рекламы при клике ] -->
+            <button class="btn-ads" id="ads-bonus-btn" onclick="showBonusVideoAd()">Получить 1 Кристалл за просмотр</button>
         </div>
 
     </div>
 
-    <!-- ==========================================================================
-         4. РАЗДЕЛ: ЛОГИКА И СКРИПТЫ ДВИЖЕНИЯ И РЕКЛАМЫ
-         ========================================================================== -->
+    <!-- ========================================================================== -->
+    <!-- [ 4. ПОЛНЫЙ ИСПРАВЛЕННЫЙ СКРИПТ ЛОГИКИ ] -->
+    <!-- ========================================================================== -->
+    <script>
+        const viewport = document.getElementById('viewport');
+        const map = document.getElementById('game-map');
 
-<script>
-    // [ ========================================================================== ]
-    // [ 1. ССЫЛКИ НА ЭЛЕМЕНТЫ ЭКРАНА (Находим кнопки и панели из HTML) ]
-    // [ ========================================================================== ]
-    const viewport = document.getElementById('viewport');
-    const map = document.getElementById('game-map');
-    const adsBtn = document.getElementById('ads-bonus-btn');
+        // [ Базовые переменные ]
+        let dna = 0;
+        let crystals = 0;
+        let clickPower = 1;
+        let autoDnaPerSecond = 0;
+        let currentEvolutionIndex = 0;
 
-    // [ ========================================================================== ]
-    // [ 2. ИГРОВЫЕ ПЕРЕМЕННЫЕ БАЛАНСА И СИМУЛЯЦИИ ]
-    // [ ========================================================================== ]
-    let dna = 0;                  // [ Текущее количество молекул ДНК ]
-    let crystals = 0;             // [ Текущее количество кристаллов ]
-    let clickPower = 1;           // [ Сила клика ]
-    let autoDnaPerSecond = 0;     // [ Пассивный доход в секунду ]
-    let currentEvolutionIndex = 0; // [ Индекс текущего существа ]
+        // [ Скролл карты ]
+        let isDragging = false;
+        let startY = 0;
+        let currentY = -2200; 
 
-    // [ ПЕРЕМЕННЫЕ ДЛЯ ВЕРТИКАЛЬНОГО СКРОЛЛА КАРТЫ ]
-    let isDragging = false;
-    let startY = 0;
-    let currentY = -2200; 
+        // [ Древо эволюции ]
+        const evolutionTree = [
+            { name: "Первую клетку", emoji: "🦠", cost: 40, clickAdd: 1, autoAdd: 0, title: "Бульон аминокислот" },
+            { name: "Бактерию", emoji: "🧫", cost: 150, clickAdd: 3, autoAdd: 1, title: "Первая живая клетка" },
+            { name: "Медузу", emoji: "🪼", cost: 600, clickAdd: 10, autoAdd: 5, title: "Простейшая бактерия" },
+            { name: "Древнюю рыбу", emoji: "🐟", cost: 2500, clickAdd: 40, autoAdd: 20, title: "Океаническая meduza" },
+            { name: "Динозавра", emoji: "🦖", cost: 12000, clickAdd: 200, autoAdd: 100, title: "Древняя кистепёрая рыба" },
+            { name: "Первого человека", emoji: "🐒", cost: 75000, clickAdd: 1000, autoAdd: 500, title: "Эра динозавров" },
+            { name: "Киборга из будущего", emoji: "🤖", cost: 500000, clickAdd: 5000, autoAdd: 2500, title: "Разумное человечество" },
+            { name: "Предел симуляции", emoji: "🌌", cost: 99999999, clickAdd: 0, autoAdd: 0, title: "Технологический киборг" }
+        ];
 
-    // [ ========================================================================== ]
-    // [ 3. ЦЕПОЧКА ЭВОЛЮЦИИ СУЩЕСТВ (Древо развития жизни) ]
-    // [ ========================================================================== ]
-    const evolutionTree = [
-        { name: "Первую клетку", emoji: "🦠", cost: 40, clickAdd: 1, autoAdd: 0, title: "Бульон аминокислот" },
-        { name: "Бактерию", emoji: "🧫", cost: 150, clickAdd: 3, autoAdd: 1, title: "Первая живая клетка" },
-        { name: "Медузу", emoji: "🪼", cost: 600, clickAdd: 10, autoAdd: 5, title: "Простейшая бактерия" },
-        { name: "Древнюю рыбу", emoji: "🐟", cost: 2500, clickAdd: 40, autoAdd: 20, title: "Океаническая медуза" },
-        { name: "Динозавра", emoji: "🦖", cost: 12000, clickAdd: 200, autoAdd: 100, title: "Древняя кистепёрая рыба" },
-        { name: "Первого человека", emoji: "🐒", cost: 75000, clickAdd: 1000, autoAdd: 500, title: "Эра динозавров" },
-        { name: "Киборга из будущего", emoji: "🤖", cost: 500000, clickAdd: 5000, autoAdd: 2500, title: "Разумное человечество" },
-        { name: "Предел симуляции", emoji: "🌌", cost: 99999999, clickAdd: 0, autoAdd: 0, title: "Технологический киборг" }
-    ];
+        // [ Плавное обновление экрана ]
+        function updateUI() {
+            const dnaBox = document.getElementById('dna-balance');
+            const cryBox = document.getElementById('crystals-val');
+            if (dnaBox) dnaBox.innerText = Math.floor(dna);
+            if (cryBox) cryBox.innerText = crystals;
 
-    // [ ========================================================================== ]
-    // [ 4. ФУНКЦИЯ ОБНОВЛЕНИЯ ИНТЕРФЕЙСА (Синхронизирует цифры с экраном) ]
-    // [ ========================================================================== ]
-    function updateUI() {
-        // [ Выводим ДНК на экран ]
-        const dnaBalanceEl = document.getElementById('dna-balance');
-        if (dnaBalanceEl) {
-            dnaBalanceEl.innerText = Math.floor(dna);
+            const evoNameEl = document.getElementById('evo-name');
+            const evoCostEl = document.getElementById('evo-cost');
+            const currentStageEl = document.getElementById('current-stage');
+
+            let currentEvo = evolutionTree[currentEvolutionIndex];
+            if (currentStageEl && currentEvo) {
+                currentStageEl.innerText = `Текущий вид: ${currentEvo.title} (+${autoDnaPerSecond}/сек)`;
+            }
+
+            let nextEvo = evolutionTree[currentEvolutionIndex];
+            if (nextEvo && evoNameEl && evoCostEl) {
+                evoNameEl.innerText = `Создать: ${nextEvo.name} ${nextEvo.emoji}`;
+                evoCostEl.innerText = `Цена: ${nextEvo.cost} ДНК`;
+            }
+            saveGameProgress();
         }
-        
-        // [ Выводим Кристаллы на экран ]
-        const crystalsBalanceEl = document.getElementById('crystals-val');
-        if (crystalsBalanceEl) {
-            crystalsBalanceEl.innerText = crystals;
+
+        // [ КЛАССИЧЕСКАЯ ФУНКЦИЯ КЛИКА - ЗАПУСКАЕТСЯ НАПРЯМУЮ ]
+        function coreClickAction() {
+            dna += clickPower;
+            updateUI();
         }
-        
-        // [ Обновляем текстовые блоки эволюции ]
-        const evoNameEl = document.getElementById('evo-name');
-        const evoCostEl = document.getElementById('evo-cost');
-        const currentStageEl = document.getElementById('current-stage');
-        
-        let currentEvo = evolutionTree[currentEvolutionIndex];
-        if (currentStageEl && currentEvo) {
-            currentStageEl.innerText = `Текущий вид: ${currentEvo.title} (+${autoDnaPerSecond}/сек)`;
+
+        // [ ФУНКЦИЯ ПОКУПКИ ЭВОЛЮЦИИ ]
+        function buyNextEvolutionStep() {
+            let activeEvo = evolutionTree[currentEvolutionIndex];
+            if (!activeEvo) return;
+
+            if (dna >= activeEvo.cost) {
+                dna -= activeEvo.cost;
+                clickPower += activeEvo.clickAdd;
+                autoDnaPerSecond += activeEvo.autoAdd;
+                currentEvolutionIndex++;
+
+                const coreBtn = document.getElementById('clicker-core');
+                if (coreBtn) coreBtn.innerText = activeEvo.emoji;
+
+                updateUI();
+            } else {
+                alert("Недостаточно молекул ДНК для совершения эволюционного скачка.");
+            }
         }
-        
-        let nextEvo = evolutionTree[currentEvolutionIndex];
-        if (nextEvo && evoNameEl && evoCostEl) {
-            evoNameEl.innerText = `Создать: ${nextEvo.name} ${nextEvo.emoji}`;
-            evoCostEl.innerText = `Цена: ${nextEvo.cost} ДНК`;
-        }
-        
-        saveGameProgress();
-    }
 
-    // [ ========================================================================== ]
-    // [ 5. ЛОГИКА ВЕРТИКАЛЬНОГО СКРОЛЛА КАРТЫ ]
-    // [ ========================================================================== ]
-    viewport.addEventListener('touchstart', (e) => {
-        isDragging = true;
-        startY = e.touches[0].clientY - currentY;
-    }, { passive: true });
-
-    viewport.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        currentY = e.touches[0].clientY - startY;
-        const minY = viewport.clientHeight - 3000; 
-        const maxY = 0;                            
-        currentY = Math.min(maxY, Math.max(currentY, minY));
-        map.style.transform = `translate3d(0px, ${currentY}px, 0px)`;
-    }, { passive: true });
-
-    viewport.addEventListener('touchend', () => {
-        isDragging = false;
-    });
-
-    // [ ========================================================================== ]
-    // [ 6. ИНТЕГРАЦИЯ ADSGRAM ]
-    // [ ========================================================================== ]
-    if (adsBtn) {
-        adsBtn.addEventListener('click', () => {
+        // [ ПРОСМОТР РЕКЛАМЫ ADSGRAM ]
+        function showBonusVideoAd() {
             if (window.Adsgram) {
                 const AdController = window.Adsgram.init({ blockId: "4218" });
                 AdController.show().then(() => {
@@ -345,102 +299,66 @@
                     updateUI();
                     alert("Спасибо за просмотр. Вам зачислен 1 кристалл.");
                 }).catch((error) => {
-                    console.error("Ошибка рекламы:", error);
                     alert("Рекламный ролик не был досмотрен полностью.");
                 });
             } else {
-                alert("Рекламная сеть временно недоступна. Пожалуйста, проверьте подключение.");
+                alert("Рекламная сеть временно недоступна.");
             }
-        });
-    }
+        }
 
-    // [ ========================================================================== ]
-    // [ 7. ЛОГИКА ИГРОВОГО ПРОЦЕССА (Кликер и Автомайнинг) ]
-    // [ ========================================================================== ]
-    function coreClickAction() {
-        dna += clickPower;
-        updateUI();
-    }
+        // [ Логика скролла карты вверх/вниз ]
+        viewport.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            startY = e.touches.clientY - currentY;
+        }, { passive: true });
 
-    function buyNextEvolutionStep() {
-        let activeEvo = evolutionTree[currentEvolutionIndex];
-        if (!activeEvo) return;
-        
-        if (dna >= activeEvo.cost) {
-            dna -= activeEvo.cost;
-            clickPower += activeEvo.clickAdd;       
-            autoDnaPerSecond += activeEvo.autoAdd; 
-            
-            currentEvolutionIndex++;
-            
-            const coreBtn = document.getElementById('clicker-core');
-            if (coreBtn) coreBtn.innerText = activeEvo.emoji;
-            
+        viewport.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            currentY = e.touches.clientY - startY;
+            const minY = viewport.clientHeight - 3000;
+            const maxY = 0;
+            currentY = Math.min(maxY, Math.max(currentY, minY));
+            map.style.transform = `translate3d(0px, ${currentY}px, 0px)`;
+        }, { passive: true });
+
+        viewport.addEventListener('touchend', () => { isDragging = false; });
+
+        // [ Автоначисление ДНК каждую секунду ]
+        setInterval(() => {
+            if (autoDnaPerSecond > 0) {
+                dna += autoDnaPerSecond;
+                const dnaBox = document.getElementById('dna-balance');
+                if (dnaBox) dnaBox.innerText = Math.floor(dna);
+                saveGameProgress();
+            }
+        }, 1000);
+
+        // [ Сохранение пакета данных в память телефона ]
+        function saveGameProgress() {
+            const gameData = { dna, crystals, clickPower, autoDnaPerSecond, currentEvolutionIndex, currentEmoji: document.getElementById('clicker-core') ? document.getElementById('clicker-core').innerText : "🧬" };
+            localStorage.setItem('evo_vertical_save', JSON.stringify(gameData));
+        }
+
+        // [ Загрузка пакета данных при входе ]
+        function loadGameProgress() {
+            const savedData = localStorage.getItem('evo_vertical_save');
+            if (savedData) {
+                try {
+                    const data = JSON.parse(savedData);
+                    dna = data.dna ?? 0;
+                    crystals = data.crystals ?? 0;
+                    clickPower = data.clickPower ?? 1;
+                    autoDnaPerSecond = data.autoDnaPerSecond ?? 0;
+                    currentEvolutionIndex = data.currentEvolutionIndex ?? 0;
+                    const coreBtn = document.getElementById('clicker-core');
+                    if (coreBtn) coreBtn.innerText = data.currentEmoji ?? "🧬";
+                } catch (e) { console.error(e); }
+            }
             updateUI();
-        } else {
-            alert("Недостаточно молекул ДНК для совершения эволюционного скачка.");
         }
-    }
 
-    // [ НАМЕРТВО ПРИВЯЗЫВАЕМ ФУНКЦИИ К КНОПКАМ ПО ИХ ID НА ЭКРАНЕ ]
-    document.addEventListener("DOMContentLoaded", () => {
-        const coreBtn = document.getElementById('clicker-core');
-        if (coreBtn) coreBtn.addEventListener('click', coreClickAction);
-
-        const evoBtn = document.getElementById('evo-upgrade-btn');
-        if (evoBtn) evoBtn.addEventListener('click', buyNextEvolutionStep);
-    });
-
-    // [ Таймер пассивного начисления ДНК каждую секунду ]
-    setInterval(() => {
-        if (autoDnaPerSecond > 0) {
-            dna += autoDnaPerSecond;
-            const dnaBalanceEl = document.getElementById('dna-balance');
-            if (dnaBalanceEl) dnaBalanceEl.innerText = Math.floor(dna);
-            saveGameProgress();
-        }
-    }, 1000);
-
-    // [ ========================================================================== ]
-    // [ 8. СОХРАНЕНИЕ И ЗАГРУЗКА ДАННЫХ (localStorage) ]
-    // [ ========================================================================== ]
-    function saveGameProgress() {
-        const gameData = { 
-            dna: dna, 
-            crystals: crystals,
-            clickPower: clickPower,
-            autoDnaPerSecond: autoDnaPerSecond,
-            currentEvolutionIndex: currentEvolutionIndex,
-            currentEmoji: document.getElementById('clicker-core') ? document.getElementById('clicker-core').innerText : "🧬"
-        };
-        localStorage.setItem('evo_vertical_save', JSON.stringify(gameData));
-    }
-
-    function loadGameProgress() {
-        const savedData = localStorage.getItem('evo_vertical_save');
-        if (savedData) {
-            try {
-                const data = JSON.parse(savedData);
-                dna = data.dna ?? 0;
-                crystals = data.crystals ?? 0;
-                clickPower = data.clickPower ?? 1;
-                autoDnaPerSecond = data.autoDnaPerSecond ?? 0;
-                currentEvolutionIndex = data.currentEvolutionIndex ?? 0;
-                
-                const coreBtn = document.getElementById('clicker-core');
-                if (coreBtn) coreBtn.innerText = data.currentEmoji ?? "🧬";
-            } catch (e) { 
-                console.error("Ошибка чтения памяти сохранения:", e); 
-            }
-        }
-        updateUI();
-    }
-
-    // [ ========================================================================== ]
-    // [ 9. КОД ЗАПУСКА ИГРЫ ПРИ СТАРТЕ ]
-    // [ ========================================================================== ]
-    loadGameProgress();
-
-</script>
+        // [ Мгновенный запуск при открытии страницы ]
+        loadGameProgress();
+    </script>
 </body>
 </html>
