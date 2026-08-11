@@ -2,348 +2,207 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dark Clicker</title>
-    <!-- Подключение AdsGram -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Crypto Clicker Pro</title>
+    <!-- Подключаем официальный скрипт Adsgram (критично для рекламы) -->
     <script src="https://adsgram.ai"></script>
-    
     <style>
-        /* БАЗОВЫЕ СТИЛИ ПРИЛОЖЕНИЯ */
-        body {
-            background-color: #0d0d0d;
-            color: white;
-            font-family: Arial, sans-serif;
-            text-align: center;
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Запрещаем лишнюю прокрутку главного экрана */
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
         }
-        .score-container {
-            font-size: 48px;
-            font-weight: bold;
-            margin-top: 40px;
-        }
-        .text-label {
-            color: #888;
-            font-size: 16px;
-        }
-        #coin {
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, #ffe066, #f5b041);
-            border-radius: 50%;
-            margin: 40px auto;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(245, 176, 65, 0.6);
-            transition: transform 0.1s;
-        }
-        #coin:active {
-            transform: scale(0.95);
-        }
-
-        /* КНОПКА РЕКЛАМЫ (СИНЯЯ) */
-        .btn-ad {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 16px 32px;
-            font-size: 18px;
-            border-radius: 12px;
-            cursor: pointer;
-            width: 85%;
-            max-width: 340px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .btn-ad:active {
-            transform: scale(0.98);
-        }
-
-        /* КРУПНАЯ И ЗАМЕТНАЯ КНОПКА МЕНЮ ВНИЗУ ГЛАВНОГО ЭКРАНА */
-        .bottom-menu-container {
-            position: fixed;
-            bottom: 30px; /* Отступ от самого низа экрана телефона */
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            z-index: 1000;
-        }
-        .btn-menu-large {
-            background: #1e1e1e;
-            color: #ffcc00; /* Желтый текст */
-            border: 2px solid #ffcc00; /* Золотая рамка */
-            padding: 18px 0; /* Высокая кнопка */
-            font-size: 20px; /* Крупный шрифт */
-            border-radius: 16px;
-            cursor: pointer;
-            width: 85%; /* Широкая кнопка */
-            max-width: 340px;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.2); /* Свечение */
-            transition: transform 0.1s, background 0.2s;
-        }
-        .btn-menu-large:active {
-            transform: scale(0.97);
-            background: #252525;
-        }
-
-        /* ПОЛНОЭКРАННОЕ ОКНО МЕНЮ (ОТКРЫВАЕТСЯ ПОВЕРХ ИГРЫ) */
-        .overlay-menu {
-            position: fixed;
-            top: 0;
-            left: 0;
+        body, html {
             width: 100%;
             height: 100%;
-            background-color: #0d0d0d; /* Полностью темный фон */
-            z-index: 2000;
-            display: none; /* По умолчанию скрыто */
-            box-sizing: border-box;
-            padding: 25px;
-            overflow-y: auto; /* Разрешаем листать меню вниз */
-        }
-        .overlay-menu.active {
-            display: block; /* Показываем меню, когда нажали кнопку */
-        }
-
-        /* КНОПКА НАЗАД ВНУТРИ МЕНЮ */
-        .close-menu-btn {
-            background: #ff4444;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-weight: bold;
-            float: right;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        /* СПИСОК КАРТОЧЕК ВНУТРИ МЕНЮ */
-        .menu-grid {
-            margin-top: 80px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1e1e2f, #11111a);
+            font-family: 'Arial', sans-serif;
+            color: #fff;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+            padding: 40px 20px;
         }
-        .menu-card {
-            background: #151515;
-            border: 1px solid #252525;
-            border-radius: 14px;
-            padding: 20px;
-            text-align: left;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
+        /* Блок баланса */
+        .balance-container {
+            text-align: center;
+            margin-top: 20px;
         }
-        .menu-card:active {
-            background: #1e1e1e;
-            transform: scale(0.98);
-        }
-        .menu-card h3 {
-            margin: 0 0 5px 0;
-            color: #ffcc00;
-            font-size: 18px;
-        }
-        .menu-card p {
-            margin: 0;
-            color: #888;
+        .balance-label {
             font-size: 14px;
+            color: #8a8a9e;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .balance-value {
+            font-size: 48px;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            margin-top: 5px;
+        }
+        .stats {
+            font-size: 14px;
+            color: #a0a0b8;
+            margin-top: 5px;
+        }
+        /* Главная кнопка-кликер */
+        .click-btn {
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, #ffd700 0%, #b8860b 100%);
+            border: 8px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.3), inset 0 0 20px rgba(0,0,0,0.4);
+            cursor: pointer;
+            outline: none;
+            transition: transform 0.05s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 70px;
+        }
+        .click-btn:active {
+            transform: scale(0.92);
+        }
+        /* Блок нижней рекламы и апгрейдов */
+        .footer-menu {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .btn-ui {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: opacity 0.2s;
+        }
+        .btn-ui:active {
+            opacity: 0.8;
+        }
+        .btn-upgrade {
+            background: linear-gradient(90deg, #3498db, #2980b9);
+        }
+        .btn-ads {
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
         }
     </style>
 </head>
 <body>
 
-    <!-- ========================================== -->
-    <!-- ЭКРАН 1: ГЛАВНЫЙ ЭКРАН КЛИКЕРА             -->
-    <!-- ========================================== -->
-    <div class="score-container" id="balance">0</div>
-    <div class="text-label">Монет накоплено</div>
-    
-    <div id="coin" onclick="clickCoin()"></div>
-    
-    <br>
-    <!-- Кнопка рекламы -->
-    <button class="btn-ad" onclick="showAd()">Смотреть видео (+100 🟡)</button>
-    
-    <!-- Одна крупная кнопка меню в самом низу -->
-    <div class="bottom-menu-container">
-        <button class="btn-menu-large" onclick="toggleMenu(true)">⚙️ МЕНЮ ИГРЫ</button>
+    <!-- ВЕРХНИЙ ИНТЕРФЕЙС: БАЛАНС -->
+    <div class="balance-container">
+        <div class="balance-label">Ваш баланс</div>
+        <div id="balance" class="balance-value">0</div>
+        <div id="stats" class="stats">За клик: +1</div>
     </div>
 
+    <!-- ЦЕНТР: КНОПКА КЛИКЕРА -->
+    <button class="click-btn" id="clicker">🟡</button>
 
-    <!-- ========================================== -->
-    <!-- ЭКРАН 2: ПОЛНОЭКРАННОЕ ОКНО МЕНЮ          -->
-    <!-- ========================================== -->
-    <div id="main-menu-overlay" class="overlay-menu">
-        <button class="close-menu-btn" onclick="toggleMenu(false)">❌ Назад</button>
-        <h2 style="text-align: left; margin-top: 10px; color: #fff;">Разделы игры</h2>
-
-<div class="menu-grid">
-<!-- Карточка Профиль -->
-<div class="menu-card" id="card-profile" onclick="openProfileModal()">
-    <h3>👤 Мой Профиль</h3>
-    <p>Баланс рублей, статистика и ID аккаунта</p>
-</div>
-    
-            <!-- Карточка 1: Рейтинг -->
-            <div class="menu-card" id="card-leaderboard" onclick="openLeaderboard()">
-                <h3>🏆 Топ игроков</h3>
-                <p id="leaderboard-summary">Посмотреть лидеров по монетам</p>
-                
-                <!-- Таблица лидеров -->
-                <div id="leaderboard-list-container" style="display: none; margin-top: 20px; border-top: 1px solid #252525; padding-top: 15px;">
-                    <div style="display: flex; justify-content: space-between; padding: 10px 5px; border-bottom: 1px solid #222; color: #ffcc00; font-weight: bold;">
-                        <span>1. Dark_Lord 👑</span><span>154,200 🟡</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; padding: 10px 5px; border-bottom: 1px solid #222; color: #e5e7eb;">
-                        <span>2. Crypto_Shark</span><span>98,550 🟡</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; padding: 10px 5px; border-bottom: 1px solid #222; color: #e5e7eb;">
-                        <span>3. Telegram_User</span><span>42,100 🟡</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; padding: 12px 5px; background: #222; border-radius: 8px; margin-top: 8px; font-weight: bold; color: #34d399;">
-                        <span>4. Вы (dark_user)</span><span id="player-leaderboard-score">0 🟡</span>
-                    </div>
-                </div>
-            </div>
-    <div class="menu-card" id="card-exchange" onclick="openExchangeModal()">
-    <h3>🔄 Обмен монет</h3>
-    <p>Конвертировать монеты в рубли (100 монет = 0.05 ₽)</p>
+    <!-- НИЖНИЙ ИНТЕРФЕЙС: АПГРЕЙД И МОНЕТИЗАЦИЯ -->
+    <div class="footer-menu">
+        <!-- Кнопка прокачки клика -->
+        <button class="btn-ui btn-upgrade" id="upgrade-btn">Прокачать клик (Цена: 50)</button>
+        <!-- Официальная вежливая кнопка рекламы для Adsgram -->
+        <button class="btn-ui btn-ads" id="ads-btn">Получить бонус за просмотр</button>
     </div>
 
-            <!-- Карточка 2: Вывод средств -->
-            <div class="menu-card" id="card-wallet" onclick="alert('Вывод средств станет доступен после официального релиза игры!')">
-                <h3>💰 Вывод средств</h3>
-                <p>Обменять накопленные монеты на реальные рубли</p>
-            </div>
-
-            <!-- Карточка 3: Задания -->
-            <div class="menu-card" id="card-tasks" onclick="alert('Задания и квесты появятся в ближайшем обновлении!')">
-                <h3>🚀 Задания и квесты</h3>
-                <p>Дополнительный заработок монет за подписки</p>
-            </div>
-
-</div>
-        </div>
-    </div>
-
-
-    <!-- ========================================== -->
-    <!-- СКРИПТЫ И ЛОГИКА ПРИЛОЖЕНИЯ                -->
-    <!-- ========================================== -->
     <script>
-        // ЛОГИКА КЛИКЕРА И КЛЮЧЕВОГО БАЛАНСА
-        let score = localStorage.getItem('clicker_balance') ? parseInt(localStorage.getItem('clicker_balance')) : 0;
-        document.getElementById('balance').innerText = score;
+        // Игровое состояние
+        let coins = 0;
+        let clickPower = 1;
+        let upgradeCost = 50;
 
-        function clickCoin() {
-            score++;
-            updateBalance();
+        const balanceEl = document.getElementById('balance');
+        const statsEl = document.getElementById('stats');
+        const clickerEl = document.getElementById('clicker');
+        const upgradeBtnEl = document.getElementById('upgrade-btn');
+        const adsBtnEl = document.getElementById('ads-btn');
+
+        // Обновление интерфейса
+        function updateUI() {
+            balanceEl.innerText = Math.floor(coins);
+            statsEl.innerText = `За клик: +${clickPower}`;
+            upgradeBtnEl.innerText = `Прокачать клик (Цена: ${upgradeCost})`;
+            saveGame();
         }
 
-        function updateBalance() {
-            document.getElementById('balance').innerText = score;
-            localStorage.setItem('clicker_balance', score);
-        }
+        // Логика клика
+        clickerEl.addEventListener('click', () => {
+            coins += clickPower;
+            updateUI();
+        });
 
-        function showAd() {
-            if (window.AdsGram) {
-                const AdController = window.AdsGram.init({ blockId: "42181" });
-                AdController.show().then((result) => {
-                    score += 100;
-                    updateBalance();
-                    alert("Успешно! Вам начислено 100 монет.");
-                }).catch((result) => {
-                    alert("Реклама не загрузилась или была закрыта раньше времени.");
+        // Логика покупки улучшения
+        upgradeBtnEl.addEventListener('click', () => {
+            if (coins >= upgradeCost) {
+                coins -= upgradeCost;
+                clickPower += 1;
+                upgradeCost = Math.floor(upgradeCost * 1.6); // Цена следующего апгрейда растет
+                updateUI();
+            } else {
+                alert("Недостаточно монет для улучшения.");
+            }
+        });
+
+        // ИНТЕГРАЦИЯ ADSGRAM (Реклама за вознаграждение)
+        adsBtnEl.addEventListener('click', () => {
+            if (window.Adsgram) {
+                // ВАЖНО: Пока проект тестируется, используем тестовый блок "4218". 
+                // Как только Adsgram одобрит бота, замени 4218 на свой личный Block ID!
+                const AdController = window.Adsgram.init({ blockId: "4218" });
+                
+                AdController.show().then(() => {
+                    // Награда за успешный просмотр (Даем много монет)
+                    const bonus = clickPower * 100;
+                    coins += bonus;
+                    updateUI();
+                    alert(`Спасибо за просмотр. Вам зачислен бонус в размере ${bonus} монет.`);
+                }).catch((error) => {
+                    console.error("Ошибка рекламы:", error);
+                    alert("Рекламный ролик не был досмотрен полностью.");
                 });
             } else {
-                score += 100;
-                updateBalance();
-                alert("Ошибка: Сеть Adsgram недоступна.");
+                alert("Рекламная сеть временно недоступна. Пожалуйста, попробуйте позже.");
             }
+        });
+
+        // Сохранение и загрузка
+        function saveGame() {
+            const data = { coins, clickPower, upgradeCost };
+            localStorage.setItem('fast_clicker_save', JSON.stringify(data));
         }
-function openExchangeModal() {
-    // Проверяем, сохранены ли монеты в переменной score
-    if (typeof score === 'undefined') return;
 
-    if (score < 100) {
-        alert(`У вас ${score} монет. Минимальная сумма для обмена — 100 монет!`);
-        return;
-    }
-
-    // Считаем доступные для обмена монеты (кратные 100)
-    const exchangeableCoins = Math.floor(score / 100) * 100;
-    const rublesGained = (exchangeableCoins / 100) * 0.05;
-
-    // Спрашиваем подтверждение у игрока
-    const confirmExchange = confirm(`Вы хотите обменять ${exchangeableCoins} монет на ${rublesGained.toFixed(2)} ₽?`);
-    
-    if (confirmExchange) {
-        score -= exchangeableCoins; // Списываем монеты
-        
-        // Создаем или обновляем баланс рублей в localStorage
-        let currentMoney = parseFloat(localStorage.getItem('user_money') || '0');
-        currentMoney += rublesGained;
-        localStorage.setItem('user_money', currentMoney.toString());
-        
-        // Обновляем баланс монет на экране и в памяти
-        updateBalance();
-        
-        alert(`Успешно обменено! На ваш баланс зачислено ${rublesGained.toFixed(2)} ₽.`);
-    }
+        function loadGame() {
+            const saved = localStorage.getItem('fast_clicker_save');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    coins = data.coins ?? 0;
+                    clickPower = data.clickPower ?? 1;
+                    upgradeCost = data.upgradeCost ?? 50;
+                } catch(e) { console.error(e); }
             }
-        
-
-        // ЛОГИКА ОТКРЫТИЯ И ЗАКРЫТИЯ ОКНА МЕНЮ
-        function toggleMenu(show) {
-            const menu = document.getElementById('main-menu-overlay');
-            if (show) {
-                menu.classList.add('active'); // Показываем окно меню поверх кликера
-            } else {
-                menu.classList.remove('active'); // Прячем окно и возвращаемся к монете
-            }
+            updateUI();
         }
-// Команда для открытия и обновления Топа игроков
-function openLeaderboard() {
-    // Берём ваши текущие накликанные монеты и вставляем в таблицу
-    document.getElementById('player-leaderboard-score').innerText = `${score} 🟡`;
-    
-    // Находим блок с таблицей лидеров
-    const container = document.getElementById('leaderboard-list-container');
-    
-    // Если она скрыта — показываем, если открыта — прячем обратно
-    if (container.style.display === 'none') {
-        container.style.display = 'block';
-        document.getElementById('leaderboard-summary').innerText = 'Таблица лидеров кликера:';
-    } else {
-        container.style.display = 'none';
-        document.getElementById('leaderboard-summary').innerText = 'Посмотреть лидеров по монетам';
-    }
-}
-function openProfileModal() {
-    let currentMoney = parseFloat(localStorage.getItem('user_money') || '0');
-    document.getElementById('profile-money').innerText = currentMoney.toFixed(2);
-    document.getElementById('stat-current-coins').innerText = score;
-    document.getElementById('profile-modal').style.display = 'block';
-}
-function closeProfileModal() {
-    document.getElementById('profile-modal').style.display = 'none';
-    }        
+
+        // Старт
+        loadGame();
     </script>
-<!-- Модальное окно Профиля -->
-<div id="profile-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center;">
-    <div style="background: #222; color: #fff; padding: 20px; border-radius: 15px; width: 85%; max-width: 340px; margin: 30% auto; text-align: center; border: 2px solid #4caf50; box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);">
-        <h2 style="margin-top: 0; color: #4caf50;">👤 Профиль</h2>
-        <div style="background: #333; padding: 10px; border-radius: 10px; margin: 15px 0;">
-            <p style="margin: 0; font-size: 14px; color: #aaa;">Баланс для вывода:</p>
-            <h2 style="margin: 5px 0 0 0; color: #4caf50; font-size: 28px;"><span id="profile-money">0.00</span> ₽</h2>
-        </div>
-        <div style="text-align: left; background: #2a2a2a; padding: 12px; border-radius: 10px; font-size: 14px;">
-            <p style="margin: 0 0 8px 0;">🟡 Монеты на счету: <b id="stat-current-coins" style="color: #ffeb3b;">0</b></p>
-            <p style="margin: 0;">🆔 Аккаунт: <span style="color: #888;">Игрок #1</span></p>
-        </div>
-        <button onclick="closeProfileModal()" style="margin-top: 20px; background: #e53935; color: white; border: none; padding: 10px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%;">Закрыть</button>
-    </div>
-</div>
 </body>
-    </html>
+</html>
