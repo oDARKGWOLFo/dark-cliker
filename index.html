@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Crypto Clicker Pro</title>
-    <!-- Подключаем официальный скрипт Adsgram (критично для рекламы) -->
+    <title>Эволюция: Вертикальное Древо</title>
+    <!-- Официальный скрипт рекламной сети Adsgram -->
     <script src="https://adsgram.ai"></script>
     <style>
+        /* ==========================================================================
+           1. СБРОС СТИЛЕЙ БРАУЗЕРА (ЭКРАН СМАРТФОНА)
+           ========================================================================== */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -15,194 +18,266 @@
             -webkit-user-select: none;
             touch-action: none;
         }
+
         body, html {
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background: linear-gradient(135deg, #1e1e2f, #11111a);
-            font-family: 'Arial', sans-serif;
+            background-color: #05060c;
+            font-family: Arial, sans-serif;
             color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            padding: 40px 20px;
         }
-        /* Блок баланса */
-        .balance-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .balance-label {
-            font-size: 14px;
-            color: #8a8a9e;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        .balance-value {
-            font-size: 48px;
-            font-weight: bold;
-            color: #ffd700;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-            margin-top: 5px;
-        }
-        .stats {
-            font-size: 14px;
-            color: #a0a0b8;
-            margin-top: 5px;
-        }
-        /* Главная кнопка-кликер */
-        .click-btn {
-            width: 220px;
-            height: 220px;
-            background: radial-gradient(circle, #ffd700 0%, #b8860b 100%);
-            border: 8px solid #fff;
-            border-radius: 50%;
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.3), inset 0 0 20px rgba(0,0,0,0.4);
-            cursor: pointer;
-            outline: none;
-            transition: transform 0.05s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 70px;
-        }
-        .click-btn:active {
-            transform: scale(0.92);
-        }
-        /* Блок нижней рекламы и апгрейдов */
-        .footer-menu {
+
+        /* Главное окно телефона, через которое мы видим игру */
+        #viewport {
             width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ==========================================================================
+           2. ИГРОВАЯ КАРТА: КОСМИЧЕСКОЕ ПРОСТРАНСТВО (Движение строго вверх/вниз)
+           ========================================================================== */
+        #game-map {
+            position: absolute;
+            width: 100%;       /* Ширина ровно под экран телефона (без скролла влево/вправо) */
+            height: 3000px;    /* Карта очень длинная, уходит далеко вверх */
+            left: 0;
+            top: -2200px;      /* Стартуем в самом низу карты (3000px минус высота экрана) */
+            
+            /* Космический неоновый фон с эффектом звездной пыли */
+            background: linear-gradient(to top, #0a0b1e 0%, #121435 50%, #1a1c4b 100%);
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px);
+            background-size: 350px 350px, 200px 200px;
+            background-position: 0 0, 40px 60px;
+            
+            transform: translate3d(0, 0, 0);
+            will-change: transform;
+        }
+
+        /* Инструкция на карте для теста */
+        .map-info-text {
+            position: absolute;
+            bottom: 100px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ==========================================================================
+           3. ИНТЕРФЕЙС УПРАВЛЕНИЯ: ПАНЕЛИ БАЛАНСА И КНОПКИ (Прибиты к экрану сверху и снизу)
+           ========================================================================== */
+        /* Верхняя плашка для вывода баланса */
+        .top-hud {
+            position: absolute;
+            top: 20px;
+            left: 5%;
+            width: 90%;
+            background: rgba(13, 16, 37, 0.85);
+            border: 2px solid #23295c;
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 10;
+        }
+
+        /* Общий стиль для каждого ресурса в плашке */
+        .hud-item {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
+            align-items: center;
         }
-        .btn-ui {
+        .hud-label {
+            font-size: 10px;
+            color: #8da2fb;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+        }
+        .hud-value {
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
+        }
+        /* Цвета цифр ресурсов */
+        #dna-val { color: #00d2ff; }
+        #crystals-val { color: #ff3366; }
+
+        /* Нижняя панель для кнопки рекламы */
+        .bottom-hud {
+            position: absolute;
+            bottom: 20px;
+            left: 5%;
+            width: 90%;
+            z-index: 10;
+        }
+
+        /* Кнопка рекламы Adsgram */
+        .btn-ads {
             width: 100%;
             padding: 16px;
+            background: linear-gradient(90deg, #10b981, #059669);
             border: none;
             border-radius: 14px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             color: white;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
             transition: opacity 0.2s;
         }
-        .btn-ui:active {
+        .btn-ads:active {
             opacity: 0.8;
-        }
-        .btn-upgrade {
-            background: linear-gradient(90deg, #3498db, #2980b9);
-        }
-        .btn-ads {
-            background: linear-gradient(90deg, #2ecc71, #27ae60);
-            box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
         }
     </style>
 </head>
 <body>
 
-    <!-- ВЕРХНИЙ ИНТЕРФЕЙС: БАЛАНС -->
-    <div class="balance-container">
-        <div class="balance-label">Ваш баланс</div>
-        <div id="balance" class="balance-value">0</div>
-        <div id="stats" class="stats">За клик: +1</div>
+    <div id="viewport">
+        
+        <!-- ВЕРХНИЙ ИНТЕРФЕЙС: БАЛАНС ДНК И АЛМАЗОВ (Прибит к экрану) -->
+        <div class="top-hud">
+            <div class="hud-item">
+                <span class="hud-label">Молекулы ДНК</span>
+                <span id="dna-val" class="hud-value">0</span>
+            </div>
+            <div class="hud-item" style="width: 2px; height: 30px; background: #23295c;"></div >
+            <div class="hud-item">
+                <span class="hud-label">Кристаллы</span>
+                <span id="crystals-val" class="hud-value">0</span>
+            </div>
+        </div>
+
+        <!-- ==========================================================================
+             ИГРОВАЯ КАРТА КОСМОСА (Двигается пальцем строго по вертикали)
+             ========================================================================== -->
+        <div id="game-map">
+            <div class="map-info-text">Листайте вверх, чтобы увидеть древо эволюции ↑</div>
+            <!-- Сюда в следующих шагах мы будем добавлять сферы жизни и цепочки существ -->
+        </div>
+
+        <!-- НИЖНИЙ ИНТЕРФЕЙС: КНОПКА ПОЛУЧЕНИЯ АЛМАЗОВ -->
+        <div class="bottom-hud">
+            <button class="btn-ads" id="ads-bonus-btn">Получить 1 Кристалл за просмотр</button>
+        </div>
+
     </div>
 
-    <!-- ЦЕНТР: КНОПКА КЛИКЕРА -->
-    <button class="click-btn" id="clicker">🟡</button>
-
-    <!-- НИЖНИЙ ИНТЕРФЕЙС: АПГРЕЙД И МОНЕТИЗАЦИЯ -->
-    <div class="footer-menu">
-        <!-- Кнопка прокачки клика -->
-        <button class="btn-ui btn-upgrade" id="upgrade-btn">Прокачать клик (Цена: 50)</button>
-        <!-- Официальная вежливая кнопка рекламы для Adsgram -->
-        <button class="btn-ui btn-ads" id="ads-btn">Получить бонус за просмотр</button>
-    </div>
-
+    <!-- ==========================================================================
+         4. РАЗДЕЛ: ЛОГИКА И СКРИПТЫ ДВИЖЕНИЯ И РЕКЛАМЫ
+         ========================================================================== -->
     <script>
-        // Игровое состояние
-        let coins = 0;
-        let clickPower = 1;
-        let upgradeCost = 50;
+        // Ссылки на элементы экрана
+        const viewport = document.getElementById('viewport');
+        const map = document.getElementById('game-map');
+        const adsBtn = document.getElementById('ads-bonus-btn');
 
-        const balanceEl = document.getElementById('balance');
-        const statsEl = document.getElementById('stats');
-        const clickerEl = document.getElementById('clicker');
-        const upgradeBtnEl = document.getElementById('upgrade-btn');
-        const adsBtnEl = document.getElementById('ads-btn');
+        // Игровые переменные баланса
+        let dna = 0;
+        let crystals = 0;
 
-        // Обновление интерфейса
+        // Переменные для вертикального скролла карты
+        let isDragging = false;
+        let startY = 0;
+        let currentY = -2200; // Стартовое положение в самом низу карты
+
+        // Обновление цифр на верхней панели
         function updateUI() {
-            balanceEl.innerText = Math.floor(coins);
-            statsEl.innerText = `За клик: +${clickPower}`;
-            upgradeBtnEl.innerText = `Прокачать клик (Цена: ${upgradeCost})`;
-            saveGame();
+            document.getElementById('dna-val').innerText = Math.floor(dna);
+            document.getElementById('crystals-val').innerText = crystals;
+            saveGameProgress();
         }
 
-        // Логика клика
-        clickerEl.addEventListener('click', () => {
-            coins += clickPower;
-            updateUI();
+        // --- ЛОГИКА ВЕРТИКАЛЬНОГО СКРОЛЛА (Строго вверх и вниз) ---
+        viewport.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            // Нам важна только координата Y (вверх/вниз), координату X (влево/вправо) мы игнорируем
+            startY = e.touches[0].clientY - currentY;
+        }, { passive: true });
+
+        viewport.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+
+            // Вычисляем новое положение карты по вертикали
+            currentY = e.touches[0].clientY - startY;
+
+            // Рассчитываем жесткие лимиты, чтобы карта не улетала в пустоту сверху и снизу
+            const minY = viewport.clientHeight - 3000; // Самый верхний край карты (ограничение)
+            const maxY = 0;                            // Самый нижний край карты (ограничение)
+
+            // Удерживаем карту в границах
+            currentY = Math.min(maxY, Math.max(currentY, minY));
+
+            // Сдвигаем карту. Обрати внимание: меняется только координата Y, по оси X всегда стоит 0!
+            map.style.transform = `translate3d(0px, ${currentY}px, 0px)`;
+        }, { passive: true });
+
+        viewport.addEventListener('touchend', () => {
+            isDragging = false;
         });
 
-        // Логика покупки улучшения
-        upgradeBtnEl.addEventListener('click', () => {
-            if (coins >= upgradeCost) {
-                coins -= upgradeCost;
-                clickPower += 1;
-                upgradeCost = Math.floor(upgradeCost * 1.6); // Цена следующего апгрейда растет
-                updateUI();
-            } else {
-                alert("Недостаточно монет для улучшения.");
-            }
-        });
 
-        // ИНТЕГРАЦИЯ ADSGRAM (Реклама за вознаграждение)
-        adsBtnEl.addEventListener('click', () => {
+        // --- ИНТЕГРАЦИЯ ADSGRAM: НАЧИСЛЕНИЕ АЛМАЗОВ ---
+        adsBtn.addEventListener('click', () => {
             if (window.Adsgram) {
-                // ВАЖНО: Пока проект тестируется, используем тестовый блок "4218". 
-                // Как только Adsgram одобрит бота, замени 4218 на свой личный Block ID!
+                // Во время тестов используем официальный блок "4218"
                 const AdController = window.Adsgram.init({ blockId: "4218" });
                 
                 AdController.show().then(() => {
-                    // Награда за успешный просмотр (Даем много монет)
-                    const bonus = clickPower * 100;
-                    coins += bonus;
+                    // Реклама досмотрена успешно: начисляем 1 алмаз
+                    crystals += 1;
                     updateUI();
-                    alert(`Спасибо за просмотр. Вам зачислен бонус в размере ${bonus} монет.`);
+                    alert("Спасибо за просмотр. Вам зачислен 1 кристалл.");
                 }).catch((error) => {
                     console.error("Ошибка рекламы:", error);
                     alert("Рекламный ролик не был досмотрен полностью.");
                 });
             } else {
-                alert("Рекламная сеть временно недоступна. Пожалуйста, попробуйте позже.");
+                alert("Рекламная сеть временно недоступна. Пожалуйста, проверьте подключение к интернету.");
             }
         });
 
-        // Сохранение и загрузка
-        function saveGame() {
-            const data = { coins, clickPower, upgradeCost };
-            localStorage.setItem('fast_clicker_save', JSON.stringify(data));
+
+// --- СОХРАНЕНИЕ И ЗАГРУЗКА ДАННЫХ В ТЕЛЕФОН ---
+        function saveGameProgress() {
+            // Собираем текущий баланс ДНК и кристаллов в один пакет данных
+            const gameData = { 
+                dna: dna, 
+                crystals: crystals 
+            };
+            // Записываем этот пакет в постоянную память браузера телефона
+            localStorage.setItem('evo_vertical_save', JSON.stringify(gameData));
         }
 
-        function loadGame() {
-            const saved = localStorage.getItem('fast_clicker_save');
-            if (saved) {
+        function loadGameProgress() {
+            // Пытаемся достать сохраненный пакет данных из памяти телефона
+            const savedData = localStorage.getItem('evo_vertical_save');
+            
+            // Если сохранение существует — распаковываем его и зачисляем игроку
+            if (savedData) {
                 try {
-                    const data = JSON.parse(saved);
-                    coins = data.coins ?? 0;
-                    clickPower = data.clickPower ?? 1;
-                    upgradeCost = data.upgradeCost ?? 50;
-                } catch(e) { console.error(e); }
+                    const data = JSON.parse(savedData);
+                    dna = data.dna ?? 0;
+                    crystals = data.crystals ?? 0;
+                } catch (e) { 
+                    // Если файл сохранения поврежден, выводим ошибку в консоль
+                    console.error("Ошибка чтения памяти сохранения:", e); 
+                }
             }
+            // Перерисовываем цифры на верхней панели экрана
             updateUI();
         }
 
-        // Старт
-        loadGame();
-    </script>
-</body>
-</html>
+        // Самая последняя строчка в коде, которая запускает чтение памяти при старте игры
+        loadGameProgress();        
