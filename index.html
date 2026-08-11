@@ -178,110 +178,211 @@
          4. РАЗДЕЛ: ЛОГИКА И СКРИПТЫ ДВИЖЕНИЯ И РЕКЛАМЫ
          ========================================================================== -->
     <script>
-        // Ссылки на элементы экрана
-        const viewport = document.getElementById('viewport');
-        const map = document.getElementById('game-map');
-        const adsBtn = document.getElementById('ads-bonus-btn');
+<script>
+    // [ ========================================================================== ]
+    // [ 1. ССЫЛКИ НА ЭЛЕМЕНТЫ ЭКРАНА (Находим кнопки и панели из HTML) ]
+    // [ ========================================================================== ]
+    const viewport = document.getElementById('viewport'); // [ Окно телефона ]
+    const map = document.getElementById('game-map');           // [ Карта космоса ]
+    const adsBtn = document.getElementById('ads-bonus-btn');   // [ Кнопка рекламы ]
 
-        // Игровые переменные баланса
-        let dna = 0;
-        let crystals = 0;
+    // [ Ссылки на элементы кликера и эволюции, которые мы добавим на карту ]
+    const dnaBalanceEl = document.getElementById('dna-val');       // [ Текст баланса ДНК ]
+    const crystalsBalanceEl = document.getElementById('crystals-val'); // [ Текст кристаллов ]
 
-        // Переменные для вертикального скролла карты
-        let isDragging = false;
-        let startY = 0;
-        let currentY = -2200; // Стартовое положение в самом низу карты
+    // [ ========================================================================== ]
+    // [ 2. ИГРОВЫЕ ПЕРЕМЕННЫЕ БАЛАНСА И СИМУЛЯЦИИ ]
+    // [ ========================================================================== ]
+    let dna = 0;                  // [ Текущее количество молекул ДНК (Очки эволюции) ]
+    let crystals = 0;             // [ Текущее количество алмазов/кристаллов за видео ]
+    let clickPower = 1;           // [ Сколько ДНК даётся игроку за один клик ]
+    let autoDnaPerSecond = 0;     // [ Сколько ДНК капает автоматически в секунду ]
+    let currentEvolutionIndex = 0; // [ На каком этапе эволюции сейчас находится игрок ]
 
-        // Обновление цифр на верхней панели
-        function updateUI() {
-            document.getElementById('dna-val').innerText = Math.floor(dna);
-            document.getElementById('crystals-val').innerText = crystals;
-            saveGameProgress();
+    // [ ПЕРЕМЕННЫЕ ДЛЯ ВЕРТИКАЛЬНОГО СКРОЛЛА КАРТЫ (Движение только вверх/вниз) ]
+    let isDragging = false; // [ Нажат ли палец на экране прямо сейчас ]
+    let startY = 0;         // [ Начальная точка нажатия пальца по вертикали ]
+    let currentY = -2200;   // [ Стартовая позиция карты (начинаем в самом низу) ]
+
+    // [ ========================================================================== ]
+    // [ 3. ЦЕПОЧКА ЭВОЛЮЦИИ СУЩЕСТВ (Древо развития жизни на Земле) ]
+    // [ ========================================================================== ]
+    const evolutionTree = [
+        { name: "Первую клетку", emoji: "🦠", cost: 40, clickAdd: 1, autoAdd: 0, title: "Бульон аминокислот" },
+        { name: "Бактерию", emoji: "🧫", cost: 150, clickAdd: 3, autoAdd: 1, title: "Первая живая клетка" },
+        { name: "Медузу", emoji: "🪼", cost: 600, clickAdd: 10, autoAdd: 5, title: "Простейшая бактерия" },
+        { name: "Древнюю рыбу", emoji: "🐟", cost: 2500, clickAdd: 40, autoAdd: 20, title: "Океаническая медуза" },
+        { name: "Динозавра", emoji: "🦖", cost: 12000, clickAdd: 200, autoAdd: 100, title: "Древняя кистепёрая рыба" },
+        { name: "Первого человека", emoji: "🐒", cost: 75000, clickAdd: 1000, autoAdd: 500, title: "Эра динозавров" },
+        { name: "Киборга из будущего", emoji: "🤖", cost: 500000, clickAdd: 5000, autoAdd: 2500, title: "Разумное человечество" },
+        { name: "Предел симуляции", emoji: "🌌", cost: 99999999, clickAdd: 0, autoAdd: 0, title: "Технологический киборг" }
+    ];
+
+    // [ ========================================================================== ]
+    // [ 4. ФУНКЦИЯ ОБНОВЛЕНИЯ ИНТЕРФЕЙСА (Синхронизирует цифры с экраном) ]
+    // [ ========================================================================== ]
+    function updateUI() {
+        // [ Выводим баланс ДНК (округляем до целого числа) ]
+        if (dnaBalanceEl) dnaBalanceEl.innerText = Math.floor(dna);
+        
+        // [ Выводим баланс кристаллов за видео ]
+        if (crystalsBalanceEl) crystalsBalanceEl.innerText = crystals;
+        
+        // [ Находим элементы апгрейдов на экране и обновляем их тексты ]
+        const evoNameEl = document.getElementById('evo-name');
+        const evoCostEl = document.getElementById('evo-cost');
+        const currentStageEl = document.getElementById('current-stage');
+        
+        let currentEvo = evolutionTree[currentEvolutionIndex];
+        if (currentStageEl && currentEvo) {
+            currentStageEl.innerText = `Текущий вид: ${currentEvo.title} (+${autoDnaPerSecond}/сек)`;
         }
-
-        // --- ЛОГИКА ВЕРТИКАЛЬНОГО СКРОЛЛА (Строго вверх и вниз) ---
-        viewport.addEventListener('touchstart', (e) => {
-            isDragging = true;
-            // Нам важна только координата Y (вверх/вниз), координату X (влево/вправо) мы игнорируем
-            startY = e.touches[0].clientY - currentY;
-        }, { passive: true });
-
-        viewport.addEventListener('touchmove', (e) => {
-            if (!isDragging) return;
-
-            // Вычисляем новое положение карты по вертикали
-            currentY = e.touches[0].clientY - startY;
-
-            // Рассчитываем жесткие лимиты, чтобы карта не улетала в пустоту сверху и снизу
-            const minY = viewport.clientHeight - 3000; // Самый верхний край карты (ограничение)
-            const maxY = 0;                            // Самый нижний край карты (ограничение)
-
-            // Удерживаем карту в границах
-            currentY = Math.min(maxY, Math.max(currentY, minY));
-
-            // Сдвигаем карту. Обрати внимание: меняется только координата Y, по оси X всегда стоит 0!
-            map.style.transform = `translate3d(0px, ${currentY}px, 0px)`;
-        }, { passive: true });
-
-        viewport.addEventListener('touchend', () => {
-            isDragging = false;
-        });
-
-
-        // --- ИНТЕГРАЦИЯ ADSGRAM: НАЧИСЛЕНИЕ АЛМАЗОВ ---
-        adsBtn.addEventListener('click', () => {
-            if (window.Adsgram) {
-                // Во время тестов используем официальный блок "4218"
-                const AdController = window.Adsgram.init({ blockId: "4218" });
-                
-                AdController.show().then(() => {
-                    // Реклама досмотрена успешно: начисляем 1 алмаз
-                    crystals += 1;
-                    updateUI();
-                    alert("Спасибо за просмотр. Вам зачислен 1 кристалл.");
-                }).catch((error) => {
-                    console.error("Ошибка рекламы:", error);
-                    alert("Рекламный ролик не был досмотрен полностью.");
-                });
-            } else {
-                alert("Рекламная сеть временно недоступна. Пожалуйста, проверьте подключение к интернету.");
-            }
-        });
-
-
-// --- СОХРАНЕНИЕ И ЗАГРУЗКА ДАННЫХ В ТЕЛЕФОН ---
-        function saveGameProgress() {
-            // Собираем текущий баланс ДНК и кристаллов в один пакет данных
-            const gameData = { 
-                dna: dna, 
-                crystals: crystals 
-            };
-            // Записываем этот пакет в постоянную память браузера телефона
-            localStorage.setItem('evo_vertical_save', JSON.stringify(gameData));
+        
+        let nextEvo = evolutionTree[currentEvolutionIndex];
+        if (nextEvo && evoNameEl && evoCostEl) {
+            evoNameEl.innerText = `Создать: ${nextEvo.name} ${nextEvo.emoji}`;
+            evoCostEl.innerText = `Цена: ${nextEvo.cost}`;
         }
+        
+        // [ Автоматически запускаем сохранение данных в память телефона ]
+        saveGameProgress();
+    }
 
-        function loadGameProgress() {
-            // Пытаемся достать сохраненный пакет данных из памяти телефона
-            const savedData = localStorage.getItem('evo_vertical_save');
+    // [ ========================================================================== ]
+    // [ 5. ЛОГИКА ВЕРТИКАЛЬНОГО СКРОЛЛА КАРТЫ (Движение строго вверх и вниз) ]
+    // [ ========================================================================== ]
+    viewport.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        // [ Запоминаем координату Y (координату X для движения влево/вправо полностью игнорируем) ]
+        startY = e.touches.clientY - currentY;
+    }, { passive: true });
+
+    viewport.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+
+        // [ Вычисляем, на сколько пальцем передвинули карту по вертикали ]
+        currentY = e.touches.clientY - startY;
+
+        // [ Устанавливаем лимиты (minY — верхний предел карты в 3000px, maxY — нижний предел) ]
+        const minY = viewport.clientHeight - 3000; 
+        const maxY = 0;                            
+
+        // [ Не даём камере улететь в чёрную пустоту выше или ниже физических границ ]
+        currentY = Math.min(maxY, Math.max(currentY, minY));
+
+        // [ Двигаем карту (по оси X всегда стоит 0px, чтобы заблокировать боковые движения) ]
+        map.style.transform = `translate3d(0px, ${currentY}px, 0px)`;
+    }, { passive: true });
+
+    viewport.addEventListener('touchend', () => {
+        // [ Палец убрали — останавливаем перетаскивание ]
+        isDragging = false;
+    });
+
+    // [ ========================================================================== ]
+    // [ 6. ИНТЕГРАЦИЯ ADSGRAM (Просмотр рекламы и начисление кристаллов) ]
+    // [ ========================================================================== ]
+    adsBtn.addEventListener('click', () => {
+        if (window.Adsgram) {
+            // [ Инициализируем рекламный блок (пока идет тест — используем код "4218") ]
+            const AdController = window.Adsgram.init({ blockId: "4218" });
             
-            // Если сохранение существует — распаковываем его и зачисляем игроку
-            if (savedData) {
-                try {
-                    const data = JSON.parse(savedData);
-                    dna = data.dna ?? 0;
-                    crystals = data.crystals ?? 0;
-                } catch (e) { 
-                    // Если файл сохранения поврежден, выводим ошибку в консоль
-                    console.error("Ошибка чтения памяти сохранения:", e); 
-                }
-            }
-            // Перерисовываем цифры на верхней панели экрана
-            updateUI();
+            AdController.show().then(() => {
+                // [ Реклама досмотрена до конца: начисляем +1 алмаз/кристалл ]
+                crystals += 1;
+                updateUI();
+                alert("Спасибо за просмотр. Вам зачислен 1 кристалл.");
+            }).catch((error) => {
+                console.error("Ошибка рекламы:", error);
+                alert("Рекламный ролик не был досмотрен полностью.");
+            });
+        } else {
+            alert("Рекламная сеть временно недоступна. Пожалуйста, проверьте подключение к интернету.");
         }
+    });
 
-        // Самая последняя строчка в коде, которая запускает чтение памяти при старте игры
-        loadGameProgress();        
+    // [ ========================================================================== ]
+    // [ 7. ЛОГИКА ИГРОВОГО ПРОЦЕССА (Кликер и Автомайнинг) ]
+    // [ ========================================================================== ]
+    // [ Функция для совершения клика (Будет вызываться при нажатии на Сферу Жизни) ]
+    function coreClickAction() {
+        dna += clickPower;
+        updateUI();
+    }
+
+    // [ Функция покупки следующего шага эволюции существ ]
+    function buyNextEvolutionStep() {
+        let activeEvo = evolutionTree[currentEvolutionIndex];
+        if (!activeEvo) return;
+        
+        if (dna >= activeEvo.cost) {
+            dna -= activeEvo.cost;
+            clickPower += activeEvo.clickAdd;       // [ Увеличиваем силу клика игрока ]
+            autoDnaPerSecond += activeEvo.autoAdd; // [ Увеличиваем пассивный автомайнинг в секунду ]
+            
+            // [ Переходим на следующую ступеньку древа эволюции ]
+            currentEvolutionIndex++;
+            
+            // [ Обновляем эмодзи главной сферы кликера на новое открытое существо ]
+            const coreBtn = document.getElementById('clicker-core');
+            if (coreBtn) coreBtn.innerText = activeEvo.emoji;
+            
+            updateUI();
+        } else {
+            alert("Недостаточно молекул ДНК для совершения эволюционного скачка.");
+        }
+    }
+
+    // [ Главный таймер автомайнинга: начисляет пассивный доход ДНК каждую секунду ]
+    setInterval(() => {
+        if (autoDnaPerSecond > 0) {
+            dna += autoDnaPerSecond;
+            if (dnaBalanceEl) dnaBalanceEl.innerText = Math.floor(dna);
+            saveGameProgress(); // [ Сохраняем каждую секунду, чтобы прогресс не терялся ]
+        }
+    }, 1000);
+
+// [ ========================================================================== ]
+    // [ 8. СОХРАНЕНИЕ И ЗАГРУЗКА ДАННЫХ (localStorage телефона) ]
+    // [ ========================================================================== ]
+    function saveGameProgress() {
+        const gameData = { 
+            dna: dna, 
+            crystals: crystals,
+            clickPower: clickPower,
+            autoDnaPerSecond: autoDnaPerSecond,
+            currentEvolutionIndex: currentEvolutionIndex,
+            currentEmoji: document.getElementById('clicker-core') ? document.getElementById('clicker-core').innerText : "🧬"
+        };
+        localStorage.setItem('evo_vertical_save', JSON.stringify(gameData));
+    }
+
+    function loadGameProgress() {
+        const savedData = localStorage.getItem('evo_vertical_save');
+        if (savedData) {
+            try {
+                const data = JSON.parse(savedData);
+                dna = data.dna ?? 0;
+                crystals = data.crystals ?? 0;
+                clickPower = data.clickPower ?? 1;
+                autoDnaPerSecond = data.autoDnaPerSecond ?? 0;
+                currentEvolutionIndex = data.currentEvolutionIndex ?? 0;
+                
+                const coreBtn = document.getElementById('clicker-core');
+                if (coreBtn) coreBtn.innerText = data.currentEmoji ?? "🧬";
+            } catch (e) { 
+                console.error("Ошибка чтения памяти сохранения:", e); 
+            }
+        }
+        updateUI();
+    }
+
+    // [ ========================================================================== ]
+    // [ 9. КОД ЗАПУСКА ИГРЫ ПРИ СТАРТЕ (Срабатывает мгновенно при открытии Web App) ]
+    // [ ========================================================================== ]
+    loadGameProgress();
 
 </script>
 </body>
 </html>        
+   
