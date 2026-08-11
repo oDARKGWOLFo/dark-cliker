@@ -372,7 +372,9 @@ const crystalsBalanceEl = document.getElementById('crystals-val'); // [ Текс
         dna += clickPower;
         updateUI();
     }
-
+document.getElementById('clicker-core').addEventListener('click', coreClickAction);
+ document.getElementById('evo-upgrade-btn').addEventListener('click', buyNextEvolutionStep);
+    
     // [ Функция покупки следующего шага эволюции существ ]
     function buyNextEvolutionStep() {
         let activeEvo = evolutionTree[currentEvolutionIndex];
