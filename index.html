@@ -335,9 +335,9 @@
 
 // [ ФУНКЦИЯ ПОКУПКИ ЭВОЛЮЦИИ ]
 function buyNextEvolutionStep() {
-    // Если здесь должен быть код для покупки эволюции, верните его сюда.
-    // Пример: let activeEvo = evolutionTree[currentEvoIndex];
-} // <-- ОБЯЗАТЕЛЬНО ЗАКРЫВАЕМ ФУНКЦИЮ ПЕРЕД НАЧАЛОМ НОВОЙ
+    // Эта функция сейчас пустая, чтобы не вызывать конфликтов.
+    // Если в ней был код, можете вернуть его сюда, аккуратно закрыв скобку }.
+}
 
 // [ ФУНКЦИЯ ПОКУПКИ АМИНОКИСЛОТ ПРЯМО НА КАРТЕ ]
 function buyAminoAcids() {
@@ -345,14 +345,14 @@ function buyAminoAcids() {
         dna -= 40;
         autoDnaPerSecond += 1; 
 
-        // Корректное получение элементов (допишите правильные ID карт)
-        const icon = document.getElementById("aminoAcidIcon"); 
-        const costText = document.getElementById("aminoAcidCost");
+        // Берем точные ID из вашей HTML-верстки
+        const icon = document.getElementById("amino-icon"); 
+        const costText = document.getElementById("amino-cost");
 
         if (icon) {
             icon.style.opacity = "1";
-            icon.style.borderColor = "#fff"; // Ваш цвет
-            icon.style.boxShadow = "0 0 10px rgba(255,255,255,0.5)"; 
+            icon.style.borderColor = "#00e5ff"; // Красивый неоновый голубой, как у ДНК
+            icon.style.boxShadow = "0 0 20px rgba(0, 210, 255, 0.6)"; 
         }
         
         if (costText) {
@@ -364,7 +364,7 @@ function buyAminoAcids() {
     } else {
         alert("Недостаточно молекул ДНК!");
     }
-}            
+}
             let activeEvo = evolutionTree[currentEvolutionIndex];
             if (!activeEvo) return;
 
