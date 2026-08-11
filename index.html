@@ -114,57 +114,9 @@
             box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
         }
 
-        /* [ СТИЛЬ ДЛЯ ГЛАВНОЙ СФЕРЫ ЖИЗНИ ] */
-        .click-sphere {
-            position: absolute;
-            bottom: 180px; 
-            left: calc(50% - 90px); 
-            width: 180px;
-            height: 180px;
-            background: radial-gradient(circle, #00f0ff 0%, #0040c0 100%);
-            border: 6px solid #fff;
-            border-radius: 50%;
-            box-shadow: 0 0 40px rgba(0, 240, 255, 0.4), inset 0 0 25px rgba(0,0,0,0.6);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 60px;
-            transition: transform 0.05s ease;
-            outline: none;
-            z-index: 5;
-        }
-        .click-sphere:active {
-            transform: scale(0.93);
-        }
-
-        .evo-panel {
-            position: absolute;
-            bottom: 400px; 
-            left: 10%;
-            width: 80%;
-            z-index: 5;
-        }
-        .btn-next-step {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(90deg, #8e44ad, #3498db);
-            border: none;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-/* [ ========================================================================== ] */
+        /* [ ========================================================================== ] */
         /* [ СТИЛИ ИКОНОК И ДРЕВА ЭВОЛЮЦИИ НА КАРТЕ ] */
         /* [ ========================================================================== ] */
-        
-        /* [ Общий стиль для интерактивных карточек на поле ] */
         .evo-node {
             position: absolute;
             display: flex;
@@ -179,10 +131,9 @@
             transition: transform 0.1s ease;
         }
         .evo-node:active {
-            transform: scale(0.92); /* [ Эффект упругого нажатия ] */
+            transform: scale(0.92);
         }
 
-        /* [ Круглые главные иконки (ДНК, Аминокислоты) ] */
         .node-circle {
             width: 80px;
             height: 80px;
@@ -197,7 +148,6 @@
             margin-bottom: 6px;
         }
 
-        /* [ Текст с названием и ценой под иконкой ] */
         .node-title {
             font-size: 13px;
             font-weight: bold;
@@ -209,17 +159,16 @@
             margin-top: 2px;
         }
 
-        /* [ Тонкие неоновые линии, соединяющие карточки ] */
         .evo-line {
             position: absolute;
             background: linear-gradient(to top, #485296, #00d2ff);
             opacity: 0.4;
             box-shadow: 0 0 8px #00d2ff;
             z-index: 4;
-        }    
+        }
     </style>
 </head>
-
+    
 <body>
 
     <div id="viewport">
@@ -237,14 +186,7 @@
             </div>
         </div>
 
-
-
-        <div class="bottom-hud">
-            <!-- [ Прямой запуск рекламы при клике ] -->
-            <button class="btn-ads" id="ads-bonus-btn" onclick="showBonusVideoAd()">Получить 1 Кристалл за просмотр</button>
-        </div>
-
-       <!-- ========================================================================== -->
+        <!-- ========================================================================== -->
         <!-- [ ИГРОВАЯ КАРТА КОСМОСА С ИНТЕРАКТИВНЫМ ДРЕВОМ ] -->
         <!-- ========================================================================== -->
         <div id="game-map">
@@ -253,14 +195,14 @@
             <div class="evo-line" style="bottom: 220px; left: 45%; width: 4px; height: 120px; transform: rotate(-30deg);"></div>
 
             <!-- [ 1. Карточка Эволюции: ДНК (Клик по ней даёт +1 ДНК) ] -->
-            <div class="evo-node" style="bottom: 150px; left: 20%;" onclick="coreClickAction()">
+            <div class="evo-node" id="dna-node-click" style="bottom: 150px; left: 20%;">
                 <div class="node-circle" style="border-color: #00d2ff; box-shadow: 0 0 20px rgba(0,210,255,0.4);">🧬</div>
                 <span class="node-title">ДНК</span>
                 <span class="node-cost">+1 за клик</span>
             </div>
 
             <!-- [ 2. Карточка Эволюции: Аминокислоты (Покупка даёт +1/сек) ] -->
-            <div class="evo-node" style="bottom: 250px; left: 55%;" onclick="buyAminoAcids()">
+            <div class="evo-node" id="amino-node-click" style="bottom: 250px; left: 55%;">
                 <div class="node-circle" id="amino-icon" style="opacity: 0.6; border-color: #8e44ad;">🧪</div>
                 <span class="node-title" id="amino-title">Аминокислоты</span>
                 <span class="node-cost" id="amino-cost">Цена: 40 ДНК</span>
@@ -272,36 +214,32 @@
 
         </div>
 
+        <div class="bottom-hud">
+            <!-- [ Кнопка рекламы Adsgram ] -->
+            <button class="btn-ads" id="ads-bonus-btn">Получить 1 Кристалл за просмотр</button>
+        </div>
+
+    </div>
+    
     <!-- ========================================================================== -->
     <!-- [ 4. ПОЛНЫЙ ИСПРАВЛЕННЫЙ СКРИПТ ЛОГИКИ ] -->
     <!-- ========================================================================== -->
     <script>
         const viewport = document.getElementById('viewport');
         const map = document.getElementById('game-map');
+        const adsBtn = document.getElementById('ads-bonus-btn');
 
-        // [ Базовые переменные ]
+        // [ Базовые игровые переменные ]
         let dna = 0;
         let crystals = 0;
         let clickPower = 1;
         let autoDnaPerSecond = 0;
-        let currentEvolutionIndex = 0;
+        let isAminoBought = false; // [ Проверка: куплены ли аминокислоты ]
 
-        // [ Скролл карты ]
+        // [ Переменные скролла карты строго вверх/вниз ]
         let isDragging = false;
         let startY = 0;
         let currentY = -2200; 
-
-        // [ Древо эволюции ]
-        const evolutionTree = [
-            { name: "Первую клетку", emoji: "🦠", cost: 40, clickAdd: 1, autoAdd: 0, title: "Бульон аминокислот" },
-            { name: "Бактерию", emoji: "🧫", cost: 150, clickAdd: 3, autoAdd: 1, title: "Первая живая клетка" },
-            { name: "Медузу", emoji: "🪼", cost: 600, clickAdd: 10, autoAdd: 5, title: "Простейшая бактерия" },
-            { name: "Древнюю рыбу", emoji: "🐟", cost: 2500, clickAdd: 40, autoAdd: 20, title: "Океаническая meduza" },
-            { name: "Динозавра", emoji: "🦖", cost: 12000, clickAdd: 200, autoAdd: 100, title: "Древняя кистепёрая рыба" },
-            { name: "Первого человека", emoji: "🐒", cost: 75000, clickAdd: 1000, autoAdd: 500, title: "Эра динозавров" },
-            { name: "Киборга из будущего", emoji: "🤖", cost: 500000, clickAdd: 5000, autoAdd: 2500, title: "Разумное человечество" },
-            { name: "Предел симуляции", emoji: "🌌", cost: 99999999, clickAdd: 0, autoAdd: 0, title: "Технологический киборг" }
-        ];
 
         // [ Плавное обновление экрана ]
         function updateUI() {
@@ -310,85 +248,50 @@
             if (dnaBox) dnaBox.innerText = Math.floor(dna);
             if (cryBox) cryBox.innerText = crystals;
 
-            const evoNameEl = document.getElementById('evo-name');
-            const evoCostEl = document.getElementById('evo-cost');
-            const currentStageEl = document.getElementById('current-stage');
-
-            let currentEvo = evolutionTree[currentEvolutionIndex];
-            if (currentStageEl && currentEvo) {
-                currentStageEl.innerText = `Текущий вид: ${currentEvo.title} (+${autoDnaPerSecond}/сек)`;
-            }
-
-            let nextEvo = evolutionTree[currentEvolutionIndex];
-            if (nextEvo && evoNameEl && evoCostEl) {
-                evoNameEl.innerText = `Создать: ${nextEvo.name} ${nextEvo.emoji}`;
-                evoCostEl.innerText = `Цена: ${nextEvo.cost} ДНК`;
-            }
-            saveGameProgress();
-        }
-
-        // [ КЛАССИЧЕСКАЯ ФУНКЦИЯ КЛИКА - ЗАПУСКАЕТСЯ НАПРЯМУЮ ]
-        function coreClickAction() {
-            dna += clickPower;
-            updateUI();
-        }
-
-// [ ФУНКЦИЯ ПОКУПКИ ЭВОЛЮЦИИ ]
-        function buyNextEvolutionStep() {
-            // [ ФУНКЦИЯ ПОКУПКИ АМИНОКИСЛОТ ПРЯМО НА КАРТЕ ]
-        function buyAminoAcids() {
-            if (dna >= 40) {
-                dna -= 40;
-                autoDnaPerSecond += 1; // [ Запускаем пассивный доход +1/сек ]
-                
-                // [ Делаем карточку яркой, показывая, что она куплена ]
-                const icon = document.getElementById('amino-icon');
-                const costText = document.getElementById('amino-cost');
+            // [ Визуальное состояние Аминокислот в зависимости от покупки ]
+            const icon = document.getElementById('amino-icon');
+            const costText = document.getElementById('amino-cost');
+            
+            if (isAminoBought) {
                 if (icon) {
                     icon.style.opacity = "1";
                     icon.style.borderColor = "#00d2ff";
                     icon.style.boxShadow = "0 0 20px rgba(0,210,255,0.4)";
                 }
                 if (costText) costText.innerText = "Куплено (+1/с)";
-                
+            } else {
+                if (icon) {
+                    icon.style.opacity = "0.6";
+                    icon.style.borderColor = "#8e44ad";
+                    icon.style.boxShadow = "none";
+                }
+                if (costText) costText.innerText = "Цена: 40 ДНК";
+            }
+
+            saveGameProgress();
+        }
+
+        // [ ФУНКЦИЯ КЛИКА ПО ДНК ]
+        function coreClickAction() {
+            dna += clickPower;
+            updateUI();
+        }
+
+        // [ ФУНКЦИЯ ПОКУПКИ АМИНОКИСЛОТ ]
+        function buyAminoAcids() {
+            if (isAminoBought) {
+                alert("Аминокислоты уже успешно открыты!");
+                return;
+            }
+
+            if (dna >= 40) {
+                dna -= 40;
+                autoDnaPerSecond += 1; // [ Запускаем пассивный доход ]
+                isAminoBought = true;  // [ Переключаем статус на куплено ]
                 updateUI();
                 alert("Вы успешно открыли Аминокислоты! Теперь ДНК генерируется пассивно.");
             } else {
                 alert("Недостаточно молекул ДНК. Нужно 40 ДНК.");
-            }
-        }
-            let activeEvo = evolutionTree[currentEvolutionIndex];
-            if (!activeEvo) return;
-
-            if (dna >= activeEvo.cost) {
-                dna -= activeEvo.cost;
-                clickPower += activeEvo.clickAdd;
-                autoDnaPerSecond += activeEvo.autoAdd;
-                currentEvolutionIndex++;
-
-                const coreBtn = document.getElementById('clicker-core');
-                if (coreBtn) coreBtn.innerText = activeEvo.emoji;
-
-                updateUI();
-            } else {
-                alert("Недостаточно молекул ДНК для совершения эволюционного скачка.");
-            }
-        }
-            let activeEvo = evolutionTree[currentEvolutionIndex];
-            if (!activeEvo) return;
-
-            if (dna >= activeEvo.cost) {
-                dna -= activeEvo.cost;
-                clickPower += activeEvo.clickAdd;
-                autoDnaPerSecond += activeEvo.autoAdd;
-                currentEvolutionIndex++;
-
-                const coreBtn = document.getElementById('clicker-core');
-                if (coreBtn) coreBtn.innerText = activeEvo.emoji;
-
-                updateUI();
-            } else {
-                alert("Недостаточно молекул ДНК для совершения эволюционного скачка.");
             }
         }
 
@@ -407,6 +310,17 @@
                 alert("Рекламная сеть временно недоступна.");
             }
         }
+
+        // [ Железобетонная привязка кликов по ID после полной загрузки страницы ]
+        document.addEventListener("DOMContentLoaded", () => {
+            const dnaNode = document.getElementById('dna-node-click');
+            if (dnaNode) dnaNode.addEventListener('click', coreClickAction);
+
+            const aminoNode = document.getElementById('amino-node-click');
+            if (aminoNode) aminoNode.addEventListener('click', buyAminoAcids);
+
+            if (adsBtn) adsBtn.addEventListener('click', showBonusVideoAd);
+        });
 
         // [ Логика скролла карты вверх/вниз ]
         viewport.addEventListener('touchstart', (e) => {
@@ -437,7 +351,7 @@
 
         // [ Сохранение пакета данных в память телефона ]
         function saveGameProgress() {
-            const gameData = { dna, crystals, clickPower, autoDnaPerSecond, currentEvolutionIndex, currentEmoji: document.getElementById('clicker-core') ? document.getElementById('clicker-core').innerText : "🧬" };
+            const gameData = { dna, crystals, clickPower, autoDnaPerSecond, isAminoBought };
             localStorage.setItem('evo_vertical_save', JSON.stringify(gameData));
         }
 
@@ -451,9 +365,7 @@
                     crystals = data.crystals ?? 0;
                     clickPower = data.clickPower ?? 1;
                     autoDnaPerSecond = data.autoDnaPerSecond ?? 0;
-                    currentEvolutionIndex = data.currentEvolutionIndex ?? 0;
-                    const coreBtn = document.getElementById('clicker-core');
-                    if (coreBtn) coreBtn.innerText = data.currentEmoji ?? "🧬";
+                    isAminoBought = data.isAminoBought ?? false;
                 } catch (e) { console.error(e); }
             }
             updateUI();
