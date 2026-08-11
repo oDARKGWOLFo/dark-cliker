@@ -163,7 +163,21 @@
              ИГРОВАЯ КАРТА КОСМОСА (Двигается пальцем строго по вертикали)
              ========================================================================== -->
         <div id="game-map">
-            <div class="map-info-text">Листайте вверх, чтобы увидеть древо эволюции ↑</div>
+            <!-- [ 1. Текущая эра игрока (Текст над кнопкой) ] -->
+            <div id="current-stage" style="position: absolute; bottom: 470px; left: 0; width: 100%; text-align: center; color: #a4b3e6; font-size: 14px; font-weight: bold;">
+                Текущий вид: Бульон аминокислот
+            </div>
+
+            <!-- [ 2. Кнопка создания следующего существа ] -->
+            <div class="evo-panel">
+                <button class="btn-next-step" id="evo-upgrade-btn" onclick="buyNextEvolutionStep()">
+                    <span id="evo-name">Создать: Первую клетку 🦠</span>
+                    <span id="evo-cost">Цена: 40 ДНК</span>
+                </button>
+            </div>
+
+            <!-- [ 3. Главная сфера жизни для кликов ] -->
+            <button class="click-sphere" id="clicker-core" onclick="coreClickAction()">🧬</button>
             <!-- Сюда в следующих шагах мы будем добавлять сферы жизни и цепочки существ -->
         </div>
 
