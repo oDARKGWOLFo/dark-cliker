@@ -403,7 +403,7 @@ body {
             }
             renderGrid();
         }
-        // javascript ФУНКЦИЯ: Отрисовка игрового поля
+// ФУНКЦИЯ: Отрисовка игрового поля с учетом переполнения
         function renderGrid() {
             const container = document.getElementById('factory-grid-container');
             container.innerHTML = ''; 
@@ -418,13 +418,16 @@ body {
                         block.className = 'workplace';
                         let progressPercent = (wp.clicks / 10) * 100;
                         
+                        // Если общая сумма на складе забита, добавляем класс "full" для красного круга
+                        let circleClass = (stock >= maxStock) ? 'progress-circle full' : 'progress-circle';
+                        
                         block.innerHTML = `
                             <div class="worker-unit" id="worker-img-${index}">${wp.avatar}</div>
                             <div class="work-bench">
                                 <div>🪵</div>
                                 <div style="opacity: ${wp.clicks > 0 ? 1 : 0}; font-size: 18px;">${currentToy}</div>
                             </div>
-                            <div class="progress-circle" style="background: conic-gradient(#00FF00 ${progressPercent}%, #333 ${progressPercent}%)"></div>
+                            <div class="${circleClass}" style="background: conic-gradient(#00FF00 ${progressPercent}%, #333 ${progressPercent}%)"></div>
                         `;
                     } else {
                         block.className = 'workplace locked';
@@ -466,47 +469,8 @@ body {
                 });
             }
         }
-// ==========================================
-        // ФУНКЦИЯ: СОЗДАНИЕ И ПОЛЕТ МОНЕТКИ К БОССУ
-        // ==========================================
-        function spawnCoinToBoss(workerIndex) {
-            // Находим на экране картинку рабочего и босса
-            const workerImg = document.getElementById(`worker-img-${workerIndex}`);
-            const bossImg = document.getElementById('boss-hero');
-            
-            if (!workerImg || !bossImg) return;
 
-            // Вычисляем, где они находятся на экране телефона
-            const workerRect = workerImg.getBoundingClientRect();
-            const bossRect = bossImg.getBoundingClientRect();
-
-            // Создаем элемент монетки
-            const coin = document.createElement('div');
-            coin.className = 'floating-coin';
-            coin.innerText = '+1💰';
-
-            // Начальная позиция (над головой рабочего)
-            coin.style.left = (workerRect.left + workerRect.width / 2) + 'px';
-            coin.style.top = workerRect.top + 'px';
-
-            // Добавляем монетку на экран
-            document.body.appendChild(coin);
-
-            // Запуск физического полета к боссу на следующей итерации кадра
-            requestAnimationFrame(() => {
-                // Конечная позиция (стол босса)
-                coin.style.left = (bossRect.left + bossRect.width / 2) + 'px';
-                coin.style.top = (bossRect.top + bossRect.height / 2) + 'px';
-                coin.style.transform = 'scale(0.5)'; // Монетка уменьшается подлетая к боссу
-                coin.style.opacity = '0.3'; // И плавно исчезает
-            });
-
-            // Полностью удаляем монетку из кода через 600 миллисекунд (время полета)
-            setTimeout(() => {
-                coin.remove();
-            }, 600);
-        }
-        // ФУНКЦИЯ: Глобальный клик по экрану
+        // ФУНКЦИЯ: Глобальный клик по экрану (БЕЗ блокировки!)
         function handleGlobalClick(event) {
             if (currentTab !== 'factory' || event.target.closest('.bottom-menu') || event.target.closest('.top-bar')) return;
 
@@ -515,11 +479,7 @@ body {
                 return;
             }
 
-            if (stock >= maxStock) {
-                document.getElementById('alert-stock').style.display = 'block';
-                return;
-            }
-
+            // Нажимать ТЕПЕРЬ МОЖНО ВСЕГДА! Человечки будут стучать в любом случае
             workplaces.forEach((wp, index) => {
                 if (wp.active) {
                     const workerImg = document.getElementById(`worker-img-${index}`);
@@ -528,11 +488,12 @@ body {
                         setTimeout(() => workerImg.classList.remove('worker-hit'), 60);
                     }
 
-                    wp.clicks++;
+                    // Шкала прогресса заполняется только если на складе ЕСТЬ место
+                    if (stock < maxStock) {
+                        wp.clicks++;
 
-                    if (wp.clicks >= 10) {
-                        wp.clicks = 0;
-                        if (stock < maxStock) {
+                        if (wp.clicks >= 10) {
+                            wp.clicks = 0;
                             stock++;
                             spawnCoinToBoss(index);
                             totalCrafted++;
@@ -545,7 +506,6 @@ body {
             updateUI();
             renderGrid();
         }
-
         // ФУНКЦИЯ: Продажа товаров боссу
         function sellAllProducts() {
             if (stock === 0) return;
