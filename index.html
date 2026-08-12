@@ -461,7 +461,46 @@ body {
                 });
             }
         }
+// ==========================================
+        // ФУНКЦИЯ: СОЗДАНИЕ И ПОЛЕТ МОНЕТКИ К БОССУ
+        // ==========================================
+        function spawnCoinToBoss(workerIndex) {
+            // Находим на экране картинку рабочего и босса
+            const workerImg = document.getElementById(`worker-img-${workerIndex}`);
+            const bossImg = document.getElementById('boss-hero');
+            
+            if (!workerImg || !bossImg) return;
 
+            // Вычисляем, где они находятся на экране телефона
+            const workerRect = workerImg.getBoundingClientRect();
+            const bossRect = bossImg.getBoundingClientRect();
+
+            // Создаем элемент монетки
+            const coin = document.createElement('div');
+            coin.className = 'floating-coin';
+            coin.innerText = '+1💰';
+
+            // Начальная позиция (над головой рабочего)
+            coin.style.left = (workerRect.left + workerRect.width / 2) + 'px';
+            coin.style.top = workerRect.top + 'px';
+
+            // Добавляем монетку на экран
+            document.body.appendChild(coin);
+
+            // Запуск физического полета к боссу на следующей итерации кадра
+            requestAnimationFrame(() => {
+                // Конечная позиция (стол босса)
+                coin.style.left = (bossRect.left + bossRect.width / 2) + 'px';
+                coin.style.top = (bossRect.top + bossRect.height / 2) + 'px';
+                coin.style.transform = 'scale(0.5)'; // Монетка уменьшается подлетая к боссу
+                coin.style.opacity = '0.3'; // И плавно исчезает
+            });
+
+            // Полностью удаляем монетку из кода через 600 миллисекунд (время полета)
+            setTimeout(() => {
+                coin.remove();
+            }, 600);
+        }
         // ФУНКЦИЯ: Глобальный клик по экрану
         function handleGlobalClick(event) {
             if (currentTab !== 'factory' || event.target.closest('.bottom-menu') || event.target.closest('.top-bar')) return;
