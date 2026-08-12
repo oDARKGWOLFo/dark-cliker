@@ -489,11 +489,12 @@ body {
                     }
 
                     // Шкала прогресса заполняется только если на складе ЕСТЬ место
-                    if (stock < maxStock) {
+if (stock < maxStock) {
                         wp.clicks++;
 
+                        // Игрушка создана (10 кликов)
                         if (wp.clicks >= 10) {
-                            wp.clicks = 0;
+                            wp.clicks = 0; // Сбрасываем клики в ноль
                             stock++;
                             spawnCoinToBoss(index);
                             totalCrafted++;
