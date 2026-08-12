@@ -411,7 +411,8 @@ body {
             const currentToy = toyCollection[currentLevel] || "🍩";
 
             if (currentTab === 'factory') {
-workplaces.forEach((wp, index) => {
+// Перебираем всех рабочих (используем точную переменную index)
+            workplaces.forEach((wp, index) => {
                 if (wp.active) {
                     const workerImg = document.getElementById(`worker-img-${index}`);
                     if (workerImg) {
@@ -422,9 +423,8 @@ workplaces.forEach((wp, index) => {
                     if (stock < maxStock) {
                         wp.clicks++;
 
-                        // Если это 10-й клик, принудительно рисуем 100% круга
+                        // На 10-й клик принудительно закрашиваем круг на полную
                         if (wp.clicks >= 10) {
-                            // Находим кружок именно этого рабочего и красим его на 100%
                             const gridContainer = document.getElementById('factory-grid-container');
                             if (gridContainer) {
                                 const circles = gridContainer.querySelectorAll('.progress-circle');
@@ -433,18 +433,20 @@ workplaces.forEach((wp, index) => {
                                 }
                             }
 
-                            // Ровно через 0.10 секунды (100 мс) сбрасываем круг и даем монету
+                            // Ждем 0.10 секунды (100 мс), чтобы показать полный круг, и сбрасываем
                             setTimeout(() => {
                                 wp.clicks = 0;
                                 stock++;
-                                spawnCoinToBoss(index);
+                                if (typeof spawnCoinToBoss === 'function') {
+                                    spawnCoinToBoss(index);
+                                }
                                 totalCrafted++;
                                 checkLevelUp();
                                 updateUI();
                                 renderGrid();
-                            }, 100); // 100 миллисекунд = 0.10 секунды!
+                            }, 100);
                         } else {
-                            // Для обычных кликов (с 1 по 9) обновляем экран как обычно
+                            // Для кликов с 1 по 9 просто обновляем экран
                             updateUI();
                             renderGrid();
                         }
