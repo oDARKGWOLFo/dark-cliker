@@ -1,671 +1,96 @@
-<!-- файл HTML  ТУТ ВАШ ТЕКСТ КОММЕНТАРИЯ -->
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Make More Clean Edition</title>
-    
-    <!-- ========================================== -->
-    <!-- РАЗДЕЛ: ПОДКЛЮЧЕНИЕ РЕКЛАМЫ ADSGRAM       -->
-    <!-- ========================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Экономический Adsgram Кликер</title>
     <script src="https://adsgram.ai"></script>
-
     <style>
-        /* ========================================== */
-        /* РАЗДЕЛ: ГЛОБАЛЬНЫЕ НАСТРОЙКИ ЭКРАНА        */
-        /* ========================================== */
-        * {
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            background: #8B7355; /* Коричневый фон */
-            background-image: linear-gradient(rgba(0,0,0,0.05) 50%, transparent 50%);
-            background-size: 100% 80px;
-            font-family: 'Arial', sans-serif;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            
-            /* ЭТИ ТРИ СТРОКИ УБЕРУТ БИРЮЗОВЫЙ ФОН ПРИ КЛИКАХ */
-            -webkit-tap-highlight-color: transparent;
-            outline: none;
-            user-select: none;
-}
-        /* ========================================== */
-        /* РАЗДЕЛ: ВЕРХНЯЯ ПАНЕЛЬ (МОНЕТЫ И ШКАЛА)    */
-        /* ========================================== */
-        .top-bar {
-            background: #4A4A4A;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 12px;
-            border-bottom: 4px solid #2B2B2B;
-            z-index: 20;
-        }
-        .currency-box {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .currency-item {
-            background: #222;
-            border: 2px solid #666;
-            border-radius: 6px;
-            padding: 4px 10px;
-            color: #FFF;
-            font-weight: bold;
-            font-size: 14px;
-            min-width: 100px;
-            text-shadow: 1px 1px 0 #000;
-        }
-        .level-container {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .level-progress-bg {
-            width: 110px;
-            height: 24px;
-            background: #222;
-            border: 2px solid #666;
-            border-radius: 6px;
-            overflow: hidden;
-            position: relative;
-        }
-        .level-progress-fill {
-            width: 0%;
-            height: 100%;
-            background: #FFCC00;
-            transition: width 0.1s ease;
-        }
-        .level-text {
-            position: absolute;
-            width: 100%;
-            text-align: center;
-            color: white;
-            font-size: 11px;
-            font-weight: bold;
-            line-height: 20px;
-            text-shadow: 1px 1px 1px #000;
-        }
-        .level-badge {
-            background: #FF9500;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-weight: bold;
-            border: 2px solid #222;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        /* ========================================== */
-        /* CSS РАЗДЕЛ: ИГРОВЫЕ ОБЪЕКТЫ (БОСС И СТЕНД)     */
-        /* ========================================== */
-        .game-field {
-            flex-grow: 1;
-            position: relative;
-            cursor: pointer;
-        }
-        .item-display {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            width: 85px;
-            height: 85px;
-            background: #E8E8E8;
-            border: 5px solid #5C4033;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 45px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-        }
-        .boss-container {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            z-index: 10;
-        }
-        .boss-character {
-            font-size: 60px;
-            cursor: pointer;
-            transition: transform 0.05s;
-        }
-        .boss-character:active {
-            transform: scale(1.1);
-        }
-        .boss-desk {
-            width: 110px;
-            height: 35px;
-            background: #D2B48C;
-            border: 3px solid #5C4033;
-            border-radius: 4px;
-            margin-top: -15px;
-            box-shadow: 0 4px 4px rgba(0,0,0,0.15);
-        }
-
-        /* ========================================== */
-        /* РАЗДЕЛ: СЕТКА РАБОЧИХ МЕСТ И ПРОКАЧКА     */
-        /* ========================================== */
-        .factory-grid {
-            position: absolute;
-            top: 45%;
-            left: 50%;
-            transform: translate(-50%, -40%);
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            width: 95%;
-            max-width: 360px;
-        }
-        .workplace {
-            background: #7F7F7F;
-            border: 3px solid #4D4D4D;
-            border-radius: 10px;
-            padding: 8px;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 110px;
-            justify-content: space-between;
-        }
-        .worker-unit {
-            font-size: 40px;
-            transition: transform 0.05s ease;
-        }
-        .worker-hit {
-            transform: scaleY(0.75) translateY(10px);
-        }
-        .work-bench {
-            width: 100%;
-            height: 30px;
-            background: #CD853F;
-            border: 2px solid #5C4033;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            margin-top: 4px;
-        }
-        .progress-circle {
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            background: conic-gradient(#00FF00 0%, #333 0%);
-            margin-top: 6px;
-            border: 2px solid #222;
-        }
-/* Класс, который сделает круг красным при переполнении */
-        .progress-circle.full {
-            background: #FF3B30 !important;
-            border-color: #A00 !important;
-        }        
-        .workplace.locked {
-            background: #4A4A4A;
-            border: 3px dashed #666;
-            color: #FFF;
-            font-weight: bold;
-            font-size: 12px;
-            cursor: pointer;
-            justify-content: center;
-        }
-        .lock-icon {
-            font-size: 24px;
-            margin-bottom: 4px;
-        }
-        .upgrade-btn {
-            background: #FFCC00;
-            color: #000;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .alert-full {
-            color: #FF3B30;
-            font-weight: bold;
-            background: rgba(0,0,0,0.85);
-            padding: 8px 16px;
-            border-radius: 20px;
-            position: absolute;
-            top: 35%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: none !important;
-            z-index: 30;
-            border: 2px solid #FF3B30;
-        }
-
-        /* ========================================== */
-        /* РАЗДЕЛ: НИЖНЕЕ МЕНЮ НАВИГАЦИИ              */
-        /* ========================================== */
-.bottom-menu {
-            height: 65px;
-            background: #333333;
-            border-top: 4px solid #1A1A1A;
-            display: flex;
-            z-index: 20;
-            
-            /* ЭТА СТРОКА ПРИПОДНИМЕТ МЕНЮ ВЫШЕ НА ТЕЛЕФОНЕ */
-            margin-bottom: env(safe-area-inset-bottom, 15px); 
-}
-        .menu-tab {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #888;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-            border-right: 1px solid #222;
-            transition: background 0.1s;
-        }
-        .menu-tab:active {
-            background: #222;
-        }
-        .menu-tab.active {
-            background: #007AFF;
-            color: white;
-        }
-/* ========================================== */
-        /* РАЗДЕЛ: ФИЗИЧЕСКИЙ ПОЛЕТ МОНЕТ К БОССУ    */
-        /* ========================================== */
-        .floating-coin {
-            position: absolute;
-            color: #FFD700;
-            font-weight: bold;
-            font-size: 22px;
-            text-shadow: 1px 1px 2px #000;
-            pointer-events: none;
-            z-index: 999;
-            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-        }        
+        body { font-family: sans-serif; background: #0f172a; color: #f8fafc; text-align: center; padding: 15px; }
+        .container { max-width: 400px; margin: 0 auto; background: #1e293b; padding: 20px; border-radius: 16px; border: 1px solid #334155; }
+        #gold { color: #f59e0b; font-size: 42px; font-weight: bold; margin: 10px 0; }
+        .income { color: #10b981; font-size: 16px; margin-bottom: 20px; }
+        .click-btn { background: #2563eb; color: white; border: none; padding: 20px; border-radius: 50%; width: 130px; height: 130px; font-size: 18px; cursor: pointer; font-weight: bold; margin-bottom: 20px; box-shadow: 0 6px 0 #1d4ed8; }
+        .click-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #1d4ed8; }
+        .shop-btn { background: #475569; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 14px; cursor: pointer; margin-bottom: 10px; font-weight: bold; }
+        .shop-btn:hover { background: #64748b; }
+        .ad-btn { background: #10b981; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
-<body onclick="handleGlobalClick(event)">
-
-    <!-- ========================================== -->
-    <!-- html РАЗДЕЛ: ВЕРХНЯЯ ПАНЕЛЬ (БАЛАНС И УРОВЕНЬ)  -->
-    <!-- ========================================== -->
-    <div class="top-bar">
-        <div class="currency-box">
-            <div class="currency-item">💰 <span id="coins-text">1000</span></div>
-            <div class="currency-item">💎 <span id="diamonds-text">5</span></div>
-        </div>
+<body>
+    <div class="container">
+        <h2>📈 ЭКОНОМИЧЕСКИЙ КЛИКЕР</h2>
+        <div id="gold">0</div>
+        <div class="income">Пассивный доход: +<span id="pps">0</span> монеты/сек</div>
         
-        <div class="level-container">
-            <div class="level-progress-bg">
-                <div class="level-progress-fill" id="level-bar"></div>
-                <div class="level-text" id="level-progress-text">0 / 100</div>
-            </div>
-            <div class="level-badge" id="level-num">1</div>
+        <button class="click-btn" onclick="clickGold()">КЛИК!<br><span style="font-size:12px; font-weight:normal;">(+1 за клик)</span></button>
+        
+        <!-- Экономический блок: Магазин инвестиций -->
+        <div style="margin-top: 10px; border-top: 1px solid #334155; padding-top: 15px;">
+            <button class="shop-btn" onclick="buyMine()">🏭 Купить Шахту (Цена: <span id="mine-cost">50</span> 💰)<br><span style="font-size:11px; font-weight:normal; color:#cbd5e1;">Дает +1 монету в секунду</span></button>
+        </div>
+
+        <!-- Рекламный блок: Быстрое вливание капитала -->
+        <div>
+            <button class="ad-btn" onclick="showAdsgramVideo()">📺 Рекламный грант (+100 💰 за просмотр)</button>
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- РАЗДЕЛ: ГЛАВНОЕ ИГРОВОЕ ПОЛЕ              -->
-    <!-- ========================================== -->
-    <div class="game-field">
-        <div class="item-display" id="current-toy-image">🍩</div>
-
-        <div class="boss-container">
-            <div class="boss-character" id="boss-hero">👨‍💼</div>
-            <div class="boss-desk"></div>
-        </div>
-
-        <div class="alert-full" id="alert-stock">ФАБРИКА ПЕРЕПОЛНЕНА! Кликни на Босса!</div>
-        <div class="factory-grid" id="factory-grid-container"></div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- РАЗДЕЛ: НИЖНЕЕ МЕНЮ НАВИГАЦИИ             -->
-    <!-- ========================================== -->
-    <div class="bottom-menu">
-        <div class="menu-tab active" id="tab-factory" onclick="switchTab('factory')">🏭 ФАБРИКА</div>
-        <div class="menu-tab" id="tab-upgrades" onclick="switchTab('upgrades')">👷 УЛУЧШЕНИЯ</div>
-        <div class="menu-tab" onclick="showAdsgramVideo()">📺 БОНУС</div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- РАЗДЕЛ: НАЧАЛО ИГРОВОЙ ЛОГИКИ (JAVASCRIPT) -->
-    <!-- ========================================== -->
     <script>
-        // Инициализация Adsgram рекламы
-        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "42438" }) : null;
-// Защита: инициализируем Telegram WebApp только если игра открыта внутри Telegram
-if (window.Telegram && window.Telegram.WebApp) {
-    window.Telegram.WebApp.ready();
-    window.Telegram.WebApp.expand();
-}
-        // Базовые переменные игры
-        let coins = 1000;
-        let diamonds = 5;
-        let stock = 0;
-        const maxStock = 10;
-        let totalCrafted = 0;
-        let currentLevel = 1;
-        const reqToLevelUp = 100;
-        let currentTab = 'factory';
+        let gold = 0;
+        let pps = 0; // Пассивный доход в секунду
+        let mineCost = 50; // Начальная стоимость шахты
 
-        // Коллекция игрушек по уровням
-        const toyCollection = {
-            1: "🍩", 
-            2: "🚗", 
-            3: "🧸"  
-        };
+        // Инициализация Adsgram (замените YOUR_BLOCK_ID на ваш реальный ID)
+        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "YOUR_BLOCK_ID" }) : null;
 
-        // База настроек ваших рабочих
-        let workplaces = [
-            { 
-                active: true, clicks: 0, cost: 0, avatar: "👷", 
-                currentLevel: 1, maxLevel: 5,
-                levelPrices: { 2: 300, 3: 1000, 4: 3000, 5: 7000 } 
-            },
-            { 
-                active: false, clicks: 0, cost: 300, avatar: "👨‍🏭", 
-                currentLevel: 1, maxLevel: 5,
-                levelPrices: { 2: 500, 3: 1500, 4: 4000, 5: 9000 } 
-            },
-            { 
-                active: false, clicks: 0, cost: 1000, avatar: "👩‍🏭", 
-                currentLevel: 1, maxLevel: 5,
-                levelPrices: { 2: 1200, 3: 3000, 4: 8000, 5: 15000 } 
-            },
-            { 
-                active: false, clicks: 0, cost: 3000, avatar: "🤖", 
-                currentLevel: 1, maxLevel: 5,
-                levelPrices: { 2: 3500, 3: 7000, 4: 15000, 5: 30000 } 
-            }
-        ];
+        function updateUI() {
+            document.getElementById('gold').innerText = Math.floor(gold);
+            document.getElementById('pps').innerText = pps;
+            document.getElementById('mine-cost').innerText = mineCost;
+        }
 
-        // Переключение меню
-        function switchTab(tabName) {
-            currentTab = tabName;
-            document.getElementById('tab-factory').classList.remove('active');
-            document.getElementById('tab-upgrades').classList.remove('active');
-            
-            if (tabName === 'factory') {
-                document.getElementById('tab-factory').classList.add('active');
+        // Обычный клик
+        function clickGold() {
+            gold += 1;
+            updateUI();
+        }
+
+        // Покупка пассивного дохода (Экономика)
+        function buyMine() {
+            if (gold >= mineCost) {
+                gold -= mineCost;
+                pps += 1; // Увеличиваем доход в секунду
+                mineCost = Math.floor(mineCost * 1.5); // Цена следующей шахты растет на 50%
+                updateUI();
             } else {
-                document.getElementById('tab-upgrades').classList.add('active');
-            }
-            renderGrid();
-        }
-
-// ФУНКЦИЯ: Отрисовка игрового поля
-        function renderGrid() {
-            const container = document.getElementById('factory-grid-container');
-            if (!container) return;
-            container.innerHTML = ''; 
-
-            const currentToy = toyCollection[currentLevel] || "🍩";
-
-            if (currentTab === 'factory') {
-                workplaces.forEach((wp, index) => {
-                    const block = document.createElement('div');
-                    
-                    if (wp.active) {
-                        block.className = 'workplace';
-                        let progressPercent = (wp.clicks / 10) * 100;
-                        let circleClass = (stock >= maxStock) ? 'progress-circle full' : 'progress-circle';
-                        
-                        block.innerHTML = `
-                            <div class="worker-unit" id="worker-img-${index}">${wp.avatar}</div>
-                            <div class="work-bench">
-                                <div>🪵</div>
-                                <div style="opacity: ${wp.clicks > 0 ? 1 : 0}; font-size: 18px;">${currentToy}</div>
-                            </div>
-                            <div class="${circleClass}" style="background: conic-gradient(#00FF00 ${progressPercent}%, #333 ${progressPercent}%)"></div>
-                        `;
-                    } else {
-                        block.className = 'workplace locked';
-                        block.setAttribute('onclick', `buyWorkplace(${index})`);
-                        block.innerHTML = `
-                            <div class="lock-icon">🔒</div>
-                            <div>Купить<br>💰 ${wp.cost}</div>
-                        `;
-                    }
-                    container.appendChild(block);
-                });
-            } 
-            else if (currentTab === 'upgrades') {
-                workplaces.forEach((wp, index) => {
-                    const block = document.createElement('div');
-                    block.className = 'workplace';
-                    
-                    if (wp.active) {
-                        let nextLvl = wp.currentLevel + 1;
-                        let price = wp.levelPrices[nextLvl];
-                        let isMax = wp.currentLevel >= wp.maxLevel;
-                        
-                        block.innerHTML = `
-                            <div class="worker-unit">${wp.avatar}</div>
-                            <div style="color: #FFF; font-size: 11px; font-weight: bold; margin-top: 4px;">Ур. ${wp.currentLevel}</div>
-                            <button class="upgrade-btn" style="${isMax ? 'background:#888;color:#FFF;' : ''}" 
-                                    onclick="${isMax ? '' : `upgradeWorker(${index})`}">
-                                ${isMax ? 'МАКС' : `💰 ${price}`}
-                            </button>
-                        `;
-                    } else {
-                        block.className = 'workplace locked';
-                        block.innerHTML = `
-                            <div class="lock-icon">🔒</div>
-                            <div style="font-size: 10px;">Сначала<br>купите в цеху</div>
-                        `;
-                    }
-                    container.appendChild(block);
-                });
+                alert("Недостаточно золота для инвестиций!");
             }
         }
-// ==========================================
-        // ФУНКЦИЯ: СОЗДАНИЕ И ПОЛЕТ МОНЕТКИ К БОССУ
-        // ==========================================
-        function spawnCoinToBoss(workerIndex) {
-            const workerImg = document.getElementById(`worker-img-${workerIndex}`);
-            const bossImg = document.getElementById('boss-hero');
-            if (!workerImg || !bossImg) return;
 
-            const workerRect = workerImg.getBoundingClientRect();
-            const bossRect = bossImg.getBoundingClientRect();
+        // Бесконечный цикл: начисление пассивного дохода каждую секунду
+        setInterval(function() {
+            gold += pps;
+            updateUI();
+        }, 1000);
 
-            const coin = document.createElement('div');
-            coin.className = 'floating-coin';
-            coin.innerText = '+1💰';
-
-            coin.style.left = (workerRect.left + workerRect.width / 2) + 'px';
-            coin.style.top = workerRect.top + 'px';
-            document.body.appendChild(coin);
-
-            requestAnimationFrame(() => {
-                coin.style.left = (bossRect.left + bossRect.width / 2) + 'px';
-                coin.style.top = (bossRect.top + bossRect.height / 2) + 'px';
-                coin.style.transform = 'scale(0.5)';
-                coin.style.opacity = '0.3';
-            });
-
-            setTimeout(() => { coin.remove(); }, 600);
-        }
-        // ФУНКЦИЯ: Глобальный клик по экрану
-        function handleGlobalClick(event) {
-            if (currentTab !== 'factory' || event.target.closest('.bottom-menu') || event.target.closest('.top-bar')) return;
-
-            if (event.target.id === 'boss-hero') {
-                sellAllProducts();
+        // Интеграция рекламы Adsgram
+        function showAdsgramVideo() {
+            if (!AdController) {
+                // Демо-режим для ПК
+                gold += 100;
+                updateUI();
+                alert("Демо-награда: +100 монет инвестировано в ваш бюджет!");
                 return;
             }
 
-            workplaces.forEach((wp, index) => {
-                if (wp.active) {
-                    const workerImg = document.getElementById(`worker-img-${index}`);
-                    if (workerImg) {
-                        workerImg.classList.add('worker-hit');
-                        setTimeout(() => workerImg.classList.remove('worker-hit'), 60);
-                    }
-
-                    if (stock < maxStock) {
-                        wp.clicks++;
-
-                        if (wp.clicks >= 10) {
-                            const gridContainer = document.getElementById('factory-grid-container');
-                            if (gridContainer) {
-                                const circles = gridContainer.querySelectorAll('.progress-circle');
-                                if (circles[index]) {
-                                    circles[index].style.background = 'conic-gradient(#00FF00 100%, #333 100%)';
-                                }
-                            }
-
-                            setTimeout(() => {
-                                wp.clicks = 0;
-                                stock++;
-                                if (typeof spawnCoinToBoss === 'function') {
-                                    spawnCoinToBoss(index);
-                                }
-                                totalCrafted++;
-                                checkLevelUp();
-                                updateUI();
-                                renderGrid();
-                            }, 100);
-                        } else {
-                            updateUI();
-                            renderGrid();
-                        }
-                    }
-                }
+            AdController.show().then(() => {
+                gold += 100; // Награда за реальный просмотр
+                updateUI();
+            }).catch(() => {
+                alert("Досмотрите видео для получения гранта!");
             });
         }
-
-        // ФУНКЦИЯ: Продажа товаров боссу
-        function sellAllProducts() {
-            if (stock === 0) return;
-            
-            coins += stock * currentLevel; 
-            stock = 0;
-            
-            document.getElementById('alert-stock').style.display = 'none';
-            updateUI();
-            renderGrid();
-        }
-
-        // ФУНКЦИЯ: Покупка нового рабочего места
-        function buyWorkplace(index) {
-            let wp = workplaces[index];
-            if (!wp.active && coins >= wp.cost) {
-                coins -= wp.cost;
-                wp.active = true;
-                updateUI();
-                renderGrid();
-            } else if (coins < wp.cost) {
-                alert("Не хватает золотых монет!");
-            }
-        }
-
-        // ФУНКЦИЯ: Прокачка уровня рабочего
-        function upgradeWorker(index) {
-            let wp = workplaces[index];
-            let nextLvl = wp.currentLevel + 1;
-            let price = wp.levelPrices[nextLvl];
-
-            if (coins >= price) {
-                coins -= price;
-                wp.currentLevel = nextLvl;
-                diamonds += 1; 
-                updateUI();
-                renderGrid();
-            } else {
-                alert("Не хватает монет для улучшения!");
-            }
-        }
-
-        // ФУНКЦИЯ: Повышение уровня фабрики
-        function checkLevelUp() {
-            if (totalCrafted >= reqToLevelUp) {
-                totalCrafted = 0;
-                currentLevel++;
-                diamonds += 5; 
-                alert(`Поздравляем! Ваша фабрика вышла на новый уровень! Открыт новый товар: ${toyCollection[currentLevel] || "🎁"}`);
-            }
-        }
-
-        // ФУНКЦИЯ: Обновление интерфейса
-        function updateUI() {
-            document.getElementById('coins-text').innerText = coins;
-            document.getElementById('diamonds-text').innerText = diamonds;
-            document.getElementById('current-toy-image').innerText = toyCollection[currentLevel] || "🍩";
-            document.getElementById('level-num').innerText = currentLevel;
-            
-            document.getElementById('level-progress-text').innerText = `${totalCrafted} / ${reqToLevelUp}`;
-            let barPercent = (totalCrafted / reqToLevelUp) * 100;
-            document.getElementById('level-bar').style.width = barPercent + '%';
-        }
-
-        // Вызов рекламы Adsgram
-        function showAdsgramVideo() {
-            if (AdController) {
-                AdController.show().then(() => {
-                    coins += 200;
-                    diamonds += 2;
-                    updateUI();
-                    renderGrid();
-                    alert("Спасибо за просмотр! Бонус зачислен: 💰 +200, 💎 +2.");
-                }).catch((error) => {
-                    alert("Реклама не была досмотрена полностью.");
-                });
-            } else {
-                alert("Рекламная сеть сейчас недоступна.");
-            }
-        }
-// ФУНКЦИЯ: Сохранение игры в память телефона
-        function saveGame() {
-            const gameData = {
-                coins: coins,
-                diamonds: diamonds,
-                currentLevel: currentLevel,
-                totalCrafted: totalCrafted,
-                workplaces: workplaces.map(wp => ({ active: wp.active, currentLevel: wp.currentLevel }))
-            };
-            localStorage.setItem('make_more_save', JSON.stringify(gameData));
-        }
-
-        // ФУНКЦИЯ: Загрузка игры из памяти телефона
-        function loadGame() {
-            const savedData = localStorage.getItem('make_more_save');
-            if (savedData) {
-                const data = JSON.parse(savedData);
-                coins = data.coins;
-                diamonds = data.diamonds;
-                currentLevel = data.currentLevel;
-                totalCrafted = data.totalCrafted;
-                
-                // Восстанавливаем статус фабрик и их уровни
-                data.workplaces.forEach((savedWp, index) => {
-                    if (workplaces[index]) {
-                        workplaces[index].active = savedWp.active;
-                        workplaces[index].currentLevel = savedWp.currentLevel;
-                    }
-                });
-            }
-        }
-window.onload = function() {
-    loadGame(); // Загружаем сохранение при старте
-    updateUI();
-    renderGrid();
-};
     </script>
 </body>
 </html>
