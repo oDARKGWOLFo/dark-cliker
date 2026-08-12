@@ -348,7 +348,11 @@ body {
     <script>
         // Инициализация Adsgram рекламы
         const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "42438" }) : null;
-
+// Защита: инициализируем Telegram WebApp только если игра открыта внутри Telegram
+if (window.Telegram && window.Telegram.WebApp) {
+    window.Telegram.WebApp.ready();
+    window.Telegram.WebApp.expand();
+}
         // Базовые переменные игры
         let coins = 1000;
         let diamonds = 5;
@@ -469,7 +473,34 @@ body {
                 });
             }
         }
+// ==========================================
+        // ФУНКЦИЯ: СОЗДАНИЕ И ПОЛЕТ МОНЕТКИ К БОССУ
+        // ==========================================
+        function spawnCoinToBoss(workerIndex) {
+            const workerImg = document.getElementById(`worker-img-${workerIndex}`);
+            const bossImg = document.getElementById('boss-hero');
+            if (!workerImg || !bossImg) return;
 
+            const workerRect = workerImg.getBoundingClientRect();
+            const bossRect = bossImg.getBoundingClientRect();
+
+            const coin = document.createElement('div');
+            coin.className = 'floating-coin';
+            coin.innerText = '+1💰';
+
+            coin.style.left = (workerRect.left + workerRect.width / 2) + 'px';
+            coin.style.top = workerRect.top + 'px';
+            document.body.appendChild(coin);
+
+            requestAnimationFrame(() => {
+                coin.style.left = (bossRect.left + bossRect.width / 2) + 'px';
+                coin.style.top = (bossRect.top + bossRect.height / 2) + 'px';
+                coin.style.transform = 'scale(0.5)';
+                coin.style.opacity = '0.3';
+            });
+
+            setTimeout(() => { coin.remove(); }, 600);
+        }
         // ФУНКЦИЯ: Глобальный клик по экрану
         function handleGlobalClick(event) {
             if (currentTab !== 'factory' || event.target.closest('.bottom-menu') || event.target.closest('.top-bar')) return;
@@ -599,11 +630,42 @@ body {
                 alert("Рекламная сеть сейчас недоступна.");
             }
         }
+// ФУНКЦИЯ: Сохранение игры в память телефона
+        function saveGame() {
+            const gameData = {
+                coins: coins,
+                diamonds: diamonds,
+                currentLevel: currentLevel,
+                totalCrafted: totalCrafted,
+                workplaces: workplaces.map(wp => ({ active: wp.active, currentLevel: wp.currentLevel }))
+            };
+            localStorage.setItem('make_more_save', JSON.stringify(gameData));
+        }
 
-        window.onload = function() {
-            updateUI();
-            renderGrid();
-        };
+        // ФУНКЦИЯ: Загрузка игры из памяти телефона
+        function loadGame() {
+            const savedData = localStorage.getItem('make_more_save');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                coins = data.coins;
+                diamonds = data.diamonds;
+                currentLevel = data.currentLevel;
+                totalCrafted = data.totalCrafted;
+                
+                // Восстанавливаем статус фабрик и их уровни
+                data.workplaces.forEach((savedWp, index) => {
+                    if (workplaces[index]) {
+                        workplaces[index].active = savedWp.active;
+                        workplaces[index].currentLevel = savedWp.currentLevel;
+                    }
+                });
+            }
+        }
+window.onload = function() {
+    loadGame(); // Загружаем сохранение при старте
+    updateUI();
+    renderGrid();
+};
     </script>
 </body>
 </html>
