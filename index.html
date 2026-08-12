@@ -296,20 +296,23 @@
         }
 
         // [ ПРОСМОТР РЕКЛАМЫ ADSGRAM ]
-        function showBonusVideoAd() {
-            if (window.Adsgram) {
-                const AdController = window.Adsgram.init({ blockId: "42438" });
-                AdController.show().then(() => {
-                    crystals += 1;
-                    updateUI();
-                    alert("Спасибо за просмотр. Вам зачислен 1 кристалл.");
-                }).catch((error) => {
-                    alert("Рекламный ролик не был досмотрен полностью.");
-                });
-            } else {
-                alert("Рекламная сеть временно недоступна.");
-            }
-        }
+// 1. Инициализируем рекламу ОДИН РАЗ при загрузке скрипта (вне функции)
+const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "42438" }) : null;
+
+// 2. Сама функция кнопки только показывает видео
+function showBonusVideoAd() {
+    if (AdController) {
+        AdController.show().then(() => {
+            crystals += 1;
+            updateUI();
+            alert("Спасибо за просмотр. Вам зачислен 1 кристалл.");
+        }).catch((error) => {
+            alert("Рекламный ролик не был досмотрен полностью.");
+        });
+    } else {
+        alert("Рекламная сеть временно недоступна.");
+    }
+}
 
         // [ Железобетонная привязка кликов по ID после полной загрузки страницы ]
         document.addEventListener("DOMContentLoaded", () => {
