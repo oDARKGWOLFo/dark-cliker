@@ -529,6 +529,7 @@ body {
                         wp.clicks = 0;
                         if (stock < maxStock) {
                             stock++;
+                            spawnCoinToBoss(index);
                             totalCrafted++;
                             checkLevelUp();
                         }
