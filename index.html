@@ -2,380 +2,634 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Эволюция: Вертикальное Древо</title>
-    <!-- [ Официальный скрипт рекламной сети Adsgram ] -->
-    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Make More Clean Edition</title>
+    
+    <!-- ========================================== -->
+    <!-- РАЗДЕЛ: ПОДКЛЮЧЕНИЕ РЕКЛАМЫ ADSGRAM       -->
+    <!-- ========================================== -->
+    <script src="https://adsgram.ai"></script>
+
     <style>
-        /* [ ========================================================================== ] */
-        /* [ 1. СБРОС СТИЛЕЙ БРАУЗЕРА (ЭКРАН СМАРТФОНА) ] */
-        /* [ ========================================================================== ] */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: none;
-        }
-
-        body, html {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #05060c;
-            font-family: Arial, sans-serif;
-            color: #fff;
-        }
-
-        #viewport {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* [ ========================================================================== ] */
-        /* [ 2. ИГРОВАЯ КАРТА КОСМОСА ] */
-        /* [ ========================================================================== ] */
-        #game-map {
-            position: absolute;
-            width: 100%;       
-            height: 3000px;    
-            left: 0;
-            top: -2200px;      
-            background: linear-gradient(to top, #0a0b1e 0%, #121435 50%, #1a1c4b 100%);
-            background-image: 
-                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
-                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px);
-            background-size: 350px 350px, 200px 200px;
-            background-position: 0 0, 40px 60px;
-            transform: translate3d(0, 0, 0);
-            will-change: transform;
-        }
-
-        /* [ ========================================================================== ] */
-        /* [ 3. СТИЛИ ИНТЕРФЕЙСА ХУД И КНОПОК ] */
-        /* [ ========================================================================== ] */
-        .top-hud {
-            position: absolute;
-            top: 20px;
-            left: 5%;
-            width: 90%;
-            background: rgba(13, 16, 37, 0.85);
-            border: 2px solid #23295c;
-            border-radius: 16px;
-            padding: 12px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            z-index: 10;
-        }
-
-        .hud-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .hud-label {
-            font-size: 10px;
-            color: #8da2fb;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 2px;
-        }
-        .hud-value {
-            font-size: 20px;
-            font-weight: bold;
-        }
-        #dna-balance { color: #00d2ff; text-shadow: 0 0 10px rgba(0, 210, 255, 0.4); }
-        #crystals-val { color: #ff3366; text-shadow: 0 0 10px rgba(255, 51, 102, 0.4); }
-
-        .bottom-hud {
-            position: absolute;
-            bottom: 20px;
-            left: 5%;
-            width: 90%;
-            z-index: 10;
-        }
-
-        .btn-ads {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(90deg, #10b981, #059669);
-            border: none;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
-        }
-
-        /* [ ========================================================================== ] */
-        /* [ СТИЛИ ИКОНОК И ДРЕВА ЭВОЛЮЦИИ НА КАРТЕ ] */
-        /* [ ========================================================================== ] */
-        .evo-node {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            cursor: pointer;
-            z-index: 6;
-            transition: transform 0.1s ease;
-        }
-        .evo-node:active {
-            transform: scale(0.92);
-        }
-
-        .node-circle {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #2a2d4a 0%, #151625 100%);
-            border: 3px solid #485296;
-            box-shadow: 0 0 20px rgba(72, 82, 150, 0.4), inset 0 0 10px rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            margin-bottom: 6px;
-        }
-
-        .node-title {
-            font-size: 13px;
-            font-weight: bold;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
-        }
-        .node-cost {
-            font-size: 11px;
-            color: #00d2ff;
-            margin-top: 2px;
-        }
-
-        .evo-line {
-            position: absolute;
-            background: linear-gradient(to top, #485296, #00d2ff);
-            opacity: 0.4;
-            box-shadow: 0 0 8px #00d2ff;
-            z-index: 4;
-        }
+        /* Стили будут в Части 2 */
     </style>
 </head>
-    
-<body>
+<body onclick="handleGlobalClick(event)">
 
-    <div id="viewport">
+    <!-- ========================================== -->
+    <!-- РАЗДЕЛ: ВЕРХНЯЯ ПАНЕЛЬ (БАЛАНС И УРОВЕНЬ)  -->
+    <!-- ========================================== -->
+    <div class="top-bar">
+        <!-- Блок золотых монет и зеленых алмазов -->
+        <div class="currency-box">
+            <div class="currency-item">💰 <span id="coins-text">0</span></div>
+            <div class="currency-item">💎 <span id="diamonds-text">0</span></div>
+        </div>
         
-        <!-- [ ВЕРХНИЙ ИНТЕРФЕЙС: БАЛАНС ДНК И КРИСТАЛЛОВ ] -->
-        <div class="top-hud">
-            <div class="hud-item">
-                <span class="hud-label">Молекулы ДНК</span>
-                <span id="dna-balance" class="hud-value">0</span>
+        <!-- Блок прогресса уровня (шкала до 100 игрушек) -->
+        <div class="level-container">
+            <div class="level-progress-bg">
+                <div class="level-progress-fill" id="level-bar"></div>
+                <div class="level-text" id="level-progress-text">0 / 100</div>
             </div>
-            <div class="hud-item" style="width: 2px; height: 30px; background: #23295c;"></div>
-            <div class="hud-item">
-                <span class="hud-label">Кристаллы</span>
-                <span id="crystals-val" class="hud-value">0</span>
-            </div>
+            <div class="level-badge" id="level-num">1</div>
         </div>
-
-        <!-- ========================================================================== -->
-        <!-- [ ИГРОВАЯ КАРТА КОСМОСА С ИНТЕРАКТИВНЫМ ДРЕВОМ ] -->
-        <!-- ========================================================================== -->
-        <div id="game-map">
-            
-            <!-- [ Тонкая неоновая линия-связь между ДНК и Аминокислотами ] -->
-            <div class="evo-line" style="bottom: 220px; left: 45%; width: 4px; height: 120px; transform: rotate(-30deg);"></div>
-
-            <!-- [ 1. Карточка Эволюции: ДНК (Клик по ней даёт +1 ДНК) ] -->
-            <div class="evo-node" id="dna-node-click" style="bottom: 150px; left: 20%;">
-                <div class="node-circle" style="border-color: #00d2ff; box-shadow: 0 0 20px rgba(0,210,255,0.4);">🧬</div>
-                <span class="node-title">ДНК</span>
-                <span class="node-cost">+1 за клик</span>
-            </div>
-
-            <!-- [ 2. Карточка Эволюции: Аминокислоты (Покупка даёт +1/сек) ] -->
-            <div class="evo-node" id="amino-node-click" style="bottom: 250px; left: 55%;">
-                <div class="node-circle" id="amino-icon" style="opacity: 0.6; border-color: #8e44ad;">🧪</div>
-                <span class="node-title" id="amino-title">Аминокислоты</span>
-                <span class="node-cost" id="amino-cost">Цена: 40 ДНК</span>
-            </div>
-
-            <div style="position: absolute; bottom: 80px; left: 0; width: 100%; text-align: center; color: rgba(255,255,255,0.2); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">
-                Техническое древо жизни
-            </div>
-
-        </div>
-
-        <div class="bottom-hud">
-            <!-- [ Кнопка рекламы Adsgram ] -->
-            <button class="btn-ads" id="ads-bonus-btn">Получить 1 Кристалл за просмотр</button>
-        </div>
-
     </div>
-    
-    <!-- ========================================================================== -->
-    <!-- [ 4. ПОЛНЫЙ ИСПРАВЛЕННЫЙ СКРИПТ ЛОГИКИ ] -->
-    <!-- ========================================================================== -->
+
+    <!-- ========================================== -->
+    <!-- РАЗДЕЛ: ГЛАВНОЕ ИГРОВОЕ ПОЛЕ              -->
+    <!-- ========================================== -->
+    <div class="game-field">
+        
+        <!-- Стенд с рисунком текущей игрушки (слева) -->
+        <div class="item-display" id="current-toy-image">🍩</div>
+
+        <!-- Босс на коробке (сверху по центру для продажи) -->
+        <div class="boss-container">
+            <div class="boss-character" id="boss-hero">👨‍💼</div>
+            <div class="boss-desk"></div>
+        </div>
+
+        <!-- Табличка предупреждения, если склад забит -->
+        <div class="alert-full" id="alert-stock">ФАБРИКА ПЕРЕПОЛНЕНА! Кликни на Босса!</div>
+
+        <!-- Контейнер для рабочих (сюда JS сам вставит верстаки) -->
+        <div class="factory-grid" id="factory-grid-container"></div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- РАЗДЕЛ: НИЖНЕЕ МЕНЮ НАВИГАЦИИ             -->
+    <!-- ========================================== -->
+    <div class="bottom-menu">
+        <div class="menu-tab active" id="tab-factory" onclick="switchTab('factory')">🏭 ФАБРИКА</div>
+        <div class="menu-tab" id="tab-upgrades" onclick="switchTab('upgrades')">👷 УЛУЧШЕНИЯ</div>
+        <div class="menu-tab" onclick="showAdsgramVideo()">📺 БОНУС</div>
+    </div>
+
+<!-- Конец первой части. HTML полностью готов. -->
+    /* ========================================== */
+        /* РАЗДЕЛ: ГЛОБАЛЬНЫЕ НАСТРОЙКИ ЭКРАНА        */
+        /* ========================================== */
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: #8B7355; /* Коричневый фон в полоску, как в Make More! */
+            background-image: linear-gradient(rgba(0,0,0,0.05) 50%, transparent 50%);
+            background-size: 100% 80px;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* ========================================== */
+        /* РАЗДЕЛ: ВЕРХНЯЯ ПАНЕЛЬ (МОНЕТЫ И ШКАЛА)    */
+        /* ========================================== */
+        .top-bar {
+            background: #4A4A4A;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            border-bottom: 4px solid #2B2B2B;
+            z-index: 20;
+        }
+        .currency-box {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .currency-item {
+            background: #222;
+            border: 2px solid #666;
+            border-radius: 6px;
+            padding: 4px 10px;
+            color: #FFF;
+            font-weight: bold;
+            font-size: 14px;
+            min-width: 100px;
+            text-shadow: 1px 1px 0 #000;
+        }
+        .level-container {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .level-progress-bg {
+            width: 110px;
+            height: 24px;
+            background: #222;
+            border: 2px solid #666;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+        .level-progress-fill {
+            width: 0%;
+            height: 100%;
+            background: #FFCC00;
+            transition: width 0.1s ease;
+        }
+        .level-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            line-height: 20px;
+            text-shadow: 1px 1px 1px #000;
+        }
+        .level-badge {
+            background: #FF9500;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            border: 2px solid #222;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* ========================================== */
+        /* РАЗДЕЛ: ИГРОВЫЕ ОБЪЕКТЫ (БОСС И СТЕНД)     */
+        /* ========================================== */
+        .game-field {
+            flex-grow: 1;
+            position: relative;
+            cursor: pointer;
+        }
+        .item-display {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 85px;
+            height: 85px;
+            background: #E8E8E8;
+            border: 5px solid #5C4033;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 45px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        .boss-container {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 10;
+        }
+        .boss-character {
+            font-size: 60px;
+            cursor: pointer;
+            transition: transform 0.05s;
+        }
+        .boss-character:active {
+            transform: scale(1.1);
+        }
+        .boss-desk {
+            width: 110px;
+            height: 35px;
+            background: #D2B48C;
+            border: 3px solid #5C4033;
+            border-radius: 4px;
+            margin-top: -15px;
+            box-shadow: 0 4px 4px rgba(0,0,0,0.15);
+        }
+
+        /* ========================================== */
+        /* РАЗДЕЛ: СЕТКА РАБОЧИХ МЕСТ И ПРОКАЧКА     */
+        /* ========================================== */
+        .factory-grid {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -40%);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 в ряд как на скриншоте */
+            gap: 15px;
+            width: 95%;
+            max-width: 360px;
+        }
+        .workplace {
+            background: #7F7F7F;
+            border: 3px solid #4D4D4D;
+            border-radius: 10px;
+            padding: 8px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 110px;
+            justify-content: space-between;
+        }
+        .worker-unit {
+            font-size: 40px;
+            transition: transform 0.05s ease;
+        }
+        /* Анимация быстрого удара при клике */
+        .worker-hit {
+            transform: scaleY(0.75) translateY(10px);
+        }
+        .work-bench {
+            width: 100%;
+            height: 30px;
+            background: #CD853F;
+            border: 2px solid #5C4033;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            margin-top: 4px;
+        }
+        .progress-circle {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: conic-gradient(#00FF00 0%, #333 0%);
+            margin-top: 6px;
+            border: 2px solid #222;
+        }
+
+        /* Стили для закрытых фабрик (кнопки покупки) */
+        .workplace.locked {
+            background: #4A4A4A;
+            border: 3px dashed #666;
+            color: #FFF;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            justify-content: center;
+        }
+        .lock-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        /* Стили для вкладки "УЛУЧШЕНИЯ" */
+        .upgrade-item {
+            width: 100%;
+            background: #555;
+            border: 2px solid #333;
+            border-radius: 6px;
+            padding: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #FFF;
+            font-size: 13px;
+        }
+        .upgrade-btn {
+            background: #FFCC00;
+            color: #000;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Предупреждения и скрытие элементов */
+        .alert-full {
+            color: #FF3B30;
+            font-weight: bold;
+            background: rgba(0,0,0,0.85);
+            padding: 8px 16px;
+            border-radius: 20px;
+            position: absolute;
+            top: 35%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            z-index: 30;
+            border: 2px solid #FF3B30;
+        }
+        .hidden {
+            display: none !important;
+        }
+
+        /* ========================================== */
+        /* РАЗДЕЛ: НИЖНЕЕ МЕНЮ НАВИГАЦИИ              */
+        /* ========================================== */
+        .bottom-menu {
+            height: 65px;
+            background: #333333;
+            border-top: 4px solid #1A1A1A;
+            display: flex;
+            z-index: 20;
+        }
+        .menu-tab {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            border-right: 1px solid #222;
+            transition: background 0.1s;
+        }
+        .menu-tab:active {
+            background: #222;
+        }
+        .menu-tab.active {
+            background: #007AFF;
+            color: white;
+        }
     <script>
-        const viewport = document.getElementById('viewport');
-        const map = document.getElementById('game-map');
-        const adsBtn = document.getElementById('ads-bonus-btn');
+        // Инициализация Adsgram (строка 300, как мы настроили!)
+        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "42438" }) : null;
 
-        // [ Базовые игровые переменные ]
-        let dna = 0;
-        let crystals = 0;
-        let clickPower = 1;
-        let autoDnaPerSecond = 0;
-        let isAminoBought = false; // [ Проверка: куплены ли аминокислоты ]
+        // Игровой баланс на старте
+        let coins = 1000;       // Золотые монеты
+        let diamonds = 5;      // Зеленые алмазы
+        let stock = 0;         // Сколько сейчас игрушек на складе
+        const maxStock = 10;   // Вместимость фабрики (максимум 10 штук!)
+        let totalCrafted = 0;  // Всего создано игрушек за этот уровень
+        let currentLevel = 1;  // Текущий уровень фабрики
+        const reqToLevelUp = 100; // Нужно сделать 100 игрушек для повышения уровня
+        let currentTab = 'factory'; // Какая вкладка сейчас открыта
 
-        // [ Переменные скролла карты строго вверх/вниз ]
-        let isDragging = false;
-        let startY = 0;
-        let currentY = -2200; 
+        // Список игрушек, которые открываются на разных уровнях
+        const toyCollection = {
+            1: "🍩", // Уровень 1: Глиняный пончик/горшок
+            2: "🚗", // Уровень 2: Машинка
+            3: "🧸"  // Уровень 3: Мишка
+        };
 
-        // [ Плавное обновление экрана ]
-        function updateUI() {
-            const dnaBox = document.getElementById('dna-balance');
-            const cryBox = document.getElementById('crystals-val');
-            if (dnaBox) dnaBox.innerText = Math.floor(dna);
-            if (cryBox) cryBox.innerText = crystals;
-
-            // [ Визуальное состояние Аминокислот в зависимости от покупки ]
-            const icon = document.getElementById('amino-icon');
-            const costText = document.getElementById('amino-cost');
-            
-            if (isAminoBought) {
-                if (icon) {
-                    icon.style.opacity = "1";
-                    icon.style.borderColor = "#00d2ff";
-                    icon.style.boxShadow = "0 0 20px rgba(0,210,255,0.4)";
-                }
-                if (costText) costText.innerText = "Куплено (+1/с)";
-            } else {
-                if (icon) {
-                    icon.style.opacity = "0.6";
-                    icon.style.borderColor = "#8e44ad";
-                    icon.style.boxShadow = "none";
-                }
-                if (costText) costText.innerText = "Цена: 40 ДНК";
+        /* ========================================================================= */
+        /* РАЗДЕЛ НАСТРОЙКИ: ТУТ ВЫ МОЖЕТЕ ИЗМЕНЯТЬ И ДОБАВЛЯТЬ ФАБРИКИ И РАБОЧИХ    */
+        /* ========================================================================= */
+        // active: true — открыта сразу, false — закрыта и её надо купить
+        // cost: сколько монет стоит открыть это рабочее место
+        // currentLevel: текущий уровень прокачки этого рабочего
+        // maxLevel: максимальный уровень прокачки
+        // levelPrices: сколько монет стоит каждый уровень (Уровень 2, Уровень 3 и т.д.)
+        let workplaces = [
+            { 
+                active: true, clicks: 0, cost: 0, avatar: "👷", 
+                currentLevel: 1, maxLevel: 5,
+                levelPrices: { 2: 300, 3: 1000, 4: 3000, 5: 7000 } 
+            },
+            { 
+                active: false, clicks: 0, cost: 300, avatar: "👨‍🏭", 
+                currentLevel: 1, maxLevel: 5,
+                levelPrices: { 2: 500, 3: 1500, 4: 4000, 5: 9000 } 
+            },
+            { 
+                active: false, clicks: 0, cost: 1000, avatar: "👩‍🏭", 
+                currentLevel: 1, maxLevel: 5,
+                levelPrices: { 2: 1200, 3: 3000, 4: 8000, 5: 15000 } 
+            },
+            { 
+                active: false, clicks: 0, cost: 3000, avatar: "🤖", 
+                currentLevel: 1, maxLevel: 5,
+                levelPrices: { 2: 3500, 3: 7000, 4: 15000, 5: 30000 } 
             }
+            // ХОТИТЕ ДОБАВИТЬ НОВУЮ ФАБРИКУ / РАБОЧЕГО? 
+            // Просто скопируйте блок выше, поставьте запятую и измените цифры!
+        ];
+        /* ========================================================================= */
 
-            saveGameProgress();
+        // ФУНКЦИЯ: Переключение вкладок (Фабрика / Улучшения)
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            // Сбрасываем активность кнопок меню
+            document.getElementById('tab-factory').classList.remove('active');
+            document.getElementById('tab-upgrades').classList.remove('active');
+            
+            // Подсвечиваем нужную вкладку
+            if (tabName === 'factory') {
+                document.getElementById('tab-factory').classList.add('active');
+            } else {
+                document.getElementById('tab-upgrades').classList.add('active');
+            }
+            
+            // Перерисовываем экран под выбранную вкладку
+            renderGrid();
+        }
+        // ФУНКЦИЯ: Отрисовка игрового поля (динамически строит сетку)
+        function renderGrid() {
+            const container = document.getElementById('factory-grid-container');
+            container.innerHTML = ''; // Очищаем старую сетку
+
+            const currentToy = toyCollection[currentLevel] || "🍩";
+
+            // РЕЖИМ 1: Открыта вкладка ФАБРИКА
+            if (currentTab === 'factory') {
+                workplaces.forEach((wp, index) => {
+                    const block = document.createElement('div');
+                    
+                    if (wp.active) {
+                        // Обычный рабочий верстак
+                        block.className = 'workplace';
+                        // Считаем прогресс в процентах для круговой шкалы (требуется 10 кликов на игрушку)
+                        let progressPercent = (wp.clicks / 10) * 100;
+                        
+                        block.innerHTML = `
+                            <div class="worker-unit" id="worker-img-${index}">${wp.avatar}</div>
+                            <div class="work-bench">
+                                <div>🪵</div>
+                                <div style="opacity: ${wp.clicks > 0 ? 1 : 0}; font-size: 18px;">${currentToy}</div>
+                            </div>
+                            <div class="progress-circle" style="background: conic-gradient(#00FF00 ${progressPercent}%, #333 ${progressPercent}%)"></div>
+                        `;
+                    } else {
+                        // Заблокированное место (кнопка покупки)
+                        block.className = 'workplace locked';
+                        block.setAttribute('onclick', `buyWorkplace(${index})`);
+                        block.innerHTML = `
+                            <div class="lock-icon">🔒</div>
+                            <div>Купить<br>💰 ${wp.cost}</div>
+                        `;
+                    }
+                    container.appendChild(block);
+                });
+            } 
+            // РЕЖИМ 2: Открыта вкладка УЛУЧШЕНИЯ
+            else if (currentTab === 'upgrades') {
+                workplaces.forEach((wp, index) => {
+                    const block = document.createElement('div');
+                    block.className = 'workplace';
+                    
+                    if (wp.active) {
+                        let nextLvl = wp.currentLevel + 1;
+                        let price = wp.levelPrices[nextLvl];
+                        let isMax = wp.currentLevel >= wp.maxLevel;
+                        
+                        block.innerHTML = `
+                            <div class="worker-unit">${wp.avatar}</div>
+                            <div style="color: #FFF; font-size: 11px; font-weight: bold; margin-top: 4px;">Ур. ${wp.currentLevel}</div>
+                            <button class="upgrade-btn" style="${isMax ? 'background:#888;color:#FFF;' : ''}" 
+                                    onclick="${isMax ? '' : `upgradeWorker(${index})`}">
+                                ${isMax ? 'МАКС' : `💰 ${price}`}
+                            </button>
+                        `;
+                    } else {
+                        block.className = 'workplace locked';
+                        block.innerHTML = `
+                            <div class="lock-icon">🔒</div>
+                            <div style="font-size: 10px;">Сначала<br>купите в цеху</div>
+                        `;
+                    }
+                    container.appendChild(block);
+                });
+            }
         }
 
-        // [ ФУНКЦИЯ КЛИКА ПО ДНК ]
-        function coreClickAction() {
-            dna += clickPower;
-            updateUI();
-        }
+        // ФУНКЦИЯ: Глобальный клик по экрану
+        function handleGlobalClick(event) {
+            // Игнорируем клики, если мы во вкладке улучшений или нажимаем меню
+            if (currentTab !== 'factory' || event.target.closest('.bottom-menu') || event.target.closest('.top-bar')) return;
 
-        // [ ФУНКЦИЯ ПОКУПКИ АМИНОКИСЛОТ ]
-        function buyAminoAcids() {
-            if (isAminoBought) {
-                alert("Аминокислоты уже успешно открыты!");
+            // Если кликнули на босса — запускаем продажу товаров
+            if (event.target.id === 'boss-hero') {
+                sellAllProducts();
                 return;
             }
 
-            if (dna >= 40) {
-                dna -= 40;
-                autoDnaPerSecond += 1; // [ Запускаем пассивный доход ]
-                isAminoBought = true;  // [ Переключаем статус на куплено ]
+            // Если склад переполнен (максимум 10) — блокируем производство
+            if (stock >= maxStock) {
+                document.getElementById('alert-stock').style.display = 'block';
+                return;
+            }
+
+            const currentToy = toyCollection[currentLevel] || "🍩";
+
+            // Каждый клик по экрану развивает прогресс ВСЕХ открытых рабочих
+            workplaces.forEach((wp, index) => {
+                if (wp.active) {
+                    // Анимируем удар каждого активного рабочего (эффект сжатия)
+                    const workerImg = document.getElementById(`worker-img-${index}`);
+                    if (workerImg) {
+                        workerImg.classList.add('worker-hit');
+                        setTimeout(() => workerImg.classList.remove('worker-hit'), 60);
+                    }
+
+                    wp.clicks++;
+
+                    // Игрушка готова (каждые 10 кликов)
+                    if (wp.clicks >= 10) {
+                        wp.clicks = 0;
+                        if (stock < maxStock) {
+                            stock++;
+                            totalCrafted++;
+                            checkLevelUp();
+                        }
+                    }
+                }
+            });
+
+            updateUI();
+            renderGrid();
+        }
+
+        // ФУНКЦИЯ: Продажа товаров боссу (1 штука = 1 монета * уровень прокачки рабочего)
+        function sellAllProducts() {
+            if (stock === 0) return;
+            
+            // Базовая цена игрушки умножается на уровень фабрики
+            coins += stock * currentLevel; 
+            stock = 0;
+            
+            document.getElementById('alert-stock').style.display = 'none';
+            updateUI();
+            renderGrid();
+        }
+
+        // ФУНКЦИЯ: Покупка нового рабочего места
+        function buyWorkplace(index) {
+            let wp = workplaces[index];
+            if (!wp.active && coins >= wp.cost) {
+                coins -= wp.cost;
+                wp.active = true;
                 updateUI();
-                alert("Вы успешно открыли Аминокислоты! Теперь ДНК генерируется пассивно.");
+                renderGrid();
+            } else if (coins < wp.cost) {
+                alert("Не хватает золотых монет!");
+            }
+        }
+
+        // ФУНКЦИЯ: Прокачка рабочего уровня
+        function upgradeWorker(index) {
+            let wp = workplaces[index];
+            let nextLvl = wp.currentLevel + 1;
+            let price = wp.levelPrices[nextLvl];
+
+            if (coins >= price) {
+                coins -= price;
+                wp.currentLevel = nextLvl;
+                // При улучшении рабочего дарим 1 зеленый алмаз!
+                diamonds += 1; 
+                updateUI();
+                renderGrid();
             } else {
-                alert("Недостаточно молекул ДНК. Нужно 40 ДНК.");
+                alert("Не хватает монет для улучшения!");
             }
         }
 
-        // [ ПРОСМОТР РЕКЛАМЫ ADSGRAM ]
-// 1. Инициализируем рекламу ОДИН РАЗ при загрузке скрипта (вне функции)
-const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "42493" }) : null;
+        // ФУНКЦИЯ: Проверка перехода на новую игрушку (новый уровень)
+        function checkLevelUp() {
+            if (totalCrafted >= reqToLevelUp) {
+                totalCrafted = 0;
+                currentLevel++;
+                // Дарим 5 алмазов за новый уровень фабрики!
+                diamonds += 5; 
+                alert(`Поздравляем! Ваша фабрика вышла на новый уровень! Открыт новый товар: ${toyCollection[currentLevel] || "🎁"}`);
+            }
+        }
 
-// 2. Сама функция кнопки только показывает видео
-function showBonusVideoAd() {
-    if (AdController) {
-        AdController.show().then(() => {
-            crystals += 1;
+        // ФУНКЦИЯ: Обновление текстовых полей интерфейса
+        function updateUI() {
+            document.getElementById('coins-text').innerText = coins;
+            document.getElementById('diamonds-text').innerText = diamonds;
+            document.getElementById('current-toy-image').innerText = toyCollection[currentLevel] || "🍩";
+            document.getElementById('level-num').innerText = currentLevel;
+            
+            // Расчет шкалы уровня до 100 штук
+            document.getElementById('level-progress-text').innerText = `${totalCrafted} / ${reqToLevelUp}`;
+            let barPercent = (totalCrafted / reqToLevelUp) * 100;
+            document.getElementById('level-bar').style.width = barPercent + '%';
+        }
+
+        // Вызов встроенной рекламы Adsgram (по кнопке Телевизор)
+        function showAdsgramVideo() {
+            if (AdController) {
+                AdController.show().then(() => {
+                    // Бонус за просмотр видео: 200 монет и 2 алмаза!
+                    coins += 200;
+                    diamonds += 2;
+                    updateUI();
+                    renderGrid();
+                    alert("Спасибо за просмотр! Бонус зачислен: 💰 +200, 💎 +2.");
+                }).catch((error) => {
+                    alert("Реклама не была досмотрена полностью.");
+                });
+            } else {
+                alert("Рекламная сеть сейчас недоступна.");
+            }
+        }
+
+        // Запуск первой отрисовки при загрузке страницы игры
+        window.onload = function() {
             updateUI();
-            alert("Спасибо за просмотр. Вам зачислен 1 кристалл.");
-        }).catch((error) => {
-            alert("Рекламный ролик не был досмотрен полностью.");
-        });
-    } else {
-        alert("Рекламная сеть временно недоступна.");
-    }
-}
-
-        // [ Железобетонная привязка кликов по ID после полной загрузки страницы ]
-        document.addEventListener("DOMContentLoaded", () => {
-            const dnaNode = document.getElementById('dna-node-click');
-            if (dnaNode) dnaNode.addEventListener('click', coreClickAction);
-
-            const aminoNode = document.getElementById('amino-node-click');
-            if (aminoNode) aminoNode.addEventListener('click', buyAminoAcids);
-
-            if (adsBtn) adsBtn.addEventListener('click', showBonusVideoAd);
-        });
-
-        // [ Логика скролла карты вверх/вниз ]
-        viewport.addEventListener('touchstart', (e) => {
-            isDragging = true;
-            startY = e.touches.clientY - currentY;
-        }, { passive: true });
-
-        viewport.addEventListener('touchmove', (e) => {
-            if (!isDragging) return;
-            currentY = e.touches.clientY - startY;
-            const minY = viewport.clientHeight - 3000;
-            const maxY = 0;
-            currentY = Math.min(maxY, Math.max(currentY, minY));
-            map.style.transform = `translate3d(0px, ${currentY}px, 0px)`;
-        }, { passive: true });
-
-        viewport.addEventListener('touchend', () => { isDragging = false; });
-
-        // [ Автоначисление ДНК каждую секунду ]
-        setInterval(() => {
-            if (autoDnaPerSecond > 0) {
-                dna += autoDnaPerSecond;
-                const dnaBox = document.getElementById('dna-balance');
-                if (dnaBox) dnaBox.innerText = Math.floor(dna);
-                saveGameProgress();
-            }
-        }, 1000);
-
-        // [ Сохранение пакета данных в память телефона ]
-        function saveGameProgress() {
-            const gameData = { dna, crystals, clickPower, autoDnaPerSecond, isAminoBought };
-            localStorage.setItem('evo_vertical_save', JSON.stringify(gameData));
-        }
-
-        // [ Загрузка пакета данных при входе ]
-        function loadGameProgress() {
-            const savedData = localStorage.getItem('evo_vertical_save');
-            if (savedData) {
-                try {
-                    const data = JSON.parse(savedData);
-                    dna = data.dna ?? 0;
-                    crystals = data.crystals ?? 0;
-                    clickPower = data.clickPower ?? 1;
-                    autoDnaPerSecond = data.autoDnaPerSecond ?? 0;
-                    isAminoBought = data.isAminoBought ?? false;
-                } catch (e) { console.error(e); }
-            }
-            updateUI();
-        }
-
-        // [ Мгновенный запуск при открытии страницы ]
-        loadGameProgress();
+            renderGrid();
+        };
     </script>
 </body>
 </html>
