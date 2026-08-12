@@ -278,6 +278,19 @@ body {
             background: #007AFF;
             color: white;
         }
+/* ========================================== */
+        /* РАЗДЕЛ: ФИЗИЧЕСКИЙ ПОЛЕТ МОНЕТ К БОССУ    */
+        /* ========================================== */
+        .floating-coin {
+            position: absolute;
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 22px;
+            text-shadow: 1px 1px 2px #000;
+            pointer-events: none;
+            z-index: 999;
+            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }        
     </style>
 </head>
 <body onclick="handleGlobalClick(event)">
