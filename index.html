@@ -411,76 +411,7 @@ body {
             const currentToy = toyCollection[currentLevel] || "🍩";
 
             if (currentTab === 'factory') {
-                workplaces.forEach((wp, index) => {
-                    const block = document.createElement('div');
-                    
-                    if (wp.active) {
-                        block.className = 'workplace';
-                        let progressPercent = (wp.clicks >= 10 || wp.clicks === 0) ? 0 : (wp.clicks / 10) * 100;
-                        
-                        // Если общая сумма на складе забита, добавляем класс "full" для красного круга
-                        let circleClass = (stock >= maxStock) ? 'progress-circle full' : 'progress-circle';
-                        
-                        block.innerHTML = `
-                            <div class="worker-unit" id="worker-img-${index}">${wp.avatar}</div>
-                            <div class="work-bench">
-                                <div>🪵</div>
-                                <div style="opacity: ${wp.clicks > 0 ? 1 : 0}; font-size: 18px;">${currentToy}</div>
-                            </div>
-                            <div class="${circleClass}" style="background: conic-gradient(#00FF00 ${progressPercent}%, #333 ${progressPercent}%)"></div>
-                        `;
-                    } else {
-                        block.className = 'workplace locked';
-                        block.setAttribute('onclick', `buyWorkplace(${index})`);
-                        block.innerHTML = `
-                            <div class="lock-icon">🔒</div>
-                            <div>Купить<br>💰 ${wp.cost}</div>
-                        `;
-                    }
-                    container.appendChild(block);
-                });
-            } 
-            else if (currentTab === 'upgrades') {
-                workplaces.forEach((wp, index) => {
-                    const block = document.createElement('div');
-                    block.className = 'workplace';
-                    
-                    if (wp.active) {
-                        let nextLvl = wp.currentLevel + 1;
-                        let price = wp.levelPrices[nextLvl];
-                        let isMax = wp.currentLevel >= wp.maxLevel;
-                        
-                        block.innerHTML = `
-                            <div class="worker-unit">${wp.avatar}</div>
-                            <div style="color: #FFF; font-size: 11px; font-weight: bold; margin-top: 4px;">Ур. ${wp.currentLevel}</div>
-                            <button class="upgrade-btn" style="${isMax ? 'background:#888;color:#FFF;' : ''}" 
-                                    onclick="${isMax ? '' : `upgradeWorker(${index})`}">
-                                ${isMax ? 'МАКС' : `💰 ${price}`}
-                            </button>
-                        `;
-                    } else {
-                        block.className = 'workplace locked';
-                        block.innerHTML = `
-                            <div class="lock-icon">🔒</div>
-                            <div style="font-size: 10px;">Сначала<br>купите в цеху</div>
-                        `;
-                    }
-                    container.appendChild(block);
-                });
-            }
-        }
-
-        // ФУНКЦИЯ: Глобальный клик по экрану (БЕЗ блокировки!)
-        function handleGlobalClick(event) {
-            if (currentTab !== 'factory' || event.target.closest('.bottom-menu') || event.target.closest('.top-bar')) return;
-
-            if (event.target.id === 'boss-hero') {
-                sellAllProducts();
-                return;
-            }
-
-            // Нажимать ТЕПЕРЬ МОЖНО ВСЕГДА! Человечки будут стучать в любом случае
-            workplaces.forEach((wp, index) => {
+workplaces.forEach((wp, index) => {
                 if (wp.active) {
                     const workerImg = document.getElementById(`worker-img-${index}`);
                     if (workerImg) {
@@ -488,22 +419,39 @@ body {
                         setTimeout(() => workerImg.classList.remove('worker-hit'), 60);
                     }
 
-                    // Шкала прогресса заполняется только если на складе ЕСТЬ место
-if (stock < maxStock) {
+                    if (stock < maxStock) {
                         wp.clicks++;
 
-                        // Игрушка создана (10 кликов)
+                        // Если это 10-й клик, принудительно рисуем 100% круга
                         if (wp.clicks >= 10) {
-                            wp.clicks = 0; // Сбрасываем клики в ноль
-                            stock++;
-                            spawnCoinToBoss(index);
-                            totalCrafted++;
-                            checkLevelUp();
+                            // Находим кружок именно этого рабочего и красим его на 100%
+                            const gridContainer = document.getElementById('factory-grid-container');
+                            if (gridContainer) {
+                                const circles = gridContainer.querySelectorAll('.progress-circle');
+                                if (circles[index]) {
+                                    circles[index].style.background = 'conic-gradient(#00FF00 100%, #333 100%)';
+                                }
+                            }
+
+                            // Ровно через 0.10 секунды (100 мс) сбрасываем круг и даем монету
+                            setTimeout(() => {
+                                wp.clicks = 0;
+                                stock++;
+                                spawnCoinToBoss(index);
+                                totalCrafted++;
+                                checkLevelUp();
+                                updateUI();
+                                renderGrid();
+                            }, 100); // 100 миллисекунд = 0.10 секунды!
+                        } else {
+                            // Для обычных кликов (с 1 по 9) обновляем экран как обычно
+                            updateUI();
+                            renderGrid();
                         }
                     }
                 }
             });
-
+                
             updateUI();
             renderGrid();
         }
