@@ -416,7 +416,7 @@ body {
                     
                     if (wp.active) {
                         block.className = 'workplace';
-                        let progressPercent = (wp.clicks / 10) * 100;
+                        let progressPercent = (wp.clicks >= 10 || wp.clicks === 0) ? 0 : (wp.clicks / 10) * 100;
                         
                         // Если общая сумма на складе забита, добавляем класс "full" для красного круга
                         let circleClass = (stock >= maxStock) ? 'progress-circle full' : 'progress-circle';
