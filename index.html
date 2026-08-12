@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Экономический Adsgram Кликер</title>
+    <title>Экономический Adsgram Кликер с сохранением</title>
     <script src="https://adsgram.ai"></script>
     <style>
         body { font-family: sans-serif; background: #0f172a; color: #f8fafc; text-align: center; padding: 15px; }
@@ -15,6 +15,7 @@
         .shop-btn { background: #475569; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 14px; cursor: pointer; margin-bottom: 10px; font-weight: bold; }
         .shop-btn:hover { background: #64748b; }
         .ad-btn { background: #10b981; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: bold; }
+        .reset-btn { background: transparent; color: #ef4444; border: none; font-size: 11px; margin-top: 20px; cursor: pointer; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -25,24 +26,33 @@
         
         <button class="click-btn" onclick="clickGold()">КЛИК!<br><span style="font-size:12px; font-weight:normal;">(+1 за клик)</span></button>
         
-        <!-- Экономический блок: Магазин инвестиций -->
         <div style="margin-top: 10px; border-top: 1px solid #334155; padding-top: 15px;">
             <button class="shop-btn" onclick="buyMine()">🏭 Купить Шахту (Цена: <span id="mine-cost">50</span> 💰)<br><span style="font-size:11px; font-weight:normal; color:#cbd5e1;">Дает +1 монету в секунду</span></button>
         </div>
 
-        <!-- Рекламный блок: Быстрое вливание капитала -->
         <div>
             <button class="ad-btn" onclick="showAdsgramVideo()">📺 Рекламный грант (+100 💰 за просмотр)</button>
         </div>
+
+        <!-- Кнопка сброса прогресса для тестов -->
+        <button class="reset-btn" onclick="resetGame()">Обнулить весь прогресс</button>
     </div>
 
     <script>
-        let gold = 0;
-        let pps = 0; // Пассивный доход в секунду
-        let mineCost = 50; // Начальная стоимость шахты
+        // 1. ЗАГРУЗКА ДАННЫХ ИЗ ПАМЯТИ (если данных нет, берутся стандартные значения)
+        let gold = parseFloat(localStorage.getItem('clicker_gold')) || 0;
+        let pps = parseInt(localStorage.getItem('clicker_pps')) || 0;
+        let mineCost = parseInt(localStorage.getItem('clicker_mineCost')) || 50;
 
-        // Инициализация Adsgram (замените YOUR_BLOCK_ID на ваш реальный ID)
+        // Инициализация Adsgram
         const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "YOUR_BLOCK_ID" }) : null;
+
+        // 2. ФУНКЦИЯ СОХРАНЕНИЯ ПРОГРЕССА В LOCALSTORAGE
+        function saveGame() {
+            localStorage.setItem('clicker_gold', gold);
+            localStorage.setItem('clicker_pps', pps);
+            localStorage.setItem('clicker_mineCost', mineCost);
+        }
 
         function updateUI() {
             document.getElementById('gold').innerText = Math.floor(gold);
@@ -50,47 +60,64 @@
             document.getElementById('mine-cost').innerText = mineCost;
         }
 
-        // Обычный клик
         function clickGold() {
             gold += 1;
             updateUI();
+            saveGame(); // Сохраняем после клика
         }
 
-        // Покупка пассивного дохода (Экономика)
         function buyMine() {
             if (gold >= mineCost) {
                 gold -= mineCost;
-                pps += 1; // Увеличиваем доход в секунду
-                mineCost = Math.floor(mineCost * 1.5); // Цена следующей шахты растет на 50%
+                pps += 1;
+                mineCost = Math.floor(mineCost * 1.5);
                 updateUI();
+                saveGame(); // Сохраняем после покупки
             } else {
                 alert("Недостаточно золота для инвестиций!");
             }
         }
 
-        // Бесконечный цикл: начисление пассивного дохода каждую секунду
+        // Автоначисление пассивного дохода
         setInterval(function() {
             gold += pps;
             updateUI();
         }, 1000);
 
-        // Интеграция рекламы Adsgram
+        // Автоматическое фоновое сохранение каждые 3 секунды
+        setInterval(function() {
+            saveGame();
+        }, 3000);
+
+        // Функция сброса (если игрок захочет начать заново)
+        function resetGame() {
+            if (confirm("Вы уверены, что хотите обнулить игру?")) {
+                localStorage.clear();
+                gold = 0; pps = 0; mineCost = 50;
+                updateUI();
+            }
+        }
+
         function showAdsgramVideo() {
             if (!AdController) {
-                // Демо-режим для ПК
                 gold += 100;
                 updateUI();
+                saveGame();
                 alert("Демо-награда: +100 монет инвестировано в ваш бюджет!");
                 return;
             }
 
             AdController.show().then(() => {
-                gold += 100; // Награда за реальный просмотр
+                gold += 100;
                 updateUI();
+                saveGame();
             }).catch(() => {
                 alert("Досмотрите видео для получения гранта!");
             });
         }
+
+        // Первичный вывод сохраненных данных на экран при старте страницы
+        updateUI();
     </script>
 </body>
 </html>
