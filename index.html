@@ -20,11 +20,11 @@
             user-select: none;
             -webkit-user-select: none;
         }
-        body {
+body {
             margin: 0;
             padding: 0;
             height: 100vh;
-            background: #8B7355; /* Коричневый фон в полоску */
+            background: #8B7355; /* Коричневый фон */
             background-image: linear-gradient(rgba(0,0,0,0.05) 50%, transparent 50%);
             background-size: 100% 80px;
             font-family: 'Arial', sans-serif;
@@ -32,8 +32,12 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-        }
-
+            
+            /* ЭТИ ТРИ СТРОКИ УБЕРУТ БИРЮЗОВЫЙ ФОН ПРИ КЛИКАХ */
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+            user-select: none;
+}
         /* ========================================== */
         /* РАЗДЕЛ: ВЕРХНЯЯ ПАНЕЛЬ (МОНЕТЫ И ШКАЛА)    */
         /* ========================================== */
@@ -245,13 +249,16 @@
         /* ========================================== */
         /* РАЗДЕЛ: НИЖНЕЕ МЕНЮ НАВИГАЦИИ              */
         /* ========================================== */
-        .bottom-menu {
+.bottom-menu {
             height: 65px;
             background: #333333;
             border-top: 4px solid #1A1A1A;
             display: flex;
             z-index: 20;
-        }
+            
+            /* ЭТА СТРОКА ПРИПОДНИМЕТ МЕНЮ ВЫШЕ НА ТЕЛЕФОНЕ */
+            margin-bottom: env(safe-area-inset-bottom, 15px); 
+}
         .menu-tab {
             flex: 1;
             display: flex;
