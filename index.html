@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Экономический Adsgram Кликер с сохранением</title>
+    <title>Экономический Adsgram Кликер Cloud</title>
+    <!-- ПОДКЛЮЧАЕМ TELEGRAM И ADSGRAM SDK -->
+    <script src="https://telegram.org"></script>
     <script src="https://adsgram.ai"></script>
     <style>
         body { font-family: sans-serif; background: #0f172a; color: #f8fafc; text-align: center; padding: 15px; }
@@ -34,24 +36,59 @@
             <button class="ad-btn" onclick="showAdsgramVideo()">📺 Рекламный грант (+100 💰 за просмотр)</button>
         </div>
 
-        <!-- Кнопка сброса прогресса для тестов -->
         <button class="reset-btn" onclick="resetGame()">Обнулить весь прогресс</button>
     </div>
 
     <script>
-        // 1. ЗАГРУЗКА ДАННЫХ ИЗ ПАМЯТИ (если данных нет, берутся стандартные значения)
-        let gold = parseFloat(localStorage.getItem('clicker_gold')) || 0;
-        let pps = parseInt(localStorage.getItem('clicker_pps')) || 0;
-        let mineCost = parseInt(localStorage.getItem('clicker_mineCost')) || 50;
+        // Сообщаем Telegram, что приложение готово к работе
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
+            window.Telegram.WebApp.expand(); // Разворачиваем на весь экран телефона
+        }
 
-        // Инициализация Adsgram
+        let gold = 0;
+        let pps = 0;
+        let mineCost = 50;
+
         const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "YOUR_BLOCK_ID" }) : null;
 
-        // 2. ФУНКЦИЯ СОХРАНЕНИЯ ПРОГРЕССА В LOCALSTORAGE
+        // ПРОВЕРКА НАЛИЧИЯ ОБЛАКА TELEGRAM
+        const isTgCloudAvailable = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.CloudStorage && window.Telegram.WebApp.CloudStorage.getItem;
+
+        // ФУНКЦИЯ ЗАГРУЗКИ ДАННЫХ
+        function loadGame() {
+            if (isTgCloudAvailable) {
+                // Пытаемся загрузить из облака Telegram
+                window.Telegram.WebApp.CloudStorage.getItems(['tg_gold', 'tg_pps', 'tg_mineCost'], (err, values) => {
+                    if (!err) {
+                        gold = parseFloat(values.tg_gold) || 0;
+                        pps = parseInt(values.tg_pps) || 0;
+                        mineCost = parseInt(values.tg_mineCost) || 50;
+                        updateUI();
+                    }
+                });
+            } else {
+                // Если запустили на ПК в обычном браузере
+                gold = parseFloat(localStorage.getItem('clicker_gold')) || 0;
+                pps = parseInt(localStorage.getItem('clicker_pps')) || 0;
+                mineCost = parseInt(localStorage.getItem('clicker_mineCost')) || 50;
+                updateUI();
+            }
+        }
+
+        // ФУНКЦИЯ СОХРАНЕНИЯ ДАННЫХ
         function saveGame() {
-            localStorage.setItem('clicker_gold', gold);
-            localStorage.setItem('clicker_pps', pps);
-            localStorage.setItem('clicker_mineCost', mineCost);
+            if (isTgCloudAvailable) {
+                // Сохраняем в облако Telegram (лимит 1024 символа на ключ, у нас гораздо меньше)
+                window.Telegram.WebApp.CloudStorage.setItem('tg_gold', gold.toString());
+                window.Telegram.WebApp.CloudStorage.setItem('tg_pps', pps.toString());
+                window.Telegram.WebApp.CloudStorage.setItem('tg_mineCost', mineCost.toString());
+            } else {
+                // Резервное сохранение в браузер
+                localStorage.setItem('clicker_gold', gold);
+                localStorage.setItem('clicker_pps', pps);
+                localStorage.setItem('clicker_mineCost', mineCost);
+            }
         }
 
         function updateUI() {
@@ -63,7 +100,7 @@
         function clickGold() {
             gold += 1;
             updateUI();
-            saveGame(); // Сохраняем после клика
+            saveGame();
         }
 
         function buyMine() {
@@ -72,7 +109,7 @@
                 pps += 1;
                 mineCost = Math.floor(mineCost * 1.5);
                 updateUI();
-                saveGame(); // Сохраняем после покупки
+                saveGame();
             } else {
                 alert("Недостаточно золота для инвестиций!");
             }
@@ -84,40 +121,38 @@
             updateUI();
         }, 1000);
 
-        // Автоматическое фоновое сохранение каждые 3 секунды
+        // Фоновое автосохранение раз в 4 секунды (чтобы не спамить запросами к серверу TG)
         setInterval(function() {
             saveGame();
-        }, 3000);
+        }, 4000);
 
-        // Функция сброса (если игрок захочет начать заново)
         function resetGame() {
             if (confirm("Вы уверены, что хотите обнулить игру?")) {
-                localStorage.clear();
                 gold = 0; pps = 0; mineCost = 50;
                 updateUI();
+                if (isTgCloudAvailable) {
+                    window.Telegram.WebApp.CloudStorage.removeItems(['tg_gold', 'tg_pps', 'tg_mineCost']);
+                } else {
+                    localStorage.clear();
+                }
             }
         }
 
         function showAdsgramVideo() {
             if (!AdController) {
-                gold += 100;
-                updateUI();
-                saveGame();
-                alert("Демо-награда: +100 монет инвестировано в ваш бюджет!");
+                gold += 100; updateUI(); saveGame();
+                alert("Демо-награда: +100 монет!");
                 return;
             }
-
             AdController.show().then(() => {
-                gold += 100;
-                updateUI();
-                saveGame();
+                gold += 100; updateUI(); saveGame();
             }).catch(() => {
                 alert("Досмотрите видео для получения гранта!");
             });
         }
 
-        // Первичный вывод сохраненных данных на экран при старте страницы
-        updateUI();
+        // Запуск загрузки при старте приложения
+        loadGame();
     </script>
 </body>
 </html>
