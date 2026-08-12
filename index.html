@@ -9,60 +9,9 @@
     <!-- РАЗДЕЛ: ПОДКЛЮЧЕНИЕ РЕКЛАМЫ ADSGRAM       -->
     <!-- ========================================== -->
     <script src="https://adsgram.ai"></script>
-    
-</style>
-    <!-- ========================================== -->
-    <!-- РАЗДЕЛ: ВЕРХНЯЯ ПАНЕЛЬ (БАЛАНС И УРОВЕНЬ)  -->
-    <!-- ========================================== -->
-    <div class="top-bar">
-        <!-- Блок золотых монет и зеленых алмазов -->
-        <div class="currency-box">
-            <div class="currency-item">💰 <span id="coins-text">0</span></div>
-            <div class="currency-item">💎 <span id="diamonds-text">0</span></div>
-        </div>
-        
-        <!-- Блок прогресса уровня (шкала до 100 игрушек) -->
-        <div class="level-container">
-            <div class="level-progress-bg">
-                <div class="level-progress-fill" id="level-bar"></div>
-                <div class="level-text" id="level-progress-text">0 / 100</div>
-            </div>
-            <div class="level-badge" id="level-num">1</div>
-        </div>
-    </div>
 
-    <!-- ========================================== -->
-    <!-- РАЗДЕЛ: ГЛАВНОЕ ИГРОВОЕ ПОЛЕ              -->
-    <!-- ========================================== -->
-    <div class="game-field">
-        
-        <!-- Стенд с рисунком текущей игрушки (слева) -->
-        <div class="item-display" id="current-toy-image">🍩</div>
-
-        <!-- Босс на коробке (сверху по центру для продажи) -->
-        <div class="boss-container">
-            <div class="boss-character" id="boss-hero">👨‍💼</div>
-            <div class="boss-desk"></div>
-        </div>
-
-        <!-- Табличка предупреждения, если склад забит -->
-        <div class="alert-full" id="alert-stock">ФАБРИКА ПЕРЕПОЛНЕНА! Кликни на Босса!</div>
-
-        <!-- Контейнер для рабочих (сюда JS сам вставит верстаки) -->
-        <div class="factory-grid" id="factory-grid-container"></div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- РАЗДЕЛ: НИЖНЕЕ МЕНЮ НАВИГАЦИИ             -->
-    <!-- ========================================== -->
-    <div class="bottom-menu">
-        <div class="menu-tab active" id="tab-factory" onclick="switchTab('factory')">🏭 ФАБРИКА</div>
-        <div class="menu-tab" id="tab-upgrades" onclick="switchTab('upgrades')">👷 УЛУЧШЕНИЯ</div>
-        <div class="menu-tab" onclick="showAdsgramVideo()">📺 БОНУС</div>
-    </div>
-
-<!-- Конец первой части. HTML полностью готов. -->
-    /* ========================================== */
+    <style>
+        /* ========================================== */
         /* РАЗДЕЛ: ГЛОБАЛЬНЫЕ НАСТРОЙКИ ЭКРАНА        */
         /* ========================================== */
         * {
@@ -74,7 +23,7 @@
             margin: 0;
             padding: 0;
             height: 100vh;
-            background: #8B7355; /* Коричневый фон в полоску, как в Make More! */
+            background: #8B7355; /* Коричневый фон в полоску */
             background-image: linear-gradient(rgba(0,0,0,0.05) 50%, transparent 50%);
             background-size: 100% 80px;
             font-family: 'Arial', sans-serif;
@@ -151,7 +100,6 @@
             border: 2px solid #222;
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
-
         /* ========================================== */
         /* РАЗДЕЛ: ИГРОВЫЕ ОБЪЕКТЫ (БОСС И СТЕНД)     */
         /* ========================================== */
@@ -210,7 +158,7 @@
             left: 50%;
             transform: translate(-50%, -40%);
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 в ряд как на скриншоте */
+            grid-template-columns: repeat(3, 1fr);
             gap: 15px;
             width: 95%;
             max-width: 360px;
@@ -233,7 +181,6 @@
             font-size: 40px;
             transition: transform 0.05s ease;
         }
-        /* Анимация быстрого удара при клике */
         .worker-hit {
             transform: scaleY(0.75) translateY(10px);
         }
@@ -257,8 +204,6 @@
             margin-top: 6px;
             border: 2px solid #222;
         }
-
-        /* Стили для закрытых фабрик (кнопки покупки) */
         .workplace.locked {
             background: #4A4A4A;
             border: 3px dashed #666;
@@ -272,21 +217,6 @@
             font-size: 24px;
             margin-bottom: 4px;
         }
-
-        /* Стили для вкладки "УЛУЧШЕНИЯ" */
-        .upgrade-item {
-            width: 100%;
-            background: #555;
-            border: 2px solid #333;
-            border-radius: 6px;
-            padding: 6px;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #FFF;
-            font-size: 13px;
-        }
         .upgrade-btn {
             background: #FFCC00;
             color: #000;
@@ -296,8 +226,6 @@
             font-weight: bold;
             cursor: pointer;
         }
-
-        /* Предупреждения и скрытие элементов */
         .alert-full {
             color: #FF3B30;
             font-weight: bold;
@@ -311,9 +239,6 @@
             display: none;
             z-index: 30;
             border: 2px solid #FF3B30;
-        }
-        .hidden {
-            display: none !important;
         }
 
         /* ========================================== */
@@ -345,39 +270,77 @@
             background: #007AFF;
             color: white;
         }
-</style>
+    </style>
 </head>
-<body>
+<body onclick="handleGlobalClick(event)">
 
+    <!-- ========================================== -->
+    <!-- РАЗДЕЛ: ВЕРХНЯЯ ПАНЕЛЬ (БАЛАНС И УРОВЕНЬ)  -->
+    <!-- ========================================== -->
+    <div class="top-bar">
+        <div class="currency-box">
+            <div class="currency-item">💰 <span id="coins-text">1000</span></div>
+            <div class="currency-item">💎 <span id="diamonds-text">5</span></div>
+        </div>
+        
+        <div class="level-container">
+            <div class="level-progress-bg">
+                <div class="level-progress-fill" id="level-bar"></div>
+                <div class="level-text" id="level-progress-text">0 / 100</div>
+            </div>
+            <div class="level-badge" id="level-num">1</div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- РАЗДЕЛ: ГЛАВНОЕ ИГРОВОЕ ПОЛЕ              -->
+    <!-- ========================================== -->
+    <div class="game-field">
+        <div class="item-display" id="current-toy-image">🍩</div>
+
+        <div class="boss-container">
+            <div class="boss-character" id="boss-hero">👨‍💼</div>
+            <div class="boss-desk"></div>
+        </div>
+
+        <div class="alert-full" id="alert-stock">ФАБРИКА ПЕРЕПОЛНЕНА! Кликни на Босса!</div>
+        <div class="factory-grid" id="factory-grid-container"></div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- РАЗДЕЛ: НИЖНЕЕ МЕНЮ НАВИГАЦИИ             -->
+    <!-- ========================================== -->
+    <div class="bottom-menu">
+        <div class="menu-tab active" id="tab-factory" onclick="switchTab('factory')">🏭 ФАБРИКА</div>
+        <div class="menu-tab" id="tab-upgrades" onclick="switchTab('upgrades')">👷 УЛУЧШЕНИЯ</div>
+        <div class="menu-tab" onclick="showAdsgramVideo()">📺 БОНУС</div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- РАЗДЕЛ: НАЧАЛО ИГРОВОЙ ЛОГИКИ (JAVASCRIPT) -->
+    <!-- ========================================== -->
     <script>
-        // Инициализация Adsgram (строка 300, как мы настроили!)
+        // Инициализация Adsgram рекламы
         const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "42438" }) : null;
 
-        // Игровой баланс на старте
-        let coins = 1000;       // Золотые монеты
-        let diamonds = 5;      // Зеленые алмазы
-        let stock = 0;         // Сколько сейчас игрушек на складе
-        const maxStock = 10;   // Вместимость фабрики (максимум 10 штук!)
-        let totalCrafted = 0;  // Всего создано игрушек за этот уровень
-        let currentLevel = 1;  // Текущий уровень фабрики
-        const reqToLevelUp = 100; // Нужно сделать 100 игрушек для повышения уровня
-        let currentTab = 'factory'; // Какая вкладка сейчас открыта
+        // Базовые переменные игры
+        let coins = 1000;
+        let diamonds = 5;
+        let stock = 0;
+        const maxStock = 10;
+        let totalCrafted = 0;
+        let currentLevel = 1;
+        const reqToLevelUp = 100;
+        let currentTab = 'factory';
 
-        // Список игрушек, которые открываются на разных уровнях
+        // Коллекция игрушек по уровням
         const toyCollection = {
-            1: "🍩", // Уровень 1: Глиняный пончик/горшок
-            2: "🚗", // Уровень 2: Машинка
-            3: "🧸"  // Уровень 3: Мишка
+            1: "🍩", 
+            2: "🚗", 
+            3: "🧸"  
         };
 
-        /* ========================================================================= */
-        /* РАЗДЕЛ НАСТРОЙКИ: ТУТ ВЫ МОЖЕТЕ ИЗМЕНЯТЬ И ДОБАВЛЯТЬ ФАБРИКИ И РАБОЧИХ    */
-        /* ========================================================================= */
-        // active: true — открыта сразу, false — закрыта и её надо купить
-        // cost: сколько монет стоит открыть это рабочее место
-        // currentLevel: текущий уровень прокачки этого рабочего
-        // maxLevel: максимальный уровень прокачки
-        // levelPrices: сколько монет стоит каждый уровень (Уровень 2, Уровень 3 и т.д.)
+        // База настроек ваших рабочих
         let workplaces = [
             { 
                 active: true, clicks: 0, cost: 0, avatar: "👷", 
@@ -399,45 +362,34 @@
                 currentLevel: 1, maxLevel: 5,
                 levelPrices: { 2: 3500, 3: 7000, 4: 15000, 5: 30000 } 
             }
-            // ХОТИТЕ ДОБАВИТЬ НОВУЮ ФАБРИКУ / РАБОЧЕГО? 
-            // Просто скопируйте блок выше, поставьте запятую и измените цифры!
         ];
-        /* ========================================================================= */
 
-        // ФУНКЦИЯ: Переключение вкладок (Фабрика / Улучшения)
+        // Переключение меню
         function switchTab(tabName) {
             currentTab = tabName;
-            
-            // Сбрасываем активность кнопок меню
             document.getElementById('tab-factory').classList.remove('active');
             document.getElementById('tab-upgrades').classList.remove('active');
             
-            // Подсвечиваем нужную вкладку
             if (tabName === 'factory') {
                 document.getElementById('tab-factory').classList.add('active');
             } else {
                 document.getElementById('tab-upgrades').classList.add('active');
             }
-            
-            // Перерисовываем экран под выбранную вкладку
             renderGrid();
         }
-        // ФУНКЦИЯ: Отрисовка игрового поля (динамически строит сетку)
+        // ФУНКЦИЯ: Отрисовка игрового поля
         function renderGrid() {
             const container = document.getElementById('factory-grid-container');
-            container.innerHTML = ''; // Очищаем старую сетку
+            container.innerHTML = ''; 
 
             const currentToy = toyCollection[currentLevel] || "🍩";
 
-            // РЕЖИМ 1: Открыта вкладка ФАБРИКА
             if (currentTab === 'factory') {
                 workplaces.forEach((wp, index) => {
                     const block = document.createElement('div');
                     
                     if (wp.active) {
-                        // Обычный рабочий верстак
                         block.className = 'workplace';
-                        // Считаем прогресс в процентах для круговой шкалы (требуется 10 кликов на игрушку)
                         let progressPercent = (wp.clicks / 10) * 100;
                         
                         block.innerHTML = `
@@ -449,7 +401,6 @@
                             <div class="progress-circle" style="background: conic-gradient(#00FF00 ${progressPercent}%, #333 ${progressPercent}%)"></div>
                         `;
                     } else {
-                        // Заблокированное место (кнопка покупки)
                         block.className = 'workplace locked';
                         block.setAttribute('onclick', `buyWorkplace(${index})`);
                         block.innerHTML = `
@@ -460,7 +411,6 @@
                     container.appendChild(block);
                 });
             } 
-            // РЕЖИМ 2: Открыта вкладка УЛУЧШЕНИЯ
             else if (currentTab === 'upgrades') {
                 workplaces.forEach((wp, index) => {
                     const block = document.createElement('div');
@@ -493,27 +443,20 @@
 
         // ФУНКЦИЯ: Глобальный клик по экрану
         function handleGlobalClick(event) {
-            // Игнорируем клики, если мы во вкладке улучшений или нажимаем меню
             if (currentTab !== 'factory' || event.target.closest('.bottom-menu') || event.target.closest('.top-bar')) return;
 
-            // Если кликнули на босса — запускаем продажу товаров
             if (event.target.id === 'boss-hero') {
                 sellAllProducts();
                 return;
             }
 
-            // Если склад переполнен (максимум 10) — блокируем производство
             if (stock >= maxStock) {
                 document.getElementById('alert-stock').style.display = 'block';
                 return;
             }
 
-            const currentToy = toyCollection[currentLevel] || "🍩";
-
-            // Каждый клик по экрану развивает прогресс ВСЕХ открытых рабочих
             workplaces.forEach((wp, index) => {
                 if (wp.active) {
-                    // Анимируем удар каждого активного рабочего (эффект сжатия)
                     const workerImg = document.getElementById(`worker-img-${index}`);
                     if (workerImg) {
                         workerImg.classList.add('worker-hit');
@@ -522,7 +465,6 @@
 
                     wp.clicks++;
 
-                    // Игрушка готова (каждые 10 кликов)
                     if (wp.clicks >= 10) {
                         wp.clicks = 0;
                         if (stock < maxStock) {
@@ -538,11 +480,10 @@
             renderGrid();
         }
 
-        // ФУНКЦИЯ: Продажа товаров боссу (1 штука = 1 монета * уровень прокачки рабочего)
+        // ФУНКЦИЯ: Продажа товаров боссу
         function sellAllProducts() {
             if (stock === 0) return;
             
-            // Базовая цена игрушки умножается на уровень фабрики
             coins += stock * currentLevel; 
             stock = 0;
             
@@ -564,7 +505,7 @@
             }
         }
 
-        // ФУНКЦИЯ: Прокачка рабочего уровня
+        // ФУНКЦИЯ: Прокачка уровня рабочего
         function upgradeWorker(index) {
             let wp = workplaces[index];
             let nextLvl = wp.currentLevel + 1;
@@ -573,7 +514,6 @@
             if (coins >= price) {
                 coins -= price;
                 wp.currentLevel = nextLvl;
-                // При улучшении рабочего дарим 1 зеленый алмаз!
                 diamonds += 1; 
                 updateUI();
                 renderGrid();
@@ -582,35 +522,32 @@
             }
         }
 
-        // ФУНКЦИЯ: Проверка перехода на новую игрушку (новый уровень)
+        // ФУНКЦИЯ: Повышение уровня фабрики
         function checkLevelUp() {
             if (totalCrafted >= reqToLevelUp) {
                 totalCrafted = 0;
                 currentLevel++;
-                // Дарим 5 алмазов за новый уровень фабрики!
                 diamonds += 5; 
                 alert(`Поздравляем! Ваша фабрика вышла на новый уровень! Открыт новый товар: ${toyCollection[currentLevel] || "🎁"}`);
             }
         }
 
-        // ФУНКЦИЯ: Обновление текстовых полей интерфейса
+        // ФУНКЦИЯ: Обновление интерфейса
         function updateUI() {
             document.getElementById('coins-text').innerText = coins;
             document.getElementById('diamonds-text').innerText = diamonds;
             document.getElementById('current-toy-image').innerText = toyCollection[currentLevel] || "🍩";
             document.getElementById('level-num').innerText = currentLevel;
             
-            // Расчет шкалы уровня до 100 штук
             document.getElementById('level-progress-text').innerText = `${totalCrafted} / ${reqToLevelUp}`;
             let barPercent = (totalCrafted / reqToLevelUp) * 100;
             document.getElementById('level-bar').style.width = barPercent + '%';
         }
 
-        // Вызов встроенной рекламы Adsgram (по кнопке Телевизор)
+        // Вызов рекламы Adsgram
         function showAdsgramVideo() {
             if (AdController) {
                 AdController.show().then(() => {
-                    // Бонус за просмотр видео: 200 монет и 2 алмаза!
                     coins += 200;
                     diamonds += 2;
                     updateUI();
@@ -624,7 +561,6 @@
             }
         }
 
-        // Запуск первой отрисовки при загрузке страницы игры
         window.onload = function() {
             updateUI();
             renderGrid();
