@@ -9,13 +9,8 @@
     <!-- РАЗДЕЛ: ПОДКЛЮЧЕНИЕ РЕКЛАМЫ ADSGRAM       -->
     <!-- ========================================== -->
     <script src="https://adsgram.ai"></script>
-
-    <style>
-        /* Стили будут в Части 2 */
-    </style>
-</head>
-<body onclick="handleGlobalClick(event)">
-
+    
+</style>
     <!-- ========================================== -->
     <!-- РАЗДЕЛ: ВЕРХНЯЯ ПАНЕЛЬ (БАЛАНС И УРОВЕНЬ)  -->
     <!-- ========================================== -->
@@ -351,7 +346,9 @@
             color: white;
         }
 </style>
-    
+</head>
+<body>
+
     <script>
         // Инициализация Adsgram (строка 300, как мы настроили!)
         const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "42438" }) : null;
