@@ -1,75 +1,287 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Adsgram Clicker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>IIIIIIIII IIIIII (Make More Clone)</title>
+    <!-- Telegram Web Apps SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Adsgram SDK -->
     <script src="https://sad.adsgram.ai/js/adsgram-ad-controller.js"></script>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f4f6f9; color: #222; text-align: center; margin: 0; padding: 20px;
-            user-select: none; -webkit-user-select: none;
-        }
-        .container { max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .score-container { font-size: 28px; font-weight: bold; margin: 20px 0; color: #0088cc; }
-        .click-btn {
-            width: 160px; height: 160px; border-radius: 50%; border: none; background: linear-gradient(135deg, #0088cc, #00aacc);
-            color: white; font-size: 40px; cursor: pointer; box-shadow: 0 8px 20px rgba(0,136,204,0.3); transition: transform 0.1s;
-        }
-        .click-btn:active { transform: scale(0.95); }
-        .ad-btn {
-            margin-top: 25px; width: 100%; padding: 12px; background-color: #4caf50; color: white;
-            border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;
-        }
-        .ad-btn:disabled { background-color: #cccccc; cursor: not-allowed; }
-    </style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background-color: #555; color: #fff; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        
+        /* IIIIIII IIIIII IIIIIIII */
+        .top-bar { background-color: #333; padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #222; }
+        .stat { display: flex; align-items: center; gap: 8px; font-weight: bold; background: #222; padding: 4px 12px; border-radius: 6px; border: 1px solid #444; }
+        .stat-coin { color: #ffd700; }
+        
+        /* IIIIIII IIIIIII IIII */
+        .game-area { flex: 1; background: repeating-linear-gradient(#8b7355, #8b7355 20px, #7a6348 20px, #7a6348 40px); display: flex; flex-direction: column; justify-content: space-between; padding: 20px 0; position: relative; }
+        
+        /* IIII IIIII */
+        .boss-zone { display: flex; flex-direction: column; align-items: center; margin-top: 10px; }
+        .boss { width: 70px; height: 70px; background-color: #ff944d; border: 4px solid #222; border-radius: 12px; position: relative; transition: transform 0.05s; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; }
+        .boss.hitting { transform: scale(1.1) translateY(4px); background-color: #ff771c; }
+        .desk { width: 110px; height: 24px; background-color: #a0522d; border: 4px solid #222; margin-top: -4px; border-radius: 4px; }
+        
+        /* IIII IIIIIIII */
+        .worker-zone { display: flex; flex-direction: column; align-items: center; margin-bottom: 4px; }
+        .worker { width: 55px; height: 65px; background-color: #4da6ff; border: 4px solid #222; border-radius: 8px; position: relative; transition: transform 0.05s; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; font-size: 10px; font-weight: bold; padding-bottom: 4px; }
+        .worker.working { transform: scaleX(1.05) scaleY(0.95); }
+        .workbench { width: 130px; height: 35px; background-color: #888; border: 4px solid #222; margin-top: -4px; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        
+        /* IIIII IIIIII */
+        .progress-container { width: 80px; height: 10px; background: #444; border: 2px solid #222; border-radius: 4px; overflow: hidden; margin-top: 2px; }
+        .progress-bar { width: 0%; height: 100%; background: #00ff00; transition: width 0.05s linear; }
+        .product-spawner { font-size: 16px; position: absolute; top: -20px; transition: transform 0.3s ease-out, opacity 0.3s; opacity: 0; pointer-events: none; }
+        
+        /* IIIIIIIIII IIIII IIIIII (+X) */
+        .floating-text { position: absolute; color: #ffd700; font-weight: bold; font-size: 20px; text-shadow: 2px 2px #000; pointer-events: none; animation: floatUp 0.6s ease-out forwards; z-index: 10; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-50px); } }
+        /* IIIIII IIII IIIIIII */
+        .bottom-nav { background-color: #333; height: 65px; display: flex; border-top: 3px solid #222; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: #aaa; background: none; border: none; border-right: 1px solid #444; cursor: pointer; font-weight: bold; }
+        .nav-item.active { background-color: #0088cc; color: white; }
+        .nav-item:last-child { border-right: none; }
+        .nav-icon { font-size: 20px; margin-bottom: 2px; }
+        /* IIII IIIIIII (IIIIIII I IIIIIII) */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: #2b2b2b; border: 3px solid #444; border-radius: 12px; width: 100%; max-width: 400px; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .modal-header { font-size: 18px; font-weight: bold; text-align: center; border-bottom: 2px solid #444; padding-bottom: 8px; }
+        .upgrade-row { display: flex; justify-content: space-between; align-items: center; background: #3a3a3a; padding: 10px; border-radius: 8px; border: 1px solid #555; }
+        .btn { background: #0088cc; color: white; border: none; padding: 8px 14px; font-weight: bold; border-radius: 6px; cursor: pointer; border-bottom: 3px solid #006699; }
+        .btn:active { border-bottom: none; transform: translateY(3px); }
+        .btn-ad { background: #28a745; border-bottom: 3px solid #1e7e34; width: 100%; padding: 12px; font-size: 16px; margin-top: 10px; }
+ .close-btn { background: #dc3545; border-bottom: 3px solid #a71d2a; }
+ </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Adsgram Clicker</h2>
-        <div class="score-container">Balance: <span id="score">0</span> I</div>
-        <button class="click-btn" id="clickBtn">I</button>
-        <button class="ad-btn" id="adBtn">I Watch Ad (+500 I)</button>
-    </div>
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        let score = parseInt(localStorage.getItem('clicker_score')) || 0;
-        const scoreEl = document.getElementById('score');
-        const clickBtn = document.getElementById('clickBtn');
-        const adBtn = document.getElementById('adBtn');
-        scoreEl.innerText = score;
-        function updateScore(amount) {
- score += amount;
- scoreEl.innerText = score;
- localStorage.setItem('clicker_score', score);
+ <!-- ■■■■■■ ■■■■■■■■■ ■■■■■■ -->
+ <div class="top-bar">
+ <div class="stat"><span class="stat-coin">■</span> <span id="balance-display">0</span></div>
+ <div class="stat"><span style="color:#66ccff;">■</span> <span id="dps-display">0/■■■</span></div>
+ </div>
+ <!-- ■■■■■■ ■■■■ ■■■■■■■■■■■■ -->
+ <div class="game-area" id="click-zone">
+ <!-- ■■■■ ■■■■■■ ■ ■■■■■■ -->
+ <div class="boss-zone">
+ <div class="boss" id="boss-character">■■■■</div>
+ <div class="desk"></div>
+ </div>
+ <!-- ■■■■■■■ ■■■■■■■■ ■■■■■■■■ -->
+ <div class="worker-zone">
+ <div id="product-item" class="product-spawner">■</div>
+ <div class="worker" id="worker-character">■</div>
+ <div class="workbench">
+ <div class="progress-container">
+ <div class="progress-bar" id="craft-progress"></div>
+ </div>
+ </div>
+ </div>
+ </div>
+ <!-- ■■■■■■■ ■■■■■■■■■■ -->
+ <div class="bottom-nav">
+ <button class="nav-item active" onclick="switchTab('game')"><div class="nav-icon">■</div>■■■</button>
+ <button class="nav-item" onclick="openModal('shop')"><div class="nav-icon">■■</div>■■■■■■■■</button>
+ <button class="nav-item" onclick="openModal('ads')"><div class="nav-icon">■</div>■■■■■■</button>
+ </div>
+ <!-- ■■■■■■■ ■■■■■■■■ ■■■■■■■■■ -->
+ <div class="modal" id="modal-shop">
+ <div class="modal-content">
+ <div class="modal-header">■■■■■■■■■ ■■■■■■</div>
+ <div class="upgrade-row">
+ <div>
+ <div>■■ ■■■■ ■■■■■ (■■■ <span id="click-lvl">1</span>)</div>
+ <small>■■■■■: +<span id="click-power">1</span> ■■ ■■■</small>
+ </div>
+ <button class="btn" id="buy-click-btn" onclick="buyUpgrade('click')">■ <span id="click-cost">50</span></button>
+ </div>
+ <div class="upgrade-row">
+ <div>
+ <div>■ ■■■■■■■■■■■■■ (■■■ <span id="auto-lvl">0</span>)</div>
+ <small>■■■■■■■■■ ■■■■■: +<span id="auto-power">1</span>/■■■</small>
+ </div>
+ <button class="btn" id="buy-auto-btn" onclick="buyUpgrade('auto')">■ <span id="auto-cost">150</span></button>
+ </div>
+ <button class="btn close-btn" onclick="closeModals()">■■■■■■■</button>
+ </div>
+ </div>
+ <!-- ■■■■■■■ ■■■■■■■ (Adsgram) -->
+ <div class="modal" id="modal-ads">
+ <div class="modal-content">
+ <div class="modal-header">■■■■■■■■■■ ■■■■■■■■</div>
+ <p style="font-size: 13px; text-align: center; color: #ccc;">■■■■■■■■■■ ■■■■■■■■ ■■■■■ ■■■■■■■■■ ■ ■■■■■■■■ ■■■■■■■■■■ ■■■■■ ■■ ■■■■■■■■ ■■■■■■ ■■■■■■■■■■■■!</p>
+ <button class="btn btn-ad" id="ad-trigger-btn" onclick="showRewardAd()">■ ■■■■■■■■ +500 ■■■■■</button>
+ <button class="btn close-btn" onclick="closeModals()">■■■■■</button>
+ </div>
+ </div> <script>
+ // ■■■■■■■■■■■■■ Telegram WebApp API
+ const tg = window.Telegram?.WebApp;
+ if (tg) {
+ tg.ready();
+ tg.expand();
  }
- clickBtn.addEventListener('click', () => updateScore(1));
- // Adsgram Integration Block
- // Replace 'YOUR_BLOCK_ID' with your actual Adsgram Block ID from the dashboard
- const AdController = window.Adsgram.init({ blockId: "YOUR_BLOCK_ID" });
- adBtn.addEventListener('click', () => {
- adBtn.disabled = true;
- AdController.show()
- .then((result) => {
- // User successfully watched the video ad completely
- updateScore(500);
- tg.showAlert("Success! You received +500 coins.");
- })
- .catch((result) => {
- // Ad was skipped, blocked, or encountered an error
- if (result.error) {
- tg.showAlert("Ad error or filled completely. Try again later.");
- } else if (result.done === false) {
- tg.showAlert("You skipped the ad! No reward granted.");
+ // ■■■■■■■ ■■■■■■■■■ ■ ■■■■■■■■■■
+ let gameState = {
+ coins: parseInt(localStorage.getItem('f_coins')) || 0,
+ clickLvl: parseInt(localStorage.getItem('f_cLvl')) || 1,
+ autoLvl: parseInt(localStorage.getItem('f_aLvl')) || 0
+ };
+ const products = ['■', '■', '■■', '■', '■■', '■'];
+ let currentProgress = 0;
+ // ■■■■■■ ■■■■■■■■■■ ■■ ■■■■■■ ■■■■■■■
+ const getClickPower = () => gameState.clickLvl * 1;
+ const getAutoPower = () => gameState.autoLvl * 2;
+ const getClickCost = () => gameState.clickLvl * 50;
+ const getAutoCost = () => (gameState.autoLvl + 1) * 150;
+ const getTargetProgress = () => 100; // ■■■■■■■■■ ■■■■■ ■■■■■■ ■■■ ■■■■■■
+ function updateUI() {
+ document.getElementById('balance-display').innerText = gameState.coins;
+ document.getElementById('dps-display').innerText = getAutoPower() + '/■■■';
+ 
+ // ■■■■■■■■■■ ■■■■■■■■■■ ■■■■■■■■
+ document.getElementById('click-lvl').innerText = gameState.clickLvl;
+ document.getElementById('click-power').innerText = getClickPower();
+ document.getElementById('click-cost').innerText = getClickCost();
+ 
+ document.getElementById('auto-lvl').innerText = gameState.autoLvl;
+ document.getElementById('auto-power').innerText = gameState.autoLvl * 2 + 2;
+ document.getElementById('auto-cost').innerText = getAutoCost();
  }
- })
- .finally(() => {
- adBtn.disabled = false;
+ function saveGame() {
+ localStorage.setItem('f_coins', gameState.coins);
+ localStorage.setItem('f_cLvl', gameState.clickLvl);
+ localStorage.setItem('f_aLvl', gameState.autoLvl);
+ }
+ // ■■■■■■■■■ ■■■■■ ■■ ■■■■■■ (■■■■■■ ■■■■)
+ document.getElementById('click-zone').addEventListener('touchstart', (e) => {
+ e.preventDefault();
+ workEffects();
+ progressCraft(getClickPower(), e.touches[0].clientX, e.touches[0].clientY);
  });
+ 
+ document.getElementById('click-zone').addEventListener('mousedown', (e) => {
+ // ■■■■■■ ■■ ■■■■■■■■■■■■ ■■■■■ ■■ ■■■■■■■■
+ if ('ontouchstart' in window) return;
+ workEffects();
+ progressCraft(getClickPower(), e.clientX, e.clientY);
  });
+ function workEffects() {
+ const boss = document.getElementById('boss-character');
+ const worker = document.getElementById('worker-character');
+ 
+ boss.classList.add('hitting');
+ worker.classList.add('working');
+ 
+ setTimeout(() => boss.classList.remove('hitting'), 80);
+ setTimeout(() => worker.classList.remove('working'), 80);
+ } function progressCraft(amount, posX, posY) {
+ currentProgress += amount;
+ const target = getTargetProgress();
+ 
+ if (currentProgress >= target) {
+ currentProgress = 0;
+ // ■■■■■■ ■■■■■■■■■, ■■■■■■■■■ ■■■■■■■
+ const reward = gameState.clickLvl * 10;
+ gameState.coins += reward;
+ 
+ spawnRewardEffect(reward, posX || window.innerWidth/2, posY || window.innerHeight/2);
+ spawnProductAnimation();
+ updateUI();
+ saveGame();
+ }
+ 
+ document.getElementById('craft-progress').style.width = `${(currentProgress / target) * 100}%`;
+ }
+ function spawnRewardEffect(amount, x, y) {
+ const el = document.createElement('div');
+ el.className = 'floating-text';
+ el.innerText = `+${amount}`;
+ el.style.left = `${x - 15}px`;
+ el.style.top = `${y - 20}px`;
+ document.body.appendChild(el);
+ setTimeout(() => el.remove(), 600);
+ }
+ function spawnProductAnimation() {
+ const prod = document.getElementById('product-item');
+ prod.innerText = products[Math.floor(Math.random() * products.length)];
+ prod.style.opacity = '1';
+ prod.style.transform = 'translateY(-60px) scale(1.4)';
+ 
+ setTimeout(() => {
+ prod.style.opacity = '0';
+ prod.style.transform = 'translateY(0) scale(1)';
+ }, 300);
+ }
+ // ■■■■■■■ ■■■■■■■■■ ■ ■■■■■■■■
+ function buyUpgrade(type) {
+ if (type === 'click' && gameState.coins >= getClickCost()) {
+ gameState.coins -= getClickCost();
+ gameState.clickLvl++;
+ } else if (type === 'auto' && gameState.coins >= getAutoCost()) {
+ gameState.coins -= getAutoCost();
+ gameState.autoLvl++;
+ } else {
+ if(tg) tg.showAlert("■■■■■■■■■■■■ ■■■■■ ■■■ ■■■■■■■■■■■■ ■■■■■■■!");
+ return;
+ }
+ updateUI();
+ saveGame();
+ }
+ // ■■■■■■■■■■■■■■ ■■■■■■■■■ ■■■■■ (■■■■■■)
+ setInterval(() => {
+ const pps = getAutoPower();
+ if (pps > 0) {
+ progressCraft(pps / 10, null, null);
+ }
+ }, 100);
+ // ■■■■■■■■■■ ■■■■■■ ■■■■■■■
+ function openModal(id) {
+ closeModals();
+ document.getElementById(`modal-${id}`).style.display = 'flex';
+ } function closeModals() {
+ document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+ }
+ // ■■■■■■■■■■ ADSGRAM (■■■■■■■ ■■ ■■■■■■■■■■■■■■)
+ // ■■■■■■■■ ■■■■ "YOUR_BLOCK_ID" ■■ ■■■■■■■■ ■■■ ■■ ■■ adsgram.ai
+ const AdController = window.AdsgramAdController ? window.AdsgramAdController.create({ blockId: "YOUR_BLOCK_ID" }) : null;
+ function showRewardAd() {
+ const btn = document.getElementById('ad-trigger-btn');
+ if (!AdController) {
+ // ■■■■-■■■■■■■■■■ ■ ■■■■■■■■ ■■■■■ ■■■■■■■■■■ ■■■■■■■■ ■■■ SDK
+ gameState.coins += 500;
+ updateUI();
+ saveGame();
+ if(tg) tg.showPopup({ title: '■■■■■■■■ ■■■■■', message: '■■■■■■■■■ +500 ■■■■■ (Adsgram SDK ■■■■■■■■■■■)' });
+ return;
+ }
+ btn.disabled = true;
+ btn.innerText = "■■■■■■■■ ■■■■■■■■■■■■ ■■■■■...";
+ AdController.show().then((result) => {
+ // ■■■■■■■■ ■■■■■■■■ ■■ ■■■■■
+ gameState.coins += 500;
+ updateUI();
+ saveGame();
+ btn.disabled = false;
+ btn.innerText = "■ ■■■■■■■■ +500 ■■■■■";
+ if(tg) tg.showPopup({ title: '■■■■■!', message: '■■■■■■■■ ■■■■■■■■! ■■ ■■■ ■■■■ ■■■■■■■■■ 500 ■■■■■.' });
+ closeModals();
+ }).catch((err) => {
+ // ■■■■■■■■ ■■■■■■ ■■■ ■■■■■■■■■■ ■■■■■■■
+ btn.disabled = false;
+ btn.innerText = "■ ■■■■■■■■ +500 ■■■■■";
+ 
+ if (err.done === false) {
+ if(tg) tg.showAlert("■■ ■■■■■■■ ■■■■■ ■■■■■■ ■■■■■■■. ■■■■■■■ ■■ ■■■■■■■■■.");
+ } else {
+ if(tg) tg.showAlert("■■■■■■■■■ ■■■■■ ■■■■■■■■ ■■■■■■■■■■■. ■■■■■■■■■■ ■■■■■.");
+ }
+ });
+ }
+ // ■■■■■■■■■■■■■ ■■■ ■■■■■■ ■■■■■■■■
+ updateUI();
  </script>
 </body>
 </html>
