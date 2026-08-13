@@ -1,424 +1,75 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosmo Bio Clicker</title>
-    <!-- ПОДКЛЮЧАЕМ СДК TELEGRAM И ADSGRAM -->
-    <script src="https://telegram.org"></script>
-    <script src="https://adsgram.ai"></script>
+    <title>Telegram Adsgram Clicker</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://sad.adsgram.ai/js/adsgram-ad-controller.js"></script>
     <style>
-        /* Базовые настройки экрана приложения */
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            background: #030712;
-            color: #fff;
-            overflow: hidden;
-            height: 100vh;
-            user-select: none;
-            -webkit-user-select: none;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f6f9; color: #222; text-align: center; margin: 0; padding: 20px;
+            user-select: none; -webkit-user-select: none;
         }
-
-        /* 1. ЖИВОЙ КОСМИЧЕСКИЙ ФОН С ПЛАНЕТАМИ */
-        .space-bg {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, #1e1b4b 0%, #030712 100%);
-            z-index: -2;
+        .container { max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .score-container { font-size: 28px; font-weight: bold; margin: 20px 0; color: #0088cc; }
+        .click-btn {
+            width: 160px; height: 160px; border-radius: 50%; border: none; background: linear-gradient(135deg, #0088cc, #00aacc);
+            color: white; font-size: 40px; cursor: pointer; box-shadow: 0 8px 20px rgba(0,136,204,0.3); transition: transform 0.1s;
         }
-        .planet-1 {
-            position: absolute;
-            top: 20%; left: 70%;
-            width: 120px; height: 120px;
-            background: radial-gradient(circle at 30% 30%, #ec4899, #4c1d95);
-            border-radius: 50%;
-            box-shadow: 0 0 40px rgba(236, 72, 153, 0.2);
-            animation: floatPlanet 25s ease-in-out infinite alternate;
-            z-index: -1;
+        .click-btn:active { transform: scale(0.95); }
+        .ad-btn {
+            margin-top: 25px; width: 100%; padding: 12px; background-color: #4caf50; color: white;
+            border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;
         }
-        .planet-2 {
-            position: absolute;
-            top: 65%; left: 15%;
-            width: 70px; height: 70px;
-            background: radial-gradient(circle at 30% 30%, #06b6d4, #0f172a);
-            border-radius: 50%;
-            box-shadow: 0 0 30px rgba(6, 182, 212, 0.15);
-            animation: floatPlanet 18s ease-in-out infinite alternate-reverse;
-            z-index: -1;
-        }
-        @keyframes floatPlanet {
-            0% { transform: translateY(0) rotate(0deg); }
-            100% { transform: translateY(40px) rotate(360deg); }
-        }
-        /* 2. ИНТЕРФЕЙС И БАЛАНС В ЛЕВОМ ВЕРХНЕМ УГЛУ */
-        .hud-top-left {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            text-align: left;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            background: rgba(15, 23, 42, 0.6);
-            padding: 12px 16px;
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .stat-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 18px;
-            font-weight: 600;
-        }
-        .dna-icon-mini {
-            font-size: 20px;
-            animation: spin 3s linear infinite;
-            display: inline-block;
-        }
-        
-        /* ИКОНКА ЭНТРОПИИ ИЗ СКРИНШОТА (CSS-модель) */
-        .entropy-icon {
-            position: relative;
-            width: 18px;
-            height: 18px;
-            background: #f472b6;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #06b6d4;
-            display: inline-block;
-        }
-        .entropy-icon::before, .entropy-icon::after, .entropy-arrow-3 {
-            content: '';
-            position: absolute;
-            width: 0; height: 0;
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-        }
-        /* Стрелка вверх-вправо */
-        .entropy-icon::before {
-            border-bottom: 8px solid #06b6d4;
-            top: -10px; right: -6px;
-            transform: rotate(45deg);
-        }
-        /* Стрелка влево */
-        .entropy-icon::after {
-            border-bottom: 8px solid #06b6d4;
-            top: 4px; left: -11px;
-            transform: rotate(-90deg);
-        }
-        /* Стрелка вниз */
-        .entropy-arrow-3 {
-            border-bottom: 8px solid #06b6d4;
-            bottom: -11px; left: 4px;
-            transform: rotate(180deg);
-        }
-
-        /* 3. ЦЕНТРАЛЬНАЯ КНОПКА ДНК */
-        .main-click-area {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            cursor: pointer;
-            width: 200px;
-            height: 200px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .dna-container {
-            width: 120px;
-            height: 160px;
-            display: flex;
-            justify-content: space-between;
-            animation: rotateDNA 8s linear infinite;
-        }
-        .dna-strand {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 100%;
-        }
-        .dna-node {
-            width: 14px;
-            height: 14px;
-            background: #3b82f6;
-            border-radius: 50%;
-            box-shadow: 0 0 15px #3b82f6;
-        }
-        .dna-strand-2 .dna-node {
-            background: #a855f7;
-            box-shadow: 0 0 15px #a855f7;
-        }
-        @keyframes rotateDNA {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(360deg); }
-        }
-        .main-click-area:active {
-            transform: translate(-50%, -50%) scale(0.95);
-        }
-
-        /* 4. КВАДРАТНЫЕ КНОПКИ В УГЛАХ (Улучшения и Реклама) */
-        .bottom-btn {
-            position: absolute;
-            bottom: 30px;
-            width: 70px;
-            height: 70px;
-            border-radius: 18px;
-            border: 1px solid rgba(255,255,255,0.1);
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            transition: transform 0.1s, background 0.2s;
-            backdrop-filter: blur(10px);
-        }
-        .bottom-btn:active { transform: scale(0.9); }
-        
-        .upgrade-btn-box {
-            left: 30px;
-            background: rgba(30, 41, 59, 0.7);
-            color: #fff;
-            font-size: 24px;
-        }
-        
-        .ad-btn-box {
-            right: 30px;
-            background: rgba(16, 185, 129, 0.2);
-            border-color: rgba(16, 185, 129, 0.4);
-            color: #10b981;
-            font-size: 12px;
-            gap: 4px;
-            }
-        /* 5. МОДАЛЬНОЕ ОКНО УЛУЧШЕНИЙ */
-        .modal {
-            display: none;
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 85%;
-            max-width: 320px;
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 24px;
-            padding: 20px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            backdrop-filter: blur(20px);
-            z-index: 10;
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .close-btn {
-            cursor: pointer;
-            font-size: 20px;
-            color: #94a3b8;
-        }
-        .modal-row {
-            background: rgba(255,255,255,0.03);
-            padding: 12px;
-            border-radius: 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .buy-action-btn {
-            background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .ad-btn:disabled { background-color: #cccccc; cursor: not-allowed; }
     </style>
 </head>
 <body>
-
-    <!-- Космическое окружение -->
-    <div class="space-bg"></div>
-    <div class="planet-1"></div>
-    <div class="planet-2"></div>
-
-    <!-- Левый верхний угол: Балансы -->
-    <div class="hud-top-left">
-        <div class="stat-row">
-            <span class="dna-icon-mini">🧬</span>
-            <span id="dna-display">0</span>
-        </div>
-        <div class="stat-row">
-            <div class="entropy-icon"><div class="entropy-arrow-3"></div></div>
-            <span id="entropy-display">0</span>
-        </div>
+    <div class="container">
+        <h2>Adsgram Clicker</h2>
+        <div class="score-container">Balance: <span id="score">0</span> I</div>
+        <button class="click-btn" id="clickBtn">I</button>
+        <button class="ad-btn" id="adBtn">I Watch Ad (+500 I)</button>
     </div>
-
-    <!-- Центр: Кликабельное ДНК -->
-    <div class="main-click-area" onclick="clickDna()">
-        <div class="dna-container">
-            <div class="dna-strand">
-                <div class="dna-node"></div><div class="dna-node"></div><div class="dna-node"></div><div class="dna-node"></div>
-            </div>
-            <div class="dna-strand dna-strand-2">
-                <div class="dna-node"></div><div class="dna-node"></div><div class="dna-node"></div><div class="dna-node"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Левый нижний угол: Кнопка окна улучшений -->
-    <div class="bottom-btn upgrade-btn-box" onclick="toggleModal(true)">
-        ⚙️
-        <span style="font-size:10px; margin-top:2px;">АПГРЕЙД</span>
-    </div>
-
-    <!-- Правый нижний угол: Реклама Энтропии -->
-    <div class="bottom-btn ad-btn-box" onclick="showAdsgramVideo()">
-        <span>📺 +1</span>
-        <div class="entropy-icon" style="transform: scale(0.9);"><div class="entropy-arrow-3"></div></div>
-    </div>
-
-    <!-- Модальное окно улучшений -->
-    <div class="modal" id="upgrade-modal">
-        <div class="modal-header">
-            <span style="font-weight: bold; font-size: 16px;">🧬 Модификации</span>
-            <span class="close-btn" onclick="toggleModal(false)">✕</span>
-        </div>
-        <div class="modal-row">
-            <div style="text-align: left;">
-                <div style="font-size: 14px; font-weight: 600;">Синтез ДНК</div>
-                <div style="font-size: 11px; color: #94a3b8;">Автодоход: +<span id="pps-val">0</span>/сек</div>
-            </div>
-            <button class="buy-action-btn" onclick="buyUpgrade()">ЦЕНА: <span id="cost-val">50</span></button>
-        </div>
-    </div>
-
     <script>
-        // Инициализация Telegram WebApp и развертывание на весь экран
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.ready();
-            window.Telegram.WebApp.expand();
-        }
-
-        let dna = 0;
-        let entropy = 0;
-        let pps = 0;
-        let upgradeCost = 50;
-
-        // Инициализация рекламного контроллера Adsgram
-        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "YOUR_BLOCK_ID" }) : null;
-        const isTgCloud = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.CloudStorage;
-
-        // ФУНКЦИЯ ЗАГРУЗКИ ДАННЫХ ИЗ ОБЛАКА ИЛИ БРАУЗЕРА
-        function loadGame() {
-            if (isTgCloud) {
-                window.Telegram.WebApp.CloudStorage.getItems(['tg_dna', 'tg_entropy', 'tg_pps', 'tg_cost'], (err, values) => {
-                    if (!err) {
-                        dna = parseFloat(values.tg_dna) || 0;
-                        entropy = parseInt(values.tg_entropy) || 0;
-                        pps = parseInt(values.tg_pps) || 0;
-                        upgradeCost = parseInt(values.tg_cost) || 50;
-                        updateUI();
-                    }
-                });
-            } else {
-                dna = parseFloat(localStorage.getItem('cosmo_dna')) || 0;
-                entropy = parseInt(localStorage.getItem('cosmo_entropy')) || 0;
-                pps = parseInt(localStorage.getItem('cosmo_pps')) || 0;
-                upgradeCost = parseInt(localStorage.getItem('cosmo_cost')) || 50;
-                updateUI();
-            }
-        }
-
-        // ФУНКЦИЯ НАДЕЖНОГО СОХРАНЕНИЯ ПРОГРЕССА
-        function saveGame() {
-            if (isTgCloud) {
-                window.Telegram.WebApp.CloudStorage.setItem('tg_dna', dna.toString());
-                window.Telegram.WebApp.CloudStorage.setItem('tg_entropy', entropy.toString());
-                window.Telegram.WebApp.CloudStorage.setItem('tg_pps', pps.toString());
-                window.Telegram.WebApp.CloudStorage.setItem('tg_cost', upgradeCost.toString());
-            } else {
-                localStorage.setItem('cosmo_dna', dna);
-                localStorage.setItem('cosmo_entropy', entropy);
-                localStorage.setItem('cosmo_pps', pps);
-                localStorage.setItem('cosmo_cost', upgradeCost);
-            }
-        }
-
-        // ОБНОВЛЕНИЕ ИНТЕРФЕЙСА ЭКРАНА И МОДАЛЬНОГО ОКНА
-        function updateUI() {
-            document.getElementById('dna-display').innerText = Math.floor(dna);
-            document.getElementById('entropy-display').innerText = entropy;
-            document.getElementById('pps-val').innerText = pps;
-            document.getElementById('cost-val').innerText = upgradeCost;
-        }
-        // 1. НАЖАТИЕ НА ДНК (КЛИК)
-        function clickDna() {
-            // Сила клика растет вместе с количеством полученной Энтропии
-            dna += 1 + (entropy * 2); 
-            updateUI();
-            saveGame();
-        }
-
-        // 2. ОТКРЫТИЕ И ЗАКРЫТИЕ ОКНА МОДИФИКАЦИЙ
-        function toggleModal(show) {
-            document.getElementById('upgrade-modal').style.display = show ? 'block' : 'none';
-        }
-
-        // 3. ПОКУПКА АПГРЕЙДА В МОДАЛЬНОМ ОКНЕ
-        function buyUpgrade() {
-            if (dna >= upgradeCost) {
-                dna -= upgradeCost;
-                pps += 1; // Увеличиваем пассивный доход
-                upgradeCost = Math.floor(upgradeCost * 1.6); // Стоимость растет на 60%
-                updateUI();
-                saveGame();
-            } else {
-                alert("Недостаточно ДНК для модификации!");
-            }
-        }
-
-        // 4. ЗАПУСК ВИДЕОРЕКЛАМЫ ИЗ ПРАВОГО УГЛА И НАЧИСЛЕНИЕ ЭНТРОПИИ
-        function showAdsgramVideo() {
-            if (!AdController) {
-                // Если тест на ПК в обычном браузере, выдаем демо-награду
-                entropy += 1;
-                updateUI();
-                saveGame();
-                alert("Демо-награда: +1 Энтропия (Увеличивает силу клика ДНК)!");
-                return;
-            }
-
-            // Вызов реальной рекламы Adsgram в Telegram
-            AdController.show().then(() => {
-                entropy += 1; // Успешный просмотр — выдаем Энтропию
-                updateUI();
-                saveGame();
-            }).catch(() => {
-                alert("Досмотрите видео до конца для извлечения Энтропии!");
-            });
-        }
-
-        // БЕСКОНЕЧНЫЙ ЦИКЛ: Пассивное начисление ДНК каждую секунду
-        setInterval(() => {
-            dna += pps;
-            updateUI();
-        }, 1000);
-
-        // БЕСКОНЕЧНЫЙ ЦИКЛ: Автосохранение в облако раз в 4 секунды (чтобы беречь лимиты запросов)
-        setInterval(saveGame, 4000);
-
-        // СТАРТ ИГРЫ: Запускаем считывание прогресса при запуске страницы
-        loadGame();
-    </script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        let score = parseInt(localStorage.getItem('clicker_score')) || 0;
+        const scoreEl = document.getElementById('score');
+        const clickBtn = document.getElementById('clickBtn');
+        const adBtn = document.getElementById('adBtn');
+        scoreEl.innerText = score;
+        function updateScore(amount) {
+ score += amount;
+ scoreEl.innerText = score;
+ localStorage.setItem('clicker_score', score);
+ }
+ clickBtn.addEventListener('click', () => updateScore(1));
+ // Adsgram Integration Block
+ // Replace 'YOUR_BLOCK_ID' with your actual Adsgram Block ID from the dashboard
+ const AdController = window.Adsgram.init({ blockId: "YOUR_BLOCK_ID" });
+ adBtn.addEventListener('click', () => {
+ adBtn.disabled = true;
+ AdController.show()
+ .then((result) => {
+ // User successfully watched the video ad completely
+ updateScore(500);
+ tg.showAlert("Success! You received +500 coins.");
+ })
+ .catch((result) => {
+ // Ad was skipped, blocked, or encountered an error
+ if (result.error) {
+ tg.showAlert("Ad error or filled completely. Try again later.");
+ } else if (result.done === false) {
+ tg.showAlert("You skipped the ad! No reward granted.");
+ }
+ })
+ .finally(() => {
+ adBtn.disabled = false;
+ });
+ });
+ </script>
 </body>
 </html>
