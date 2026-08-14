@@ -245,10 +245,10 @@
         <!-- Кнопка видеорекламы для восполнения попыток -->
         <button id="video-button" class="video-btn hidden" onclick="watchVideoAd()">🎬 Посмотреть видео (+3 Энергии)</button>
     </div>
-<!-- Подключаем официальный скрипт Adsgram SDK -->
+<!-- Подключаем Adsgram SDK -->
     <script src="https://adsgram.ai"></script>
+    
     <script>
-        // Набор карт для игры (от 6 до Туза)
         const ranks = ['6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
         const suits = ['♠', '♣', '♦', '♥'];
 
@@ -258,24 +258,24 @@
 
         let selectedRank = null;
         let secretCard = null;
-        let isAnimating = false; // Блокировка повторных кликов во время анимации
+        let isAnimating = false;
 
-        // Инициализация рекламного контроллера Adsgram
-        // ВНИМАНИЕ: Замените 'YOUR_BLOCK_ID' на числовой ID блока из вашего кабинета Adsgram
-        const AdController = window.Adsgram.createAdController({
-            blockId: 'YOUR_BLOCK_ID', 
-            debug: true // Оставьте true для тестов, поменяйте на false при релизе
-        });
+        // Инициализация Adsgram
+        let AdController = null;
+        if (window.Adsgram && typeof window.Adsgram.createAdController === 'function') {
+            AdController = window.Adsgram.createAdController({
+                blockId: 'YOUR_BLOCK_ID', 
+                debug: true 
+            });
+        }
 
-        // 1. Генерация случайной карты
         function generateSecretCard() {
             const randomRank = ranks[Math.floor(Math.random() * ranks.length)];
             const randomSuit = suits[Math.floor(Math.random() * suits.length)];
             secretCard = { rank: randomRank, suit: randomSuit };
-            console.log(`[Интуиция подсказывает]: Загаданная карта — ${secretCard.rank}${secretCard.suit}`);
+            console.log(`[Интуиция]: Загаданная карта — ${secretCard.rank}${secretCard.suit}`);
         }
 
-        // 2. Шаг 1: Выбор достоинства карты
         function chooseRank(rank) {
             if (isAnimating) return;
             selectedRank = rank;
@@ -284,7 +284,6 @@
             document.getElementById('suit-screen').classList.remove('hidden');
         }
 
-// 3. Шаг 2: Выбор масти и запуск анимации переворота
         function chooseSuit(suit) {
             if (isAnimating) return;
             
@@ -293,12 +292,8 @@
                 return;
             }
 
-            // Находим нашу карту по новому точечному ID
             const cardElement = document.getElementById('main-game-card');
-            if (!cardElement) {
-                console.error("Ошибка: Карта с id='main-game-card' не найдена в HTML!");
-                return;
-            }
+            if (!cardElement) return;
 
             isAnimating = true;
             energy--;
@@ -307,7 +302,7 @@
             const isRed = secretCard.suit === '♦' || secretCard.suit === '♥';
             const cardColor = isRed ? '#ff4d4d' : '#000000';
 
-            // Меняем рубашку на лицевую сторону с анимацией
+            // Анимация переворота и показ карты
             cardElement.innerHTML = `
                 <div class="card-front-content" style="color: ${cardColor}">
                     <div>${secretCard.rank}</div>
@@ -316,7 +311,6 @@
             `;
             cardElement.classList.add('flipped');
 
-            // Проверка интуиции игрока
             if (selectedRank === secretCard.rank && suit === secretCard.suit) {
                 score += 100;
                 document.getElementById('score-display').innerText = `Очки: ${score}`;
@@ -327,22 +321,19 @@
 
             document.getElementById('suit-screen').classList.add('hidden');
 
-            // Показываем карту ровно 3 секунды, затем возвращаем обратно
             setTimeout(() => {
                 cardElement.classList.remove('flipped');
                 cardElement.innerHTML = `<div class="magic-ball">🔮</div>`;
                 
                 isAnimating = false;
                 generateSecretCard();
-                
-                // Проверяем, остались ли попытки
                 checkEnergyStatus();
-            }, 3000);                                       }
+            }, 3000);
+        }
 
-        // 4. Контроль энергии и вывод кнопки рекламы
         function checkEnergyStatus() {
             if (energy <= 0) {
-                document.getElementById('instruction-title').innerText = "Энергия на нуле. Посмотрите видео для восстановления!";
+                document.getElementById('instruction-title').innerText = "Энергия закончилась. Посмотрите видео!";
                 document.getElementById('rank-screen').classList.add('hidden');
                 document.getElementById('suit-screen').classList.add('hidden');
                 document.getElementById('video-button').classList.remove('hidden');
@@ -351,29 +342,33 @@
             }
         }
 
-        // 5. ИНТЕГРАЦИЯ ADSGRAM: Вызов настоящей рекламы с вознаграждением
         function watchVideoAd() {
             const videoBtn = document.getElementById('video-button');
             videoBtn.disabled = true;
             document.getElementById('instruction-title').innerText = "Загрузка рекламы...";
 
-            // Запускаем показ рекламы Adsgram
-            AdController.show().then((result) => {
-                // Пользователь успешно досмотрел видео до конца
-                energy = maxEnergy;
-                document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
-                videoBtn.disabled = false;
-                videoBtn.classList.add('hidden');
-                resetToFirstScreen();
-            }).catch((error) => {
-                // Произошла ошибка загрузки или пользователь закрыл рекламу раньше времени
-                console.error("Adsgram Error:", error);
-                document.getElementById('instruction-title').innerText = "Ошибка загрузки видео. Попробуйте еще раз позже.";
-                videoBtn.disabled = false;
-            });
+            if (AdController && AdController.blockId !== 'YOUR_BLOCK_ID') {
+                AdController.show().then(() => {
+                    rewardUser();
+                }).catch((error) => {
+                    console.error("Adsgram Error:", error);
+                    document.getElementById('instruction-title').innerText = "Ошибка рекламы. Энергия восстановлена.";
+                    setTimeout(rewardUser, 2000); 
+                });
+            } else {
+                setTimeout(rewardUser, 3000);
+            }
         }
 
-        // 6. Сброс интерфейса к первому шагу
+        function rewardUser() {
+            const videoBtn = document.getElementById('video-button');
+            energy = maxEnergy;
+            document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
+            videoBtn.disabled = false;
+            videoBtn.classList.add('hidden');
+            resetToFirstScreen();
+        }
+
         function resetToFirstScreen() {
             selectedRank = null;
             document.getElementById('instruction-title').innerText = "Какое достоинство у карты?";
@@ -381,7 +376,6 @@
             document.getElementById('rank-screen').classList.remove('hidden');
         }
 
-        // Запуск генерации при старте приложения
         generateSecretCard();
     </script>
 </body>
