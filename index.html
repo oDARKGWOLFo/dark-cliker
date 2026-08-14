@@ -210,7 +210,7 @@
     <!-- Игровой стол -->
     <div class="game-zone">
         <!-- Интерактивная карта с узором рубашки -->
-        <div class="card-shirt">
+<div class="card-shirt" id="main-game-card">
             <div class="magic-ball">🔮</div>
         </div>
         
@@ -284,7 +284,7 @@
             document.getElementById('suit-screen').classList.remove('hidden');
         }
 
-        // 3. Шаг 2: Выбор масти и запуск анимации переворота
+// 3. Шаг 2: Выбор масти и запуск анимации переворота
         function chooseSuit(suit) {
             if (isAnimating) return;
             
@@ -293,11 +293,17 @@
                 return;
             }
 
+            // Находим нашу карту по новому точечному ID
+            const cardElement = document.getElementById('main-game-card');
+            if (!cardElement) {
+                console.error("Ошибка: Карта с id='main-game-card' не найдена в HTML!");
+                return;
+            }
+
             isAnimating = true;
             energy--;
             document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
 
-            const cardElement = document.querySelector('.card-shirt');
             const isRed = secretCard.suit === '♦' || secretCard.suit === '♥';
             const cardColor = isRed ? '#ff4d4d' : '#000000';
 
@@ -331,8 +337,7 @@
                 
                 // Проверяем, остались ли попытки
                 checkEnergyStatus();
-            }, 3000);
-        }
+            }, 3000);                                       }
 
         // 4. Контроль энергии и вывод кнопки рекламы
         function checkEnergyStatus() {
