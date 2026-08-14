@@ -245,7 +245,10 @@
         <!-- Кнопка видеорекламы для восполнения попыток -->
         <button id="video-button" class="video-btn hidden" onclick="watchVideoAd()">🎬 Посмотреть видео (+3 Энергии)</button>
     </div>
-<script>
+<!-- Подключаем официальный скрипт Adsgram SDK -->
+    <script src="https://adsgram.ai"></script>
+    
+    <script>
         // Набор карт для игры (от 6 до Туза)
         const ranks = ['6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
         const suits = ['♠', '♣', '♦', '♥'];
@@ -258,12 +261,18 @@
         let secretCard = null;
         let isAnimating = false; // Блокировка повторных кликов во время анимации
 
+        // Инициализация рекламного контроллера Adsgram
+        // ВНИМАНИЕ: Замените 'YOUR_BLOCK_ID' на числовой ID блока из вашего кабинета Adsgram
+        const AdController = window.Adsgram.createAdController({
+            blockId: 'YOUR_BLOCK_ID', 
+            debug: true // Оставьте true для тестов, поменяйте на false при релизе
+        });
+
         // 1. Генерация случайной карты
         function generateSecretCard() {
             const randomRank = ranks[Math.floor(Math.random() * ranks.length)];
             const randomSuit = suits[Math.floor(Math.random() * suits.length)];
             secretCard = { rank: randomRank, suit: randomSuit };
-            // Подсказка в консоли для удобного тестирования
             console.log(`[Интуиция подсказывает]: Загаданная карта — ${secretCard.rank}${secretCard.suit}`);
         }
 
@@ -313,7 +322,7 @@
 
             document.getElementById('suit-screen').classList.add('hidden');
 
-            // Показываем карту ровно 3 секунды, затем плавно закрываем её обратно
+            // Показываем карту ровно 3 секунды, затем возвращаем обратно
             setTimeout(() => {
                 cardElement.classList.remove('flipped');
                 cardElement.innerHTML = `<div class="magic-ball">🔮</div>`;
@@ -338,19 +347,26 @@
             }
         }
 
-        // 5. Имитация просмотра рекламного видеоролика
+        // 5. ИНТЕГРАЦИЯ ADSGRAM: Вызов настоящей рекламы с вознаграждением
         function watchVideoAd() {
             const videoBtn = document.getElementById('video-button');
             videoBtn.disabled = true;
-            document.getElementById('instruction-title').innerText = "Загрузка видео... Подождите 3 сек.";
+            document.getElementById('instruction-title').innerText = "Загрузка рекламы...";
 
-            setTimeout(() => {
+            // Запускаем показ рекламы Adsgram
+            AdController.show().then((result) => {
+                // Пользователь успешно досмотрел видео до конца
                 energy = maxEnergy;
                 document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
                 videoBtn.disabled = false;
                 videoBtn.classList.add('hidden');
                 resetToFirstScreen();
-            }, 3000);
+            }).catch((error) => {
+                // Произошла ошибка загрузки или пользователь закрыл рекламу раньше времени
+                console.error("Adsgram Error:", error);
+                document.getElementById('instruction-title').innerText = "Ошибка загрузки видео. Попробуйте еще раз позже.";
+                videoBtn.disabled = false;
+            });
         }
 
         // 6. Сброс интерфейса к первому шагу
@@ -365,4 +381,4 @@
         generateSecretCard();
     </script>
 </body>
-</html>    
+</html>
