@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Master of Intuition</title>
     <style>
-        /* Базовые настройки под стиль Telegram Mini App */
+        /* Премиальный ультра-черный фон с золотыми элементами */
         body {
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #145c32; /* Темно-зеленый суконный фон из скриншота */
+            background-color: #000000; /* Глубокий черный фон */
             color: #ffffff;
             display: flex;
             flex-direction: column;
@@ -20,33 +20,38 @@
             user-select: none;
         }
 
-        /* Верхняя панель состояния (Очки и Энергия) */
+        /* Верхняя панель состояния с золотой неоновой рамкой */
         .header-panel {
             display: flex;
             justify-content: space-between;
             width: 90%;
             max-width: 400px;
-            background-color: #0b361d;
-            padding: 12px 20px;
-            border-radius: 15px;
+            background-color: #0d0d0d;
+            padding: 14px 20px;
+            border-radius: 16px;
+            border: 2px solid #ffd700; /* Золотая рамка */
             margin-top: 20px;
             box-sizing: border-box;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.25);
         }
 
         .score-text {
-            color: #ffd700; /* Золотой цвет для очков */
+            color: #ffd700; /* Премиальный золотой цвет текста */
             font-weight: bold;
             font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .energy-text {
-            color: #00e5ff; /* Бирюзовый цвет для энергии */
+            color: #ffd700; 
             font-weight: bold;
             font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        /* Центральная игровая зона */
+        /* Главная интерактивная игровая зона */
         .game-zone {
             flex: 1;
             display: flex;
@@ -55,42 +60,64 @@
             align-items: center;
             width: 100%;
         }
-
-        /* Закругленная рубашка карты по центру */
+        /* Файл CSS Графическая рубашка карты в золотом оформлении с узором */
         .card-shirt {
             width: 160px;
             height: 240px;
-            background-color: #196f3d;
-            border: 3px solid #ffffff;
+            background-color: #111111;
+            border: 3px solid #ffd700; /* Золотая рамка карты */
             border-radius: 16px;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.3);
             margin-bottom: 25px;
             position: relative;
-            background-image: radial-gradient(#1e8449 15%, transparent 16%),
-                              radial-gradient(#1e8449 15%, transparent 16%);
-            background-size: 12px 12px;
-            background-position: 0 0, 6px 6px;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s;
+            
+            /* Сложный золотой графический узор рубашки */
+            background-image: 
+                radial-gradient(circle at 50% 50%, transparent 10%, rgba(255,215,0,0.05) 11%, transparent 12%),
+                linear-gradient(45deg, transparent 48%, #ffd700 49%, #ffd700 51%, transparent 52%),
+                linear-gradient(-45deg, transparent 48%, #ffd700 49%, #ffd700 51%, transparent 52%);
+            background-size: 20px 20px, 20px 20px, 20px 20px;
+            background-position: 0 0, 0 0, 0 0;
         }
 
-        /* Магический шар из вашего примера */
+        /* Эффект перевернутой карты (лицевая сторона) */
+        .card-shirt.flipped {
+            background-color: #ffffff !important;
+            background-image: none !important;
+            transform: rotateY(180deg);
+        }
+
+        /* Контент внутри открытой карты */
+        .card-front-content {
+            font-size: 44px;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transform: rotateY(180deg); /* Компенсация зеркальности при перевороте */
+        }
+
         .magic-ball {
             font-size: 45px;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
         }
 
-        /* Интерактивный текст вопроса */
+        /* Текст вопроса/подсказки */
         .question-text {
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 20px;
             text-align: center;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            color: #ffd700;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
         }
 
-        /* Общие контейнеры для блоков кнопок */
         .screen-container {
             width: 90%;
             max-width: 400px;
@@ -100,7 +127,7 @@
             margin-bottom: 30px;
         }
 
-        /* Удобная сетка 3х3 для выбора достоинства карты */
+        /* Сетки для кнопок выбора */
         .grid-ranks {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -108,7 +135,6 @@
             width: 100%;
         }
 
-        /* Сетка 2х2 для выбора масти */
         .grid-suits {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -116,43 +142,58 @@
             width: 100%;
         }
 
-        /* Единый стиль игровых кнопок */
+        /* Стиль кнопок меню */
         button {
-            background-color: #212f3d;
-            color: white;
-            border: none;
+            background-color: #0a0a0a;
+            color: #ffd700;
+            border: 2px solid #ffd700;
             padding: 15px 10px;
             font-size: 18px;
             font-weight: bold;
             border-radius: 12px;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.6);
             transition: background-color 0.1s, transform 0.1s;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Эффект нажатия кнопок для мобильных экранов */
         button:active {
             transform: scale(0.95);
-            background-color: #2c3e50;
+            background-color: #1a1a1a;
         }
 
-        /* Цветовое разделение кнопок мастей */
+        /* Текст и границы для кнопок мастей */
         .suit-btn[data-color="red"] {
-            background-color: #b03a2e; /* Красный цвет для Буби/Черви */
+            color: #ff4d4d;
+            border-color: #ff4d4d;
         }
-        .suit-btn[data-color="red"]:active {
-            background-color: #cb4335;
-        }
-
         .suit-btn[data-color="black"] {
-            background-color: #2c3e50; /* Темный цвет для Пики/Крести */
-        }
-        .suit-btn[data-color="black"]:active {
-            background-color: #34495e;
+            color: #ffffff;
+            border-color: #ffffff;
         }
 
-        /* Вспомогательный класс для плавного переключения экранов */
+        /* Премиальная пульсирующая кнопка видео */
+        .video-btn {
+            width: 90%;
+            max-width: 400px;
+            background: linear-gradient(135deg, #ffd700, #b8860b);
+            color: #000000;
+            border: none;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 14px;
+            margin-bottom: 35px;
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+            animation: pulseAd 1.5s infinite;
+        }
+
+        @keyframes pulseAd {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
         .hidden {
             display: none !important;
         }
@@ -168,10 +209,12 @@
 
     <!-- Игровой стол -->
     <div class="game-zone">
+        <!-- Интерактивная карта с узором рубашки -->
         <div class="card-shirt">
             <div class="magic-ball">🔮</div>
         </div>
         
+        <!-- Интерактивный заголовок-инструкция -->
         <div class="question-text" id="instruction-title">Какое достоинство у карты?</div>
 
         <!-- ШАГ 1: Меню выбора достоинства (6-Туз) -->
@@ -182,10 +225,10 @@
                 <button onclick="chooseRank('8')">8</button>
                 <button onclick="chooseRank('9')">9</button>
                 <button onclick="chooseRank('10')">10</button>
-                <button onclick="chooseRank('J')">Валет (J)</button>
-                <button onclick="chooseRank('Q')">Дама (Q)</button>
-                <button onclick="chooseRank('K')">Король (K)</button>
-                <button onclick="chooseRank('A')">Туз (A)</button>
+                <button onclick="chooseRank('J')">J</button>
+                <button onclick="chooseRank('Q')">Q</button>
+                <button onclick="chooseRank('K')">K</button>
+                <button onclick="chooseRank('A')">A</button>
             </div>
         </div>
 
@@ -198,11 +241,12 @@
                 <button class="suit-btn" data-color="red" onclick="chooseSuit('♥')">Черви ♥</button>
             </div>
         </div>
-    </div>
 
-    <!-- Сюда во второй части мы вставим тег <script> с логикой -->
+        <!-- Кнопка видеорекламы для восполнения попыток -->
+        <button id="video-button" class="video-btn hidden" onclick="watchVideoAd()">🎬 Посмотреть видео (+3 Энергии)</button>
+    </div>
 <script>
-        // Переменные для хранения карт, очков и лимитов
+        // Набор карт для игры (от 6 до Туза)
         const ranks = ['6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
         const suits = ['♠', '♣', '♦', '♥'];
 
@@ -210,61 +254,106 @@
         let energy = 3;
         const maxEnergy = 3;
 
-        let selectedRank = null; // Переменная для записи выбранного номинала
-        let secretCard = null;   // Переменная для хранения загаданной карты
+        let selectedRank = null;
+        let secretCard = null;
+        let isAnimating = false; // Блокировка повторных кликов во время анимации
 
-        // 1. Функция создания новой случайной карты
+        // 1. Генерация случайной карты
         function generateSecretCard() {
             const randomRank = ranks[Math.floor(Math.random() * ranks.length)];
             const randomSuit = suits[Math.floor(Math.random() * suits.length)];
             secretCard = { rank: randomRank, suit: randomSuit };
-            
-            // Подсказка в консоли браузера (F12) для проверки работы
-            console.log(`[Интуиция]: Загаданная карта — ${secretCard.rank}${secretCard.suit}`);
+            // Подсказка в консоли для удобного тестирования
+            console.log(`[Интуиция подсказывает]: Загаданная карта — ${secretCard.rank}${secretCard.suit}`);
         }
 
-        // 2. Шаг первый: Обработка клика на номинал карты (6-Туз)
+        // 2. Шаг 1: Выбор достоинства карты
         function chooseRank(rank) {
+            if (isAnimating) return;
             selectedRank = rank;
-            
-            // Меняем текст вопроса на экране
             document.getElementById('instruction-title').innerText = `Выбрано: ${rank}. Какая масть?`;
-            
-            // Прячем экран выбора номиналов и показываем выбор мастей
             document.getElementById('rank-screen').classList.add('hidden');
             document.getElementById('suit-screen').classList.remove('hidden');
         }
 
-        // 3. Шаг второй: Обработка клика на масть и финальная проверка
+        // 3. Шаг 2: Выбор масти и запуск анимации переворота
         function chooseSuit(suit) {
-            // Проверка на наличие доступной энергии
+            if (isAnimating) return;
+            
             if (energy <= 0) {
-                alert("Энергия на нуле! Перезагрузите страницу или подождите.");
-                resetToFirstScreen();
+                checkEnergyStatus();
                 return;
             }
 
-            // Уменьшаем запас энергии на 1 единицу
+            isAnimating = true;
             energy--;
             document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
 
-            // Сверяем выбор пользователя с загаданной картой
+            const cardElement = document.querySelector('.card-shirt');
+            const isRed = secretCard.suit === '♦' || secretCard.suit === '♥';
+            const cardColor = isRed ? '#ff4d4d' : '#000000';
+
+            // Меняем рубашку на лицевую сторону с анимацией
+            cardElement.innerHTML = `
+                <div class="card-front-content" style="color: ${cardColor}">
+                    <div>${secretCard.rank}</div>
+                    <div style="font-size: 55px; margin-top: -5px;">${secretCard.suit}</div>
+                </div>
+            `;
+            cardElement.classList.add('flipped');
+
+            // Проверка интуиции игрока
             if (selectedRank === secretCard.rank && suit === secretCard.suit) {
-                // Игрок угадал и номинал, и масть (шанс 1 из 36!)
-                score += 100; 
+                score += 100;
                 document.getElementById('score-display').innerText = `Очки: ${score}`;
-                alert(`🔮 Феноменально! Интуиция вас не подвела. Это была карта: ${secretCard.rank}${secretCard.suit}. Получено +100 очков!`);
+                document.getElementById('instruction-title').innerText = "🎉 Блестяще! Вы угадали карту!";
             } else {
-                // Игрок не угадал
-                alert(`Мимо. Загаданная карта была: ${secretCard.rank}${secretCard.suit}. Попробуйте развить интуицию еще раз!`);
+                document.getElementById('instruction-title').innerText = "Мимо! Развивайте шестое чувство";
             }
 
-            // Запускаем новый раунд игры
-            generateSecretCard();
-            resetToFirstScreen();
+            document.getElementById('suit-screen').classList.add('hidden');
+
+            // Показываем карту ровно 3 секунды, затем плавно закрываем её обратно
+            setTimeout(() => {
+                cardElement.classList.remove('flipped');
+                cardElement.innerHTML = `<div class="magic-ball">🔮</div>`;
+                
+                isAnimating = false;
+                generateSecretCard();
+                
+                // Проверяем, остались ли попытки
+                checkEnergyStatus();
+            }, 3000);
         }
 
-        // 4. Функция возврата к первому экрану выбора достоинства
+        // 4. Контроль энергии и вывод кнопки рекламы
+        function checkEnergyStatus() {
+            if (energy <= 0) {
+                document.getElementById('instruction-title').innerText = "Энергия на нуле. Посмотрите видео для восстановления!";
+                document.getElementById('rank-screen').classList.add('hidden');
+                document.getElementById('suit-screen').classList.add('hidden');
+                document.getElementById('video-button').classList.remove('hidden');
+            } else {
+                resetToFirstScreen();
+            }
+        }
+
+        // 5. Имитация просмотра рекламного видеоролика
+        function watchVideoAd() {
+            const videoBtn = document.getElementById('video-button');
+            videoBtn.disabled = true;
+            document.getElementById('instruction-title').innerText = "Загрузка видео... Подождите 3 сек.";
+
+            setTimeout(() => {
+                energy = maxEnergy;
+                document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
+                videoBtn.disabled = false;
+                videoBtn.classList.add('hidden');
+                resetToFirstScreen();
+            }, 3000);
+        }
+
+        // 6. Сброс интерфейса к первому шагу
         function resetToFirstScreen() {
             selectedRank = null;
             document.getElementById('instruction-title').innerText = "Какое достоинство у карты?";
@@ -272,9 +361,8 @@
             document.getElementById('rank-screen').classList.remove('hidden');
         }
 
-        // Автоматический запуск генерации карты при первом открытии
+        // Запуск генерации при старте приложения
         generateSecretCard();
-</script>
-    
-</body>    
-</html>
+    </script>
+</body>
+</html>    
