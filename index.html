@@ -319,10 +319,7 @@
                 score += 100;
                 document.getElementById('score-display').innerText = "Очки: " + score;
                 document.getElementById('instruction-title').innerText = "🎉 Блестяще! Вы угадали карту!";
-                if (
-  window.Telegram && 
-  window.Telegram.WebApp.CloudStorage
-) {
+if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
   window.Telegram.WebApp
     .CloudStorage.setItem(
       'player_score', 
