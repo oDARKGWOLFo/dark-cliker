@@ -2,231 +2,279 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
-    <title>Интуиция: Угадай Карту</title>
-    <!-- Подключаем Telegram и Adsgram -->
-    <script src="https://telegram.org"></script>
-    <script src="https://adsgram.ai those-integration-v1.js" async></script>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Master of Intuition</title>
     <style>
-        :root {
-            --poker-green: #145c32;
-            --panel-bg: #0f4022;
-            --text-color: #ffffff;
-            --neon-gold: #ffd700;
-        }
+        /* Базовые настройки под стиль Telegram Mini App */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--poker-green);
-            color: var(--text-color);
-            margin: 0; padding: 16px;
-            display: flex; flex-direction: column; align-items: center;
-            min-height: 95vh; box-sizing: border-box;
-            user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #145c32; /* Темно-зеленый суконный фон из скриншота */
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
         }
-        .header {
-            display: flex; justify-content: space-around; width: 100%; max-width: 340px;
-            background: var(--panel-bg); padding: 12px; border-radius: 14px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-weight: bold;
-        }
-        .energy-text { color: #00f2fe; }
-        .score-text { color: var(--neon-gold); }
 
-        /* Анимация карты */
-        .card-container {
-            width: 160px; height: 240px; perspective: 1000px; margin: 40px 0;
+        /* Верхняя панель состояния (Очки и Энергия) */
+        .header-panel {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 400px;
+            background-color: #0b361d;
+            padding: 12px 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        .card {
-            width: 100%; height: 100%; position: relative;
-            transform-style: preserve-3d; transition: transform 0.6s ease; cursor: pointer;
-        }
-        .card.flipped { transform: rotateY(180deg); }
-        .card-face {
-            position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
-            border-radius: 12px; border: 3px solid #ffffff; display: flex;
-            flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4); box-sizing: border-box;
-        }
-        .card-back {
-            background: linear-gradient(135deg, #7f00ff 0%, #e100ff 100%);
-            background-image: radial-gradient(rgba(255,255,255,0.15) 10%, transparent 11%);
-            background-size: 15px 15px;
-        }
-        .card-back::after { content: "🔮"; font-size: 40px; }
-        .card-front {
-            background: #ffffff; transform: rotateY(180deg); color: #000000;
-        }
-        .card-value { font-size: 32px; font-weight: bold; position: absolute; top: 10px; left: 14px; }
-        .card-suit-big { font-size: 72px; }
-        
-        .red { color: #d63031; }
-        .black { color: #2d3436; }
 
-        .status-msg { font-size: 18px; font-weight: bold; height: 24px; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-
-        /* Кнопки выбора */
-        .controls { display: flex; gap: 16px; width: 100%; max-width: 340px; margin-bottom: 16px; }
-        .btn-choice {
-            flex: 1; padding: 16px; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        .score-text {
+            color: #ffd700; /* Золотой цвет для очков */
+            font-weight: bold;
+            font-size: 16px;
         }
-        .btn-red { background-color: #d63031; }
-        .btn-black { background-color: #2d3436; }
-        
-        .btn-ad {
-            width: 100%; max-width: 340px; padding: 16px; border: none; border-radius: 12px;
-            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-            color: white; font-size: 15px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3); display: none;
+
+        .energy-text {
+            color: #00e5ff; /* Бирюзовый цвет для энергии */
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* Центральная игровая зона */
+        .game-zone {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* Закругленная рубашка карты по центру */
+        .card-shirt {
+            width: 160px;
+            height: 240px;
+            background-color: #196f3d;
+            border: 3px solid #ffffff;
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            margin-bottom: 25px;
+            position: relative;
+            background-image: radial-gradient(#1e8449 15%, transparent 16%),
+                              radial-gradient(#1e8449 15%, transparent 16%);
+            background-size: 12px 12px;
+            background-position: 0 0, 6px 6px;
+        }
+
+        /* Магический шар из вашего примера */
+        .magic-ball {
+            font-size: 45px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+        }
+
+        /* Интерактивный текст вопроса */
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* Общие контейнеры для блоков кнопок */
+        .screen-container {
+            width: 90%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        /* Удобная сетка 3х3 для выбора достоинства карты */
+        .grid-ranks {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            width: 100%;
+        }
+
+        /* Сетка 2х2 для выбора масти */
+        .grid-suits {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            width: 100%;
+        }
+
+        /* Единый стиль игровых кнопок */
+        button {
+            background-color: #212f3d;
+            color: white;
+            border: none;
+            padding: 15px 10px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: background-color 0.1s, transform 0.1s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Эффект нажатия кнопок для мобильных экранов */
+        button:active {
+            transform: scale(0.95);
+            background-color: #2c3e50;
+        }
+
+        /* Цветовое разделение кнопок мастей */
+        .suit-btn[data-color="red"] {
+            background-color: #b03a2e; /* Красный цвет для Буби/Черви */
+        }
+        .suit-btn[data-color="red"]:active {
+            background-color: #cb4335;
+        }
+
+        .suit-btn[data-color="black"] {
+            background-color: #2c3e50; /* Темный цвет для Пики/Крести */
+        }
+        .suit-btn[data-color="black"]:active {
+            background-color: #34495e;
+        }
+
+        /* Вспомогательный класс для плавного переключения экранов */
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="score-text">Очки: <span id="score-val">0</span></div>
-        <div class="energy-text">Энергия: <span id="energy-val">3</span>/3</div>
+    <!-- Шапка с игровыми данными -->
+    <div class="header-panel">
+        <div class="score-text" id="score-display">Очки: 0</div>
+        <div class="energy-text" id="energy-display">Энергия: 3/3</div>
     </div>
 
-    <div class="card-container">
-        <div class="card" id="game-card">
-            <div class="card-face card-back"></div>
-            <div class="card-face card-front" id="card-front-content">
-                <!-- Сюда сгенерируется карта -->
+    <!-- Игровой стол -->
+    <div class="game-zone">
+        <div class="card-shirt">
+            <div class="magic-ball">🔮</div>
+        </div>
+        
+        <div class="question-text" id="instruction-title">Какое достоинство у карты?</div>
+
+        <!-- ШАГ 1: Меню выбора достоинства (6-Туз) -->
+        <div id="rank-screen" class="screen-container">
+            <div class="grid-ranks">
+                <button onclick="chooseRank('6')">6</button>
+                <button onclick="chooseRank('7')">7</button>
+                <button onclick="chooseRank('8')">8</button>
+                <button onclick="chooseRank('9')">9</button>
+                <button onclick="chooseRank('10')">10</button>
+                <button onclick="chooseRank('J')">Валет (J)</button>
+                <button onclick="chooseRank('Q')">Дама (Q)</button>
+                <button onclick="chooseRank('K')">Король (K)</button>
+                <button onclick="chooseRank('A')">Туз (A)</button>
+            </div>
+        </div>
+
+        <!-- ШАГ 2: Меню выбора масти (изначально скрыто) -->
+        <div id="suit-screen" class="screen-container hidden">
+            <div class="grid-suits">
+                <button class="suit-btn" data-color="black" onclick="chooseSuit('♠')">Пики ♠</button>
+                <button class="suit-btn" data-color="black" onclick="chooseSuit('♣')">Крести ♣</button>
+                <button class="suit-btn" data-color="red" onclick="chooseSuit('♦')">Буби ♦</button>
+                <button class="suit-btn" data-color="red" onclick="chooseSuit('♥')">Черви ♥</button>
             </div>
         </div>
     </div>
 
-    <div class="status-msg" id="status-text">Какого цвета карта?</div>
+    <!-- Сюда во второй части мы вставим тег <script> с логикой -->
+<script>
+        // Переменные для хранения карт, очков и лимитов
+        const ranks = ['6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+        const suits = ['♠', '♣', '♦', '♥'];
 
-    <div class="controls" id="buttons-zone">
-        <button class="btn-choice btn-red" onclick="makeGuess('red')">Красная</button>
-        <button class="btn-choice btn-black" onclick="makeGuess('black')">Черная</button>
-    </div>
+        let score = 0;
+        let energy = 3;
+        const maxEnergy = 3;
 
-    <button class="btn-ad" id="ad-btn" onclick="watchAdForEnergy()">Восстановить энергию (+3 поп.) 📺</button>
+        let selectedRank = null; // Переменная для записи выбранного номинала
+        let secretCard = null;   // Переменная для хранения загаданной карты
 
-    <script>
-        // НАСТРОЙКА ADSGRAM (замените на ваш реальный ID)
-        const ADSGRAM_BLOCK_ID = "YOUR_ADSGRAM_BLOCK_ID";
-        let AdController = window.Adsgram ? window.Adsgram.init({ blockId: ADSGRAM_BLOCK_ID }) : null;
-
-        const tg = window.Telegram.WebApp;
-        if (tg) { tg.ready(); tg.expand(); }
-
-        // Список возможных карт (номинал, эмодзи масти, цвет)
-        const deck = [
-            { val: "7", suit: "♣️", color: "black" }, // Ваша семерка треф
-            { val: "A", suit: "♥️", color: "red" },
-            { val: "10", suit: "♦️", color: "red" },
-            { val: "K", suit: "♠️", color: "black" },
-            { val: "9", suit: "♥️", color: "red" },
-            { val: "J", suit: "♣️", color: "black" }
-        ];
-
-        let state = {
-            score: parseInt(localStorage.getItem('int_score')) || 0,
-            energy: parseInt(localStorage.getItem('int_energy')) || 3,
-            isWaiting: false
-        };
-
-        let currentCard = null;
-
-        function generateNewCard() {
-            const randomIndex = Math.floor(Math.random() * deck.length);
-            currentCard = deck[randomIndex];
+        // 1. Функция создания новой случайной карты
+        function generateSecretCard() {
+            const randomRank = ranks[Math.floor(Math.random() * ranks.length)];
+            const randomSuit = suits[Math.floor(Math.random() * suits.length)];
+            secretCard = { rank: randomRank, suit: randomSuit };
             
-            const front = document.getElementById('card-front-content');
-            front.className = `card-face card-front ${currentCard.color}`;
-            front.innerHTML = `
-                <div class="card-value">${currentCard.val}</div>
-                <div class="card-suit-big">${currentCard.suit}</div>
-            `;
+            // Подсказка в консоли браузера (F12) для проверки работы
+            console.log(`[Интуиция]: Загаданная карта — ${secretCard.rank}${secretCard.suit}`);
         }
 
-        function updateUI() {
-            document.getElementById('score-val').innerText = state.score;
-            document.getElementById('energy-val').innerText = state.energy;
-
-            const btnZone = document.getElementById('buttons-zone');
-            const adBtn = document.getElementById('ad-btn');
-
-            if (state.energy <= 0) {
-                btnZone.style.display = 'none';
-                adBtn.style.display = 'block';
-                document.getElementById('status-text').innerText = "Энергия интуиции на нуле!";
-            } else {
-                btnZone.style.display = 'flex';
-                adBtn.style.display = 'none';
-            }
+        // 2. Шаг первый: Обработка клика на номинал карты (6-Туз)
+        function chooseRank(rank) {
+            selectedRank = rank;
             
-            localStorage.setItem('int_score', state.score);
-            localStorage.setItem('int_energy', state.energy);
+            // Меняем текст вопроса на экране
+            document.getElementById('instruction-title').innerText = `Выбрано: ${rank}. Какая масть?`;
+            
+            // Прячем экран выбора номиналов и показываем выбор мастей
+            document.getElementById('rank-screen').classList.add('hidden');
+            document.getElementById('suit-screen').classList.remove('hidden');
         }
 
-        function makeGuess(playerChoice) {
-            if (state.isWaiting || state.energy <= 0) return;
-            state.isWaiting = true;
-            state.energy--;
+        // 3. Шаг второй: Обработка клика на масть и финальная проверка
+        function chooseSuit(suit) {
+            // Проверка на наличие доступной энергии
+            if (energy <= 0) {
+                alert("Энергия на нуле! Перезагрузите страницу или подождите.");
+                resetToFirstScreen();
+                return;
+            }
 
-            const cardElement = document.getElementById('game-card');
-            const statusText = document.getElementById('status-text');
+            // Уменьшаем запас энергии на 1 единицу
+            energy--;
+            document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
 
-            // Показываем карту лицом
-            cardElement.classList.add('flipped');
-
-            if (playerChoice === currentCard.color) {
-                state.score += 10;
-                statusText.innerText = "🎉 Интуиция не подвела! +10 очков";
-                if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-                
-                // Через 1.5 секунды закрываем карту и загадываем новую
-                setTimeout(() => {
-                    cardElement.classList.remove('flipped');
-                    setTimeout(() => {
-                        generateNewCard();
-                        statusText.innerText = "Какого цвета следующая карта?";
-                        state.isWaiting = false;
-                        updateUI();
-                    }, 400);
-                }, 1500);
-
+            // Сверяем выбор пользователя с загаданной картой
+            if (selectedRank === secretCard.rank && suit === secretCard.suit) {
+                // Игрок угадал и номинал, и масть (шанс 1 из 36!)
+                score += 100; 
+                document.getElementById('score-display').innerText = `Очки: ${score}`;
+                alert(`🔮 Феноменально! Интуиция вас не подвела. Это была карта: ${secretCard.rank}${secretCard.suit}. Получено +100 очков!`);
             } else {
-                statusText.innerText = "❌ Ошибка. Карта была другого цвета";
-                if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
-
-                // ⚡ ЖЕСТКОЕ ТРЕБОВАНИЕ: через 1 секунду карта закрывается обратно
-                setTimeout(() => {
-                    cardElement.classList.remove('flipped');
-                    setTimeout(() => {
-                        generateNewCard();
-                        statusText.innerText = "Попробуй еще раз! Какого цвета карта?";
-                        state.isWaiting = false;
-                        updateUI();
-                    }, 400);
-                }, 1000); // 1 секунда на просмотр ошибки
+                // Игрок не угадал
+                alert(`Мимо. Загаданная карта была: ${secretCard.rank}${secretCard.suit}. Попробуйте развить интуицию еще раз!`);
             }
+
+            // Запускаем новый раунд игры
+            generateSecretCard();
+            resetToFirstScreen();
         }
 
-        async function watchAdForEnergy() {
-            if (!AdController) return alert("Реклама загружается, подождите...");
-            const adBtn = document.getElementById('ad-btn');
-            adBtn.disabled = true; adBtn.innerText = "Загрузка видео...";
-
-            try {
-                await AdController.show(); // Ждем пока досмотрит рекламу
-                state.energy = 3; // Начисляем строго 3 новые попытки
-                document.getElementById('status-text').innerText = "Энергия восстановлена! Отгадывай:";
-                updateUI();
-            } catch (err) {
-                alert("Досмотрите видеорекламу до конца, чтобы получить попытки! 🔮");
-            } finally {
-                adBtn.disabled = false; adBtn.innerText = "Восстановить энергию (+3 поп.) 📺";
-            }
+        // 4. Функция возврата к первому экрану выбора достоинства
+        function resetToFirstScreen() {
+            selectedRank = null;
+            document.getElementById('instruction-title').innerText = "Какое достоинство у карты?";
+            document.getElementById('suit-screen').classList.add('hidden');
+            document.getElementById('rank-screen').classList.remove('hidden');
         }
 
-        // Запуск первой игры
-        generateNewCard();
-        updateUI();
-    </script>
-</body>
+        // Автоматический запуск генерации карты при первом открытии
+        generateSecretCard();
+</script>
+    
+</body>    
 </html>
