@@ -316,7 +316,16 @@
                 score += 100;
                 document.getElementById('score-display').innerText = `Очки: ${score}`;
                 document.getElementById('instruction-title').innerText = "🎉 Блестяще! Вы угадали карту!";
-                localStorage.setItem('player_score', score.toString()); // Сохраняем очки                
+                if (
+  window.Telegram && 
+  window.Telegram.WebApp.CloudStorage
+) {
+  window.Telegram.WebApp
+    .CloudStorage.setItem(
+      'player_score', 
+      score.toString()
+    );
+                }                
             } else {
                 document.getElementById('instruction-title').innerText = "Мимо! Развивайте шестое чувство";
             }
