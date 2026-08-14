@@ -409,7 +409,8 @@ if (
                 'player_energy', 
                 function(err, value) {
                     if (!err && value !== null) {
-                        energy = parseInt(value, 10);
+    energy = parseInt(value, 10);
+    if (isNaN(energy)) { energy = 3; }
                         document.getElementById('energy-display').innerText = 
                             "Энергия: " + energy + "/" + maxEnergy;
                     }
