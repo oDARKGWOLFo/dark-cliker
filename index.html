@@ -315,6 +315,7 @@
                 score += 100;
                 document.getElementById('score-display').innerText = `Очки: ${score}`;
                 document.getElementById('instruction-title').innerText = "🎉 Блестяще! Вы угадали карту!";
+                localStorage.setItem('player_score', score.toString()); // Сохраняем очки                
             } else {
                 document.getElementById('instruction-title').innerText = "Мимо! Развивайте шестое чувство";
             }
@@ -376,6 +377,13 @@
             document.getElementById('rank-screen').classList.remove('hidden');
         }
 
+        // Загрузка очков при старте
+        const savedScore = localStorage.getItem('player_score');
+        if (savedScore) {
+            score = parseInt(savedScore, 10) || 0;
+            document.getElementById('score-display').innerText = `Очки: ${score}`;
+        }
+        
         generateSecretCard();
     </script>
 </body>
