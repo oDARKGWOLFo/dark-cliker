@@ -388,10 +388,22 @@
         }
 
         // Загрузка очков при старте
-        const savedScore = localStorage.getItem('player_score');
-        if (savedScore) {
-            score = parseInt(savedScore, 10) || 0;
-            document.getElementById('score-display').innerText = `Очки: ${score}`;
+if (
+  window.Telegram && 
+  window.Telegram.WebApp.CloudStorage
+) {
+  window.Telegram.WebApp
+    .CloudStorage.getItem(
+      'player_score', 
+      function(err, value) {
+        if (!err && value) {
+          score = parseInt(value, 10) || 0;
+          document.getElementById(
+            'score-display'
+          ).innerText = `Очки: ${score}`;
+        }
+      }
+    );
         }
         
         generateSecretCard();
