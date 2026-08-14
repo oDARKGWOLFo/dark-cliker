@@ -387,23 +387,19 @@
             document.getElementById('rank-screen').classList.remove('hidden');
         }
 
-        // Загрузка очков при старте
-if (
-  window.Telegram && 
-  window.Telegram.WebApp.CloudStorage
-) {
-  window.Telegram.WebApp
-    .CloudStorage.getItem(
-      'player_score', 
-      function(err, value) {
-        if (!err && value) {
-          score = parseInt(value, 10) || 0;
-          document.getElementById(
-            'score-display'
-          ).innerText = `Очки: ${score}`;
+// Инициализация Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
         }
-      }
-    );
+
+        // Загрузка очков при старте
+        if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
+            window.Telegram.WebApp.CloudStorage.getItem('player_score', function(err, value) {
+                if (!err && value) {
+                    score = parseInt(value, 10) || 0;
+                    document.getElementById('score-display').innerText = "Очки: " + score;
+                }
+            });
         }
         
         generateSecretCard();
