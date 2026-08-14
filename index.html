@@ -1,1 +1,232 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
+    <title>Интуиция: Угадай Карту</title>
+    <!-- Подключаем Telegram и Adsgram -->
+    <script src="https://telegram.org"></script>
+    <script src="https://adsgram.ai those-integration-v1.js" async></script>
+    
+    <style>
+        :root {
+            --poker-green: #145c32;
+            --panel-bg: #0f4022;
+            --text-color: #ffffff;
+            --neon-gold: #ffd700;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--poker-green);
+            color: var(--text-color);
+            margin: 0; padding: 16px;
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 95vh; box-sizing: border-box;
+            user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+        }
+        .header {
+            display: flex; justify-content: space-around; width: 100%; max-width: 340px;
+            background: var(--panel-bg); padding: 12px; border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-weight: bold;
+        }
+        .energy-text { color: #00f2fe; }
+        .score-text { color: var(--neon-gold); }
 
+        /* Анимация карты */
+        .card-container {
+            width: 160px; height: 240px; perspective: 1000px; margin: 40px 0;
+        }
+        .card {
+            width: 100%; height: 100%; position: relative;
+            transform-style: preserve-3d; transition: transform 0.6s ease; cursor: pointer;
+        }
+        .card.flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+            border-radius: 12px; border: 3px solid #ffffff; display: flex;
+            flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4); box-sizing: border-box;
+        }
+        .card-back {
+            background: linear-gradient(135deg, #7f00ff 0%, #e100ff 100%);
+            background-image: radial-gradient(rgba(255,255,255,0.15) 10%, transparent 11%);
+            background-size: 15px 15px;
+        }
+        .card-back::after { content: "🔮"; font-size: 40px; }
+        .card-front {
+            background: #ffffff; transform: rotateY(180deg); color: #000000;
+        }
+        .card-value { font-size: 32px; font-weight: bold; position: absolute; top: 10px; left: 14px; }
+        .card-suit-big { font-size: 72px; }
+        
+        .red { color: #d63031; }
+        .black { color: #2d3436; }
+
+        .status-msg { font-size: 18px; font-weight: bold; height: 24px; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+
+        /* Кнопки выбора */
+        .controls { display: flex; gap: 16px; width: 100%; max-width: 340px; margin-bottom: 16px; }
+        .btn-choice {
+            flex: 1; padding: 16px; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .btn-red { background-color: #d63031; }
+        .btn-black { background-color: #2d3436; }
+        
+        .btn-ad {
+            width: 100%; max-width: 340px; padding: 16px; border: none; border-radius: 12px;
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            color: white; font-size: 15px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3); display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="score-text">Очки: <span id="score-val">0</span></div>
+        <div class="energy-text">Энергия: <span id="energy-val">3</span>/3</div>
+    </div>
+
+    <div class="card-container">
+        <div class="card" id="game-card">
+            <div class="card-face card-back"></div>
+            <div class="card-face card-front" id="card-front-content">
+                <!-- Сюда сгенерируется карта -->
+            </div>
+        </div>
+    </div>
+
+    <div class="status-msg" id="status-text">Какого цвета карта?</div>
+
+    <div class="controls" id="buttons-zone">
+        <button class="btn-choice btn-red" onclick="makeGuess('red')">Красная</button>
+        <button class="btn-choice btn-black" onclick="makeGuess('black')">Черная</button>
+    </div>
+
+    <button class="btn-ad" id="ad-btn" onclick="watchAdForEnergy()">Восстановить энергию (+3 поп.) 📺</button>
+
+    <script>
+        // НАСТРОЙКА ADSGRAM (замените на ваш реальный ID)
+        const ADSGRAM_BLOCK_ID = "YOUR_ADSGRAM_BLOCK_ID";
+        let AdController = window.Adsgram ? window.Adsgram.init({ blockId: ADSGRAM_BLOCK_ID }) : null;
+
+        const tg = window.Telegram.WebApp;
+        if (tg) { tg.ready(); tg.expand(); }
+
+        // Список возможных карт (номинал, эмодзи масти, цвет)
+        const deck = [
+            { val: "7", suit: "♣️", color: "black" }, // Ваша семерка треф
+            { val: "A", suit: "♥️", color: "red" },
+            { val: "10", suit: "♦️", color: "red" },
+            { val: "K", suit: "♠️", color: "black" },
+            { val: "9", suit: "♥️", color: "red" },
+            { val: "J", suit: "♣️", color: "black" }
+        ];
+
+        let state = {
+            score: parseInt(localStorage.getItem('int_score')) || 0,
+            energy: parseInt(localStorage.getItem('int_energy')) || 3,
+            isWaiting: false
+        };
+
+        let currentCard = null;
+
+        function generateNewCard() {
+            const randomIndex = Math.floor(Math.random() * deck.length);
+            currentCard = deck[randomIndex];
+            
+            const front = document.getElementById('card-front-content');
+            front.className = `card-face card-front ${currentCard.color}`;
+            front.innerHTML = `
+                <div class="card-value">${currentCard.val}</div>
+                <div class="card-suit-big">${currentCard.suit}</div>
+            `;
+        }
+
+        function updateUI() {
+            document.getElementById('score-val').innerText = state.score;
+            document.getElementById('energy-val').innerText = state.energy;
+
+            const btnZone = document.getElementById('buttons-zone');
+            const adBtn = document.getElementById('ad-btn');
+
+            if (state.energy <= 0) {
+                btnZone.style.display = 'none';
+                adBtn.style.display = 'block';
+                document.getElementById('status-text').innerText = "Энергия интуиции на нуле!";
+            } else {
+                btnZone.style.display = 'flex';
+                adBtn.style.display = 'none';
+            }
+            
+            localStorage.setItem('int_score', state.score);
+            localStorage.setItem('int_energy', state.energy);
+        }
+
+        function makeGuess(playerChoice) {
+            if (state.isWaiting || state.energy <= 0) return;
+            state.isWaiting = true;
+            state.energy--;
+
+            const cardElement = document.getElementById('game-card');
+            const statusText = document.getElementById('status-text');
+
+            // Показываем карту лицом
+            cardElement.classList.add('flipped');
+
+            if (playerChoice === currentCard.color) {
+                state.score += 10;
+                statusText.innerText = "🎉 Интуиция не подвела! +10 очков";
+                if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                
+                // Через 1.5 секунды закрываем карту и загадываем новую
+                setTimeout(() => {
+                    cardElement.classList.remove('flipped');
+                    setTimeout(() => {
+                        generateNewCard();
+                        statusText.innerText = "Какого цвета следующая карта?";
+                        state.isWaiting = false;
+                        updateUI();
+                    }, 400);
+                }, 1500);
+
+            } else {
+                statusText.innerText = "❌ Ошибка. Карта была другого цвета";
+                if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+
+                // ⚡ ЖЕСТКОЕ ТРЕБОВАНИЕ: через 1 секунду карта закрывается обратно
+                setTimeout(() => {
+                    cardElement.classList.remove('flipped');
+                    setTimeout(() => {
+                        generateNewCard();
+                        statusText.innerText = "Попробуй еще раз! Какого цвета карта?";
+                        state.isWaiting = false;
+                        updateUI();
+                    }, 400);
+                }, 1000); // 1 секунда на просмотр ошибки
+            }
+        }
+
+        async function watchAdForEnergy() {
+            if (!AdController) return alert("Реклама загружается, подождите...");
+            const adBtn = document.getElementById('ad-btn');
+            adBtn.disabled = true; adBtn.innerText = "Загрузка видео...";
+
+            try {
+                await AdController.show(); // Ждем пока досмотрит рекламу
+                state.energy = 3; // Начисляем строго 3 новые попытки
+                document.getElementById('status-text').innerText = "Энергия восстановлена! Отгадывай:";
+                updateUI();
+            } catch (err) {
+                alert("Досмотрите видеорекламу до конца, чтобы получить попытки! 🔮");
+            } finally {
+                adBtn.disabled = false; adBtn.innerText = "Восстановить энергию (+3 поп.) 📺";
+            }
+        }
+
+        // Запуск первой игры
+        generateNewCard();
+        updateUI();
+    </script>
+</body>
+</html>
