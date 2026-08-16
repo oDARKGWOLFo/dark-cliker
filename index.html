@@ -353,32 +353,39 @@ if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
             }
         }
 
-        function watchVideoAd() {
-            const videoBtn = document.getElementById('video-button');
-            videoBtn.disabled = true;
-            document.getElementById('instruction-title').innerText = "Загрузка рекламы...";
+function watchVideoAd() {
+    const videoBtn = document.getElementById('video-button');
+    videoBtn.disabled = true;
+    document.getElementById('instruction-title').innerText = "Загрузка рекламы...";
 
-            if (AdController && AdController.blockId !== 'YOUR_BLOCK_ID') {
-                AdController.show().then(() => {
-                    rewardUser();
-                }).catch((error) => {
-                    console.error("Adsgram Error:", error);
-                    document.getElementById('instruction-title').innerText = "Ошибка рекламы. Энергия восстановлена.";
-                    setTimeout(rewardUser, 2000); 
-                });
-            } else {
-                setTimeout(rewardUser, 3000);
-            }
-        }
-
-        function rewardUser() {
-            const videoBtn = document.getElementById('video-button');
-            energy = maxEnergy;
-            document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
+    if (AdController) {
+        AdController.show().then(() => {
+            rewardUser();
+        }).catch((error) => {
+            console.error("Adsgram Error:", error);
+            document.getElementById('instruction-title').innerText = "Реклама не загрузилась. Попробуйте еще раз.";
             videoBtn.disabled = false;
-            videoBtn.classList.add('hidden');
-            resetToFirstScreen();
+        });
+    } else {
+        setTimeout(rewardUser, 2000);
+    }
         }
+
+function rewardUser() {
+    const videoBtn = document.getElementById('video-button');
+    energy = maxEnergy;
+    document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
+    
+    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.CloudStorage) {
+        window.Telegram.WebApp.CloudStorage.setItem('player_energy', energy.toString(), function(err, success) {
+            if (err) console.error("Ошибка сохранения энергии после рекламы:", err);
+        });
+    }
+
+    videoBtn.disabled = false;
+    videoBtn.classList.add('hidden');
+    resetToFirstScreen();
+}
 
         function resetToFirstScreen() {
             selectedRank = null;
@@ -388,37 +395,33 @@ if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
         }
 
 // Инициализация Telegram WebApp
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.ready();
-        }
+if (window.Telegram && window.Telegram.WebApp) {
+    window.Telegram.WebApp.ready();
+    document.getElementById('video-button').classList.add('hidden');
 
-        // Загрузка очков при старте
-        if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
-            window.Telegram.WebApp.CloudStorage.getItem('player_score', function(err, value) {
-                if (!err && value) {
-                    score = parseInt(value, 10) || 0;
-                    document.getElementById('score-display').innerText = "Очки: " + score;
-                }
-            });
+    window.Telegram.WebApp.CloudStorage.getItem('player_score', function(err, value) {
+        if (!err && value) {
+            score = parseInt(value, 10) || 0;
+            document.getElementById('score-display').innerText = `Очки: ${score}`;
         }
-if (
-            window.Telegram && 
-            window.Telegram.WebApp.CloudStorage
-        ) {
-            window.Telegram.WebApp.CloudStorage.getItem(
-                'player_energy', 
-                function(err, value) {
-                    if (!err && value !== null) {
-    energy = parseInt(value, 10);
-    if (isNaN(energy)) { energy = 3; }
-                        document.getElementById('energy-display').innerText = 
-                            "Энергия: " + energy + "/" + maxEnergy;
-                    }
-                }
-            );
-}
         
-        generateSecretCard();
+        window.Telegram.WebApp.CloudStorage.getItem('player_energy', function(errEnergy, valueEnergy) {
+            if (!errEnergy && valueEnergy !== null && valueEnergy !== undefined) {
+                energy = parseInt(valueEnergy, 10);
+            } else {
+                energy = maxEnergy;
+            }
+            
+            document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
+            generateSecretCard();
+            checkEnergyStatus();
+        });
+    });
+} else {
+    document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
+    generateSecretCard();
+    checkEnergyStatus();
+                }
     </script>
 </body>
 </html>
