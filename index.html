@@ -202,10 +202,19 @@
 <body>
 
     <!-- Шапка с игровыми данными -->
-    <div class="header-panel">
-        <div class="score-text" id="score-display">Очки: 0</div>
-        <div class="energy-text" id="energy-display">Энергия: 3/3</div>
+<div class="stats-container" style="display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 15px; border: 2px solid #ffcc00; border-radius: 15px; box-shadow: 0 0 10px #ffcc00; margin: 10px; box-sizing: border-box;">
+    <!-- Левая колонка: Очки и Рейтинг под ними -->
+    <div style="display: flex; flex-direction: column; align-items: flex-start;">
+        <span id="score-display" style="color: #ffcc00; font-weight: bold; font-size: 16px; text-shadow: 0 0 5px #ffcc00;">ОЧКИ: 0</span>
+        <button id="rating-button" onclick="openRatingModal()" style="background: transparent; border: 1px solid #ffcc00; color: #ffcc00; border-radius: 8px; padding: 2px 8px; margin-top: 5px; font-size: 12px; cursor: pointer; font-family: inherit; box-shadow: 0 0 5px #ffcc00; font-weight: bold;">🏆 РЕЙТИНГ</button>
     </div>
+
+    <!-- Правая колонка: Энергия и Таймер под ней -->
+    <div style="display: flex; flex-direction: column; align-items: flex-end;">
+        <span id="energy-display" style="color: #ffcc00; font-weight: bold; font-size: 16px; text-shadow: 0 0 5px #ffcc00;">ЭНЕРГИЯ: 3/3</span>
+        <span id="energy-timer" style="color: #ffcc00; font-size: 12px; margin-top: 5px; text-shadow: 0 0 3px #ffcc00; opacity: 0.9;"></span>
+    </div>
+</div>
 
     <!-- Игровой стол -->
     <div class="game-zone">
@@ -245,6 +254,22 @@
         <!-- Кнопка видеорекламы для восполнения попыток -->
         <button id="video-button" class="video-btn hidden" onclick="watchVideoAd()">🎬 Посмотреть видео (+3 Энергии)</button>
     </div>
+    <!-- Модальное окно рейтинга Топ-100 -->
+<div id="rating-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; font-family: sans-serif; box-sizing: border-box; padding: 20px;">
+    <div style="background: #000; border: 3px solid #ffcc00; border-radius: 20px; width: 100%; max-width: 360px; max-height: 80vh; box-shadow: 0 0 20px #ffcc00; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box;">
+        
+        <!-- Заголовок -->
+        <h2 style="color: #ffcc00; text-align: center; margin-top: 0; margin-bottom: 15px; font-size: 20px; text-shadow: 0 0 8px #ffcc00; font-weight: bold; letter-spacing: 1px;">ТАБЛИЦА ЛИДЕРОВ</h2>
+        
+        <!-- Скроллируемый список игроков -->
+        <div id="rating-list" style="overflow-y: auto; flex-grow: 1; padding-right: 5px; margin-bottom: 15px; display: flex; flex-direction: column;">
+            <!-- Сюда JavaScript автоматически вставит Топ-100 игроков -->
+        </div>
+
+        <!-- Кнопка Закрыть -->
+        <button onclick="closeRatingModal()" style="background: #ffcc00; color: #000; border: none; border-radius: 12px; padding: 12px; width: 100%; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 0 10px #ffcc00; font-family: inherit; transition: transform 0.1s;">ЗАКРЫТЬ</button>
+    </div>
+</div>
 <!-- Подключаем Adsgram SDK -->
     <script src="https://static.adsgram.ai/js/advadsgram-sdk.js"></script>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -260,6 +285,8 @@
         let selectedRank = null;
         let secretCard = null;
         let isAnimating = false;
+        let lastEnergyTime = Date.now(); // Время последнего изменения энергии
+const RECOVERY_TIME = 60 * 60 * 1000; // Время восстановления (60 минут в миллисекундах)
 
         // Инициализация Adsgram
         let AdController = null;
@@ -352,6 +379,114 @@ if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
                 resetToFirstScreen();
             }
         }
+
+        // Функция запуска таймера и пассивного восстановления энергии (+1 в час)
+function startEnergyTimer() {
+    setInterval(() => {
+        if (energy >= maxEnergy) {
+            document.getElementById('energy-timer').innerText = ""; // Если энергия полная, таймер скрыт
+            return;
+        }
+
+        const now = Date.now();
+        const timePassed = now - lastEnergyTime;
+
+        // Если прошел час или больше, начисляем энергию
+        if (timePassed >= RECOVERY_TIME) {
+            const recovered = Math.floor(timePassed / RECOVERY_TIME);
+            energy = Math.min(maxEnergy, energy + recovered);
+            lastEnergyTime = lastEnergyTime + (recovered * RECOVERY_TIME); // Сдвигаем точку отсчета времени
+            
+            document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/${maxEnergy}`;
+            
+            // Сохраняем новое состояние энергии и времени в Telegram CloudStorage
+            saveEnergyToCloud();
+        }
+
+        // Вычисляем, сколько минут и секунд осталось до получения следующей энергии
+        const timeRemaining = RECOVERY_TIME - (now - lastEnergyTime);
+        if (timeRemaining > 0) {
+            const minutes = Math.floor(timeRemaining / 60000);
+            const seconds = Math.floor((timeRemaining % 60000) / 1000);
+            
+            // Форматируем в красивый вид (например: 59:05)
+            const displayMin = minutes < 10 ? '0' + minutes : minutes;
+            const displaySec = seconds < 10 ? '0' + seconds : seconds;
+            document.getElementById('energy-timer').innerText = `⏳ До +1: ${displayMin}:${displaySec}`;
+        }
+    }, 1000); // Таймер обновляется каждую секунду
+}
+
+// Вспомогательная функция для сохранения энергии и времени в облако
+function saveEnergyToCloud() {
+    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.CloudStorage) {
+        window.Telegram.WebApp.CloudStorage.setItem('player_energy', energy.toString());
+        window.Telegram.WebApp.CloudStorage.setItem('last_energy_time', lastEnergyTime.toString());
+    }
+}
+
+        // Функция открытия модального окна и генерации списка Топ-100 Рейтинга
+function openRatingModal() {
+    const modal = document.getElementById('rating-modal');
+    const listContainer = document.getElementById('rating-list');
+    listContainer.innerHTML = ""; // Очищаем список перед открытием
+    
+    // Базовые демо-данные для наполнения списка. 
+    // На первое место временно выводим текущего игрока с его реальными очками 'score'
+    const demoPlayers = [
+        { name: "Вы (Текущий игрок)", score: score },
+        { name: "dark_master", score: 2500 },
+        { name: "intuition_king", score: 1800 },
+        { name: "crypto_cliker", score: 1200 },
+        { name: "alex_777", score: 900 },
+        { name: "user_4920", score: 400 }
+    ];
+    
+    // Заполняем список дальше до Топ-100 декоративными ботами для красивого теста верстки
+    for (let i = demoPlayers.length; i <= 100; i++) {
+        demoPlayers.push({ name: `player_anonymous_${i}`, score: Math.max(0, 400 - (i * 4)) });
+    }
+
+    // Автоматически сортируем всех игроков от большего количества очков к меньшему
+    demoPlayers.sort((a, b) => b.score - a.score);
+
+    // Отрисовываем каждую строчку списка лидеров
+    demoPlayers.forEach((player, index) => {
+        const place = index + 1;
+        let badge = `<span style="color: #888; font-weight: bold; width: 25px; display: inline-block; font-family: sans-serif;">${place}.</span>`;
+        let rowStyle = "display: flex; justify-content: space-between; align-items: center; padding: 8px 5px; border-bottom: 1px solid #222; color: #fff; font-size: 14px; font-family: sans-serif;";
+        
+        // Оформляем Топ-1, Топ-2, Топ-3 уникальными значками медалей и золотым свечением
+        if (place === 1) {
+            badge = `<span style="font-size: 18px; width: 25px; display: inline-block;">🥇</span>`;
+            rowStyle += "color: #ffe600; font-weight: bold; text-shadow: 0 0 5px #ffe600;";
+        } else if (place === 2) {
+            badge = `<span style="font-size: 18px; width: 25px; display: inline-block;">🥈</span>`;
+            rowStyle += "color: #cccccc; font-weight: bold;";
+        } else if (place === 3) {
+            badge = `<span style="font-size: 18px; width: 25px; display: inline-block;">🥉</span>`;
+            rowStyle += "color: #cd7f32; font-weight: bold;";
+        }
+
+        const playerRow = document.createElement('div');
+        playerRow.style = rowStyle;
+        playerRow.innerHTML = `
+            <div style="display: flex; align-items: center;">
+                ${badge}
+                <span style="margin-left: 5px; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${player.name}</span>
+            </div>
+            <span style="color: #ffcc00; font-weight: bold;">${player.score}</span>
+        `;
+        listContainer.appendChild(playerRow);
+    });
+
+    modal.style.display = "flex";
+}
+
+// Функция закрытия модального окна рейтинга
+function closeRatingModal() {
+    document.getElementById('rating-modal').style.display = "none";
+}
 
 function watchVideoAd() {
     const videoBtn = document.getElementById('video-button');
