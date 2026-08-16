@@ -324,11 +324,15 @@ const RECOVERY_TIME = 60 * 60 * 1000; // Время восстановления
             if (!cardElement) return;
 
             isAnimating = true;
-            energy--;
-            document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
-            if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
+energy--;
+lastEnergyTime = Date.now(); // Запоминаем точное время хода для таймера
+
+document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/${maxEnergy}`;
+
+if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.CloudStorage) {
     window.Telegram.WebApp.CloudStorage.setItem('player_energy', energy.toString());
-                }
+    window.Telegram.WebApp.CloudStorage.setItem('last_energy_time', lastEnergyTime.toString());
+}
 
             const isRed = secretCard.suit === '♦' || secretCard.suit === '♥';
             const cardColor = isRed ? '#ff4d4d' : '#000000';
@@ -537,7 +541,7 @@ if (window.Telegram && window.Telegram.WebApp) {
     window.Telegram.WebApp.CloudStorage.getItem('player_score', function(err, value) {
         if (!err && value) {
             score = parseInt(value, 10) || 0;
-            document.getElementById('score-display').innerText = `Очки: ${score}`;
+            document.getElementById('score-display').innerText = `ОЧКИ: ${score}`;
         }
         
         window.Telegram.WebApp.CloudStorage.getItem('player_energy', function(errEnergy, valueEnergy) {
@@ -547,16 +551,26 @@ if (window.Telegram && window.Telegram.WebApp) {
                 energy = maxEnergy;
             }
             
-            document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
-            generateSecretCard();
-            checkEnergyStatus();
+            window.Telegram.WebApp.CloudStorage.getItem('last_energy_time', function(errTime, valueTime) {
+                if (!errTime && valueTime) {
+                    lastEnergyTime = parseInt(valueTime, 10) || Date.now();
+                } else {
+                    lastEnergyTime = Date.now();
+                }
+                
+                document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/${maxEnergy}`;
+                generateSecretCard();
+                checkEnergyStatus();
+                startEnergyTimer(); // Запуск таймера восстановления энергии
+            });
         });
     });
 } else {
-    document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
+    document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/${maxEnergy}`;
     generateSecretCard();
     checkEnergyStatus();
-                }
+    startEnergyTimer(); // Запуск таймера в обычном браузере
+        }
     </script>
 </body>
 </html>
