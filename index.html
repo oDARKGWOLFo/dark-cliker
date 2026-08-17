@@ -447,7 +447,7 @@ function openRatingModal() {
     ];
     
     // Заполняем список дальше до Топ-100 декоративными ботами для красивого теста верстки
-    for (let i = demoPlayers.length; i <= 100; i++) {
+    for (let i = demoPlayers.length; i < 100; i++) {
         demoPlayers.push({ name: `player_anonymous_${i}`, score: Math.max(0, 400 - (i * 4)) });
     }
 
