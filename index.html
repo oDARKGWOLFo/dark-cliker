@@ -320,7 +320,7 @@
 </button>
 
 <!-- Вернувшаяся на свое место шапка с игровыми данными -->
-<div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 15px; border: 2px solid #ffcc00; border-radius: 15px; box-shadow: 0 0 10px #ffcc00; margin: 85px 15px 25px 15px; box-sizing: border-box; background: #000;">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 15px; border: 2px solid #ffcc00; border-radius: 15px; box-shadow: 0 0 10px #ffcc00; margin: 45px 15px 25px 15px; box-sizing: border-box; background: #000;">
     <!-- Левая колонка: Очки и Рейтинг под ними -->
     <div style="display: flex; flex-direction: column; align-items: flex-start;">
         <div id="score-display" style="color: #ffcc00; font-weight: bold; font-size: 16px; text-shadow: 0 0 5px #ffcc00; font-family: sans-serif;">ОЧКИ: 0</div>
@@ -408,20 +408,19 @@ const RECOVERY_TIME = 60 * 60 * 1000; // Время восстановления
         
         // Функция переключения режимов игры из Главного меню
 function selectGameMode(mode) {
-    // Функция возврата из игры в Главное меню
-function goBackToMenu() {
-    document.getElementById('training-room-screen').classList.add('hidden');
-    document.getElementById('main-menu-screen').classList.remove('hidden');
-}
     if (mode === 'training') {
-        // Скрываем главное меню и показываем тренировочную комнату
-        document.getElementById('main-menu-screen').classList.add('hidden');
+        document.getElementById('main-menu-screen').style.setProperty('display', 'none', 'important');
+        document.getElementById('training-room-screen').style.setProperty('display', 'block', 'important');
         document.getElementById('training-room-screen').classList.remove('hidden');
     } else if (mode === 'pvp') {
-        // Задел на будущее: здесь будет открываться лобби выбора ставок PvP
         alert('Режим "Игра 1 на 1" находится в разработке! Скоро добавим выбор ставок.');
     }
 }
+
+function goBackToMenu() {
+    document.getElementById('training-room-screen').style.setProperty('display', 'none', 'important');
+    document.getElementById('main-menu-screen').style.setProperty('display', 'flex', 'important');
+        }
 
         // Инициализация Adsgram
         let AdController = null;
