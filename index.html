@@ -264,6 +264,32 @@
 </div>
     
 <div id="training-room-screen" class="hidden">
+
+    <!-- Квадратная кнопка Назад в Меню -->
+<div style="display: flex; justify-content: flex-start; padding: 10px 15px; margin-bottom: -15px; box-sizing: border-box;">
+    <button onclick="goBackToMenu()" style="
+        width: 65px; 
+        height: 55px; 
+        background: transparent; 
+        border: 2px solid #ffcc00; 
+        color: #ffcc00; 
+        border-radius: 12px; 
+        font-size: 11px; 
+        font-weight: bold; 
+        text-transform: uppercase; 
+        cursor: pointer; 
+        font-family: sans-serif; 
+        box-shadow: 0 0 8px #ffcc00; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        justify-content: center; 
+        gap: 2px;
+        box-sizing: border-box;">
+        <span style="font-size: 14px;">🏠</span>
+        <div>МЕНЮ</div>
+    </button>
+</div>
     
     <!-- Шапка с игровыми данными -->
 <div class="stats-container" style="display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 15px; border: 2px solid #ffcc00; border-radius: 15px; box-shadow: 0 0 10px #ffcc00; margin: 10px; box-sizing: border-box;">
@@ -354,6 +380,11 @@ const RECOVERY_TIME = 60 * 60 * 1000; // Время восстановления
         
         // Функция переключения режимов игры из Главного меню
 function selectGameMode(mode) {
+    // Функция возврата из игры в Главное меню
+function goBackToMenu() {
+    document.getElementById('training-room-screen').classList.add('hidden');
+    document.getElementById('main-menu-screen').classList.remove('hidden');
+}
     if (mode === 'training') {
         // Скрываем главное меню и показываем тренировочную комнату
         document.getElementById('main-menu-screen').classList.add('hidden');
