@@ -324,9 +324,10 @@ const RECOVERY_TIME = 60 * 60 * 1000; // Время восстановления
             if (!cardElement) return;
 
             isAnimating = true;
+if (energy === maxEnergy) {
+    lastEnergyTime = Date.now(); // Запускаем таймер с нуля только при первой трате
+}
 energy--;
-lastEnergyTime = Date.now(); // Запоминаем точное время хода для таймера
-
 document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/${maxEnergy}`;
 
 if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.CloudStorage) {
