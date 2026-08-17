@@ -540,7 +540,7 @@ function watchVideoAd() {
 function rewardUser() {
     const videoBtn = document.getElementById('video-button');
     energy = maxEnergy;
-    document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
+    document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/${maxEnergy}`;
     
     if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.CloudStorage) {
         window.Telegram.WebApp.CloudStorage.setItem('player_energy', energy.toString(), function(err, success) {
