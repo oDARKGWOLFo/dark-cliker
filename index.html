@@ -294,18 +294,12 @@
     <div>МЕНЮ</div>
 </button>
 
-<!-- Шапка зафиксирована по высоте и выровнена в один уровень с кнопкой МЕНЮ -->
-<div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px 10px 65px; border: 2px solid #ffcc00; border-radius: 15px; box-shadow: 0 0 10px #ffcc00; margin: 15px 15px 25px 15px; box-sizing: border-box; background: #000; width: calc(100% - 30px); min-height: 52px;">
-    <!-- Левая колонка (Очки и Рейтинг) -->
-    <div style="display: flex; flex-direction: column; align-items: flex-start; width: 50%; box-sizing: border-box;">
-        <div id="score-display" style="color: #ffcc00; font-weight: bold; font-size: 14px; text-shadow: 0 0 5px #ffcc00; font-family: sans-serif; white-space: nowrap;">ОЧКИ: 0</div>
-        <button id="rating-button" onclick="openRatingModal()" style="background: transparent; border: 1px solid #ffcc00; color: #ffcc00; border-radius: 6px; padding: 2px 6px; margin-top: 3px; font-size: 10px; cursor: pointer; font-family: sans-serif; box-shadow: 0 0 5px #ffcc00; font-weight: bold; letter-spacing: 0.5px; white-space: nowrap;">🏆 РЕЙТИНГ</button>
-    </div>
-
-    <!-- Правая колонка (Энергия и Таймер) -->
-    <div style="display: flex; flex-direction: column; align-items: flex-end; width: 50%; box-sizing: border-box;">
-        <div id="energy-display" style="color: #ffcc00; font-weight: bold; font-size: 14px; text-shadow: 0 0 5px #ffcc00; font-family: sans-serif; white-space: nowrap;">ЭНЕРГИЯ: 3/3</div>
-        <div id="energy-timer" style="color: #ffcc00; font-size: 10px; margin-top: 4px; text-shadow: 0 0 3px #ffcc00; opacity: 0.9; font-family: sans-serif; font-weight: bold; white-space: nowrap;"></div>
+<!-- Очищенная минималистичная шапка (Только Энергия и Таймер) -->
+<div style="display: flex; justify-content: flex-end; align-items: center; padding: 10px 20px; border: 2px solid #ffcc00; border-radius: 15px; box-shadow: 0 0 10px #ffcc00; margin: 15px 15px 25px 15px; box-sizing: border-box; background: #000; width: calc(100% - 30px); min-height: 52px;">
+    <!-- Единственный блок по центру свободного места справа от кнопки -->
+    <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; box-sizing: border-box;">
+        <div id="energy-display" style="color: #ffcc00; font-weight: bold; font-size: 15px; text-shadow: 0 0 5px #ffcc00; font-family: sans-serif; white-space: nowrap; letter-spacing: 0.5px;">ЭНЕРГИЯ: 3/3</div>
+        <div id="energy-timer" style="color: #ffcc00; font-size: 11px; margin-top: 3px; text-shadow: 0 0 3px #ffcc00; opacity: 0.9; font-family: sans-serif; font-weight: bold; white-space: nowrap;"></div>
     </div>
 </div>
 
