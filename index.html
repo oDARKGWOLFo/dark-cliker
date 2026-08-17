@@ -365,7 +365,6 @@
         const ranks = ['6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
         const suits = ['♠', '♣', '♦', '♥'];
 
-        let score = 0;
         let energy = 3;
         const maxEnergy = 3;
 
@@ -433,11 +432,6 @@ if (energy === maxEnergy) {
 energy--;
 document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/${maxEnergy}`;
 
-if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.CloudStorage) {
-    window.Telegram.WebApp.CloudStorage.setItem('player_energy', energy.toString());
-    window.Telegram.WebApp.CloudStorage.setItem('last_energy_time', lastEnergyTime.toString());
-}
-
             const isRed = secretCard.suit === '♦' || secretCard.suit === '♥';
             const cardColor = isRed ? '#ff4d4d' : '#000000';
 
@@ -451,16 +445,8 @@ if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.CloudSto
             cardElement.classList.add('flipped');
 
             if (selectedRank === secretCard.rank && suit === secretCard.suit) {
-                score += 100;
-                document.getElementById('score-display').innerText = "Очки: " + score;
                 document.getElementById('instruction-title').innerText = "🎉 Блестяще! Вы угадали карту!";
-if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
-  window.Telegram.WebApp
-    .CloudStorage.setItem(
-      'player_score', 
-      score.toString()
-    );
-                }                
+
             } else {
                 document.getElementById('instruction-title').innerText = "Мимо! Развивайте шестое чувство";
             }
@@ -550,52 +536,6 @@ function openRatingModal() {
         { name: "user_4920", score: 400 }
     ];
     
-    // Заполняем список дальше до Топ-100 декоративными ботами для красивого теста верстки
-    for (let i = demoPlayers.length; i < 100; i++) {
-        demoPlayers.push({ name: `player_anonymous_${i}`, score: Math.max(0, 400 - (i * 4)) });
-    }
-
-    // Автоматически сортируем всех игроков от большего количества очков к меньшему
-    demoPlayers.sort((a, b) => b.score - a.score);
-
-    // Отрисовываем каждую строчку списка лидеров
-    demoPlayers.forEach((player, index) => {
-        const place = index + 1;
-        let badge = `<span style="color: #888; font-weight: bold; width: 25px; display: inline-block; font-family: sans-serif;">${place}.</span>`;
-        let rowStyle = "display: flex; justify-content: space-between; align-items: center; padding: 8px 5px; border-bottom: 1px solid #222; color: #fff; font-size: 14px; font-family: sans-serif;";
-        
-        // Оформляем Топ-1, Топ-2, Топ-3 уникальными значками медалей и золотым свечением
-        if (place === 1) {
-            badge = `<span style="font-size: 18px; width: 25px; display: inline-block;">🥇</span>`;
-            rowStyle += "color: #ffe600; font-weight: bold; text-shadow: 0 0 5px #ffe600;";
-        } else if (place === 2) {
-            badge = `<span style="font-size: 18px; width: 25px; display: inline-block;">🥈</span>`;
-            rowStyle += "color: #cccccc; font-weight: bold;";
-        } else if (place === 3) {
-            badge = `<span style="font-size: 18px; width: 25px; display: inline-block;">🥉</span>`;
-            rowStyle += "color: #cd7f32; font-weight: bold;";
-        }
-
-        const playerRow = document.createElement('div');
-        playerRow.style = rowStyle;
-        playerRow.innerHTML = `
-            <div style="display: flex; align-items: center;">
-                ${badge}
-                <span style="margin-left: 5px; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${player.name}</span>
-            </div>
-            <span style="color: #ffcc00; font-weight: bold;">${player.score}</span>
-        `;
-        listContainer.appendChild(playerRow);
-    });
-
-    modal.style.display = "flex";
-}
-
-// Функция закрытия модального окна рейтинга
-function closeRatingModal() {
-    document.getElementById('rating-modal').style.display = "none";
-}
-
 function watchVideoAd() {
     const videoBtn = document.getElementById('video-button');
     videoBtn.disabled = true;
@@ -641,12 +581,6 @@ function rewardUser() {
 if (window.Telegram && window.Telegram.WebApp) {
     window.Telegram.WebApp.ready();
     document.getElementById('video-button').classList.add('hidden');
-
-    window.Telegram.WebApp.CloudStorage.getItem('player_score', function(err, value) {
-        if (!err && value) {
-            score = parseInt(value, 10) || 0;
-            document.getElementById('score-display').innerText = `ОЧКИ: ${score}`;
-        }
         
         window.Telegram.WebApp.CloudStorage.getItem('player_energy', function(errEnergy, valueEnergy) {
             if (!errEnergy && valueEnergy !== null && valueEnergy !== undefined) {
