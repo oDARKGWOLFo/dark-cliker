@@ -294,18 +294,18 @@
     <div>МЕНЮ</div>
 </button>
 
-<!-- Вернувшаяся на свое место шапка с игровыми данными -->
-<div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 15px; border: 2px solid #ffcc00; border-radius: 15px; box-shadow: 0 0 10px #ffcc00; margin: 45px 15px 25px 15px; box-sizing: border-box; background: #000;">
-    <!-- Левая колонка: Очки и Рейтинг под ними -->
-    <div style="display: flex; flex-direction: column; align-items: flex-start;">
-        <div id="score-display" style="color: #ffcc00; font-weight: bold; font-size: 16px; text-shadow: 0 0 5px #ffcc00; font-family: sans-serif;">ОЧКИ: 0</div>
-        <button id="rating-button" onclick="openRatingModal()" style="background: transparent; border: 1px solid #ffcc00; color: #ffcc00; border-radius: 8px; padding: 3px 10px; margin-top: 6px; font-size: 11px; cursor: pointer; font-family: sans-serif; box-shadow: 0 0 5px #ffcc00; font-weight: bold; letter-spacing: 0.5px;">🏆 РЕЙТИНГ</button>
+<!-- Шапка зафиксирована по высоте и выровнена в один уровень с кнопкой МЕНЮ -->
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px 10px 65px; border: 2px solid #ffcc00; border-radius: 15px; box-shadow: 0 0 10px #ffcc00; margin: 15px 15px 25px 15px; box-sizing: border-box; background: #000; width: calc(100% - 30px); min-height: 52px;">
+    <!-- Левая колонка (Очки и Рейтинг) -->
+    <div style="display: flex; flex-direction: column; align-items: flex-start; width: 50%; box-sizing: border-box;">
+        <div id="score-display" style="color: #ffcc00; font-weight: bold; font-size: 14px; text-shadow: 0 0 5px #ffcc00; font-family: sans-serif; white-space: nowrap;">ОЧКИ: 0</div>
+        <button id="rating-button" onclick="openRatingModal()" style="background: transparent; border: 1px solid #ffcc00; color: #ffcc00; border-radius: 6px; padding: 2px 6px; margin-top: 3px; font-size: 10px; cursor: pointer; font-family: sans-serif; box-shadow: 0 0 5px #ffcc00; font-weight: bold; letter-spacing: 0.5px; white-space: nowrap;">🏆 РЕЙТИНГ</button>
     </div>
 
-    <!-- Правая колонка: Энергия и Таймер под ней -->
-    <div style="display: flex; flex-direction: column; align-items: flex-end;">
-        <div id="energy-display" style="color: #ffcc00; font-weight: bold; font-size: 16px; text-shadow: 0 0 5px #ffcc00; font-family: sans-serif;">ЭНЕРГИЯ: 3/3</div>
-        <div id="energy-timer" style="color: #ffcc00; font-size: 11px; margin-top: 6px; text-shadow: 0 0 3px #ffcc00; opacity: 0.9; font-family: sans-serif; font-weight: bold;"></div>
+    <!-- Правая колонка (Энергия и Таймер) -->
+    <div style="display: flex; flex-direction: column; align-items: flex-end; width: 50%; box-sizing: border-box;">
+        <div id="energy-display" style="color: #ffcc00; font-weight: bold; font-size: 14px; text-shadow: 0 0 5px #ffcc00; font-family: sans-serif; white-space: nowrap;">ЭНЕРГИЯ: 3/3</div>
+        <div id="energy-timer" style="color: #ffcc00; font-size: 10px; margin-top: 4px; text-shadow: 0 0 3px #ffcc00; opacity: 0.9; font-family: sans-serif; font-weight: bold; white-space: nowrap;"></div>
     </div>
 </div>
 
