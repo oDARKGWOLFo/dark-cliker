@@ -518,23 +518,6 @@ function saveEnergyToCloud() {
         window.Telegram.WebApp.CloudStorage.setItem('last_energy_time', lastEnergyTime.toString());
     }
 }
-
-        // Функция открытия модального окна и генерации списка Топ-100 Рейтинга
-function openRatingModal() {
-    const modal = document.getElementById('rating-modal');
-    const listContainer = document.getElementById('rating-list');
-    listContainer.innerHTML = ""; // Очищаем список перед открытием
-    
-    // Базовые демо-данные для наполнения списка. 
-    // На первое место временно выводим текущего игрока с его реальными очками 'score'
-    const demoPlayers = [
-        { name: "Вы (Текущий игрок)", score: score },
-        { name: "dark_master", score: 2500 },
-        { name: "intuition_king", score: 1800 },
-        { name: "crypto_cliker", score: 1200 },
-        { name: "alex_777", score: 900 },
-        { name: "user_4920", score: 400 }
-    ];
     
 function watchVideoAd() {
     const videoBtn = document.getElementById('video-button');
