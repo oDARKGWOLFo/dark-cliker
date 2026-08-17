@@ -200,7 +200,71 @@
     </style>
 </head>
 <body>
+   <!-- ГЛАВНОЕ МЕНЮ ИГРЫ В ЗОЛОТОЙ РАМКЕ -->
+<div id="main-menu-screen" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; min-height: 90vh; padding: 20px; box-sizing: border-box; font-family: 'Arial Black', sans-serif;">
+    
+    <!-- Общая золотая панель меню -->
+    <div style="width: 100%; max-width: 320px; padding: 30px 20px; border: 2px solid #ffcc00; border-radius: 20px; box-shadow: 0 0 15px #ffcc00; background: #000000; box-sizing: border-box; display: flex; flex-direction: column; align-items: center;">
+        
+        <!-- Заголовок внутри рамки -->
+        <h2 style="color: #ffcc00; text-align: center; margin-top: 0; margin-bottom: 30px; font-size: 20px; text-shadow: 0 0 8px #ffcc00; font-weight: bold; letter-spacing: 1px;">ВЫБЕРИТЕ РЕЖИМ</h2>
 
+        <!-- Кнопка: ТРЕНИРОВКА БЕЗ СЕТИ (Серая плитка) -->
+        <button onclick="selectGameMode('training')" style="
+            width: 100%; 
+            height: 110px; 
+            background: linear-gradient(to bottom, #7a8a9e 0%, #435165 50%, #2b3747 100%); 
+            border: 4px solid #1a232f; 
+            border-radius: 14px; 
+            box-shadow: inset 0 2px 5px rgba(255,255,255,0.4), 0 4px 10px rgba(0,0,0,0.5); 
+            color: #ffffff; 
+            font-size: 20px; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            text-shadow: 2px 2px 0px #1a232f;
+            cursor: pointer; 
+            margin-bottom: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+            font-family: inherit;">
+            <div>ТРЕНИРОВКА</div>
+            <div style="font-size: 16px; color: #cbd5e1; font-weight: normal; margin-top: 4px; text-shadow: 1px 1px 0px #1a232f;">БЕЗ СЕТИ</div>
+        </button>
+
+        <!-- Кнопка: ИГРА 1 НА 1 (Зеленая плитка) -->
+        <button onclick="selectGameMode('pvp')" style="
+            width: 100%; 
+            height: 110px; 
+            background: linear-gradient(to bottom, #79d021 0%, #4fa112 50%, #2f6a04 100%); 
+            border: 4px solid #1a3d02; 
+            border-radius: 14px; 
+            box-shadow: inset 0 2px 5px rgba(255,255,255,0.5), 0 4px 10px rgba(0,0,0,0.5); 
+            color: #ffffff; 
+            font-size: 26px; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            text-shadow: 2px 2px 0px #1a3d02;
+            cursor: pointer; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+            font-family: inherit;">
+            <div>ИГРА</div>
+            <div style="font-size: 20px; color: #e1f5fe; font-weight: bold; margin-top: 2px; text-shadow: 1px 1px 0px #1a3d02;">1 на 1</div>
+        </button>
+
+    </div>
+</div>
+    
+<div id="training-room-screen" class="hidden">
+    
     <!-- Шапка с игровыми данными -->
 <div class="stats-container" style="display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 15px; border: 2px solid #ffcc00; border-radius: 15px; box-shadow: 0 0 10px #ffcc00; margin: 10px; box-sizing: border-box;">
     <!-- Левая колонка: Очки и Рейтинг под ними -->
@@ -287,6 +351,18 @@
         let isAnimating = false;
         let lastEnergyTime = Date.now(); // Время последнего изменения энергии
 const RECOVERY_TIME = 60 * 60 * 1000; // Время восстановления (60 минут в миллисекундах)
+        
+        // Функция переключения режимов игры из Главного меню
+function selectGameMode(mode) {
+    if (mode === 'training') {
+        // Скрываем главное меню и показываем тренировочную комнату
+        document.getElementById('main-menu-screen').classList.add('hidden');
+        document.getElementById('training-room-screen').classList.remove('hidden');
+    } else if (mode === 'pvp') {
+        // Задел на будущее: здесь будет открываться лобби выбора ставок PvP
+        alert('Режим "Игра 1 на 1" находится в разработке! Скоро добавим выбор ставок.');
+    }
+}
 
         // Инициализация Adsgram
         let AdController = null;
