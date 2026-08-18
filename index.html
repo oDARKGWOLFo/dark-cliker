@@ -370,13 +370,24 @@ if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
             }
         }
 
-        function rewardUser() {
-            const videoBtn = document.getElementById('video-button');
-            energy = maxEnergy;
-            document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
-            videoBtn.disabled = false;
-            videoBtn.classList.add('hidden');
-            resetToFirstScreen();
+function rewardUser() {
+    const videoBtn = document.getElementById('video-button');
+    
+    energy = 3; // Даем полную энергию
+    document.getElementById('energy-display').innerText = "ЭНЕРГИЯ: 3/3";
+    
+    // ЖЕСТКО сохраняем тройку в Telegram, чтобы она не пропадала при обновлении
+    if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
+        window.Telegram.WebApp.CloudStorage.setItem('player_energy', '3', function(err, success) {
+            if (err) {
+                console.error("Ошибка сохранения энергии:", err);
+            }
+        });
+    }
+    
+    if (videoBtn) {
+        videoBtn.style.display = 'none'; // Прячем кнопку
+    }
         }
 
         function resetToFirstScreen() {
