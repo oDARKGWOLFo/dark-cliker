@@ -372,7 +372,7 @@
         function rewardUser() {
             const videoBtn = document.getElementById('video-button');
             energy = maxEnergy;
-            document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
+            document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/3`;
             videoBtn.disabled = false;
             videoBtn.classList.add('hidden');
             resetToFirstScreen();
@@ -399,8 +399,7 @@ if (
                     if (!err && value !== null) {
     energy = parseInt(value, 10);
     if (isNaN(energy)) { energy = 3; }
-                        document.getElementById('energy-display').innerText = 
-                            "Энергия: " + energy + "/" + maxEnergy;
+document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/3`;
                         if (energy < 3) startEnergyTimer();
                     }
                 }
