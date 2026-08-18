@@ -35,14 +35,6 @@
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.25);
         }
 
-        .score-text {
-            color: #ffd700; /* Премиальный золотой цвет текста */
-            font-weight: bold;
-            font-size: 16px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
         .energy-text {
             color: #ffd700; 
             font-weight: bold;
@@ -203,7 +195,6 @@
 
     <!-- Шапка с игровыми данными -->
     <div class="header-panel">
-        <div class="score-text" id="score-display">Очки: 0</div>
         <div class="energy-text" id="energy-display">Энергия: 3/3</div>
     </div>
 
@@ -253,7 +244,6 @@
         const ranks = ['6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
         const suits = ['♠', '♣', '♦', '♥'];
 
-        let score = 0;
         let energy = 3;
         const maxEnergy = 3;
 
@@ -311,21 +301,11 @@
                 <div class="card-front-content" style="color: ${cardColor}">
                     <div>${secretCard.rank}</div>
                     <div style="font-size: 55px; margin-top: -5px;">${secretCard.suit}</div>
-                </div>
-            `;
+                </div>`;
             cardElement.classList.add('flipped');
 
             if (selectedRank === secretCard.rank && suit === secretCard.suit) {
-                score += 100;
-                document.getElementById('score-display').innerText = "Очки: " + score;
-                document.getElementById('instruction-title').innerText = "🎉 Блестяще! Вы угадали карту!";
-if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
-  window.Telegram.WebApp
-    .CloudStorage.setItem(
-      'player_score', 
-      score.toString()
-    );
-                }                
+                document.getElementById('instruction-title').innerText = "🎉 Блестяще! Вы угадали карту!";                
             } else {
                 document.getElementById('instruction-title').innerText = "Мимо! Развивайте шестое чувство";
             }
@@ -390,16 +370,6 @@ if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
 // Инициализация Telegram WebApp
         if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.ready();
-        }
-
-        // Загрузка очков при старте
-        if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
-            window.Telegram.WebApp.CloudStorage.getItem('player_score', function(err, value) {
-                if (!err && value) {
-                    score = parseInt(value, 10) || 0;
-                    document.getElementById('score-display').innerText = "Очки: " + score;
-                }
-            });
         }
 if (
             window.Telegram && 
