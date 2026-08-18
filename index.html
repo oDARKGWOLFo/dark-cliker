@@ -342,22 +342,36 @@
             }
         }
 
-        function watchVideoAd() {
-            const videoBtn = document.getElementById('video-button');
-            videoBtn.disabled = true;
-            document.getElementById('instruction-title').innerText = "Загрузка рекламы...";
-
-            if (AdController && AdController.blockId !== 'YOUR_BLOCK_ID') {
-                AdController.show().then(() => {
-                    rewardUser();
-                }).catch((error) => {
-                    console.error("Adsgram Error:", error);
-                    document.getElementById('instruction-title').innerText = "Ошибка рекламы. Энергия восстановлена.";
-                    setTimeout(rewardUser, 2000); 
-                });
-            } else {
-                setTimeout(rewardUser, 3000);
-            }
+function watchVideoAd() {
+    const videoBtn = document.getElementById('video-button');
+    if (videoBtn) videoBtn.disabled = true;
+    
+    document.getElementById('instruction-title').innerText = "Загрузка рекламы...";
+    
+    // Проверяем, настроен ли блок рекламы Adsgram
+    if (typeof AdController !== 'undefined' && AdController.blockId && AdController.blockId !== 'YOUR_BLOCK_ID') {
+        AdController.show()
+            .then(() => {
+                // Игрок ПОЛНОСТЬЮ посмотрел рекламу — только тут даем энергию
+                rewardUser(); 
+            })
+            .catch((error) => {
+                console.error("Adsgram Error:", error);
+                // Реклама сломалась или её закрыли — пишем ошибку, ничего не начисляем
+                document.getElementById('instruction-title').innerText = "❌ Реклама не досмотрена или недоступна";
+                
+                // Через 3 секунды возвращаем кнопку рекламы в рабочее состояние
+                setTimeout(() => {
+                    if (videoBtn) videoBtn.disabled = false;
+                    document.getElementById('instruction-title').innerText = "Энергия закончилась. Посмотрите видео!";
+                }, 3000);
+            });
+    } else {
+        // Этот блок сработает ТОЛЬКО на вашем ПК/телефоне, пока стоит 'YOUR_BLOCK_ID'
+        // Как только вставите реальный ID от Adsgram, этот блок никогда не запустится
+        document.getElementById('instruction-title').innerText = "Тестовый режим: начисление...";
+        setTimeout(rewardUser, 2000);
+    }
         }
 
 function rewardUser() {
