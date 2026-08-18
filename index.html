@@ -376,9 +376,11 @@ const RECOVERY_TIME = 60 * 60 * 1000; // Время восстановления
         
 function selectGameMode(mode) {
     if (mode === 'training') {
-        // Напрямую скрываем меню и принудительно открываем игровой экран
-        document.getElementById('main-menu-screen').style.setProperty('display', 'none', 'important');
+        // Напрямую находим главный контейнер меню по тегу и прячем его
+        const mainMenu = document.querySelector('[id*="menu-screen"]') || document.getElementById('main-menu-screen');
+        if (mainMenu) mainMenu.style.display = 'none';
         
+        // Напрямую открываем игровое поле тренировки
         const trainingScreen = document.getElementById('training-room-screen');
         if (trainingScreen) {
             trainingScreen.style.setProperty('display', 'block', 'important');
