@@ -374,14 +374,18 @@
         let lastEnergyTime = Date.now(); // Время последнего изменения энергии
 const RECOVERY_TIME = 60 * 60 * 1000; // Время восстановления (60 минут в миллисекундах)
         
-        // Функция переключения режимов игры из Главного меню
 function selectGameMode(mode) {
     if (mode === 'training') {
+        // Напрямую скрываем меню и принудительно открываем игровой экран
         document.getElementById('main-menu-screen').style.setProperty('display', 'none', 'important');
-        document.getElementById('training-room-screen').style.setProperty('display', 'block', 'important');
-        document.getElementById('training-room-screen').classList.remove('hidden');
+        
+        const trainingScreen = document.getElementById('training-room-screen');
+        if (trainingScreen) {
+            trainingScreen.style.setProperty('display', 'block', 'important');
+            trainingScreen.classList.remove('hidden');
+        }
     } else if (mode === 'pvp') {
-        alert('Режим "Игра 1 на 1" находится в разработке! Скоро добавим выбор ставок.');
+        alert('Режим "Игра 1 на 1" в разработке! Выбирайте тренировочную комнату.');
     }
 }
 
