@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Master of Intuition</title>
     <style>
-        /* CSS — ЭТО СТИЛИ. ОНИ ОТВЕЧАЮТ ЗА КРАСОТУ И ЦВЕТА В ИГРЕ */
-        
+        /* Премиальный ультра-черный фон с золотыми элементами */
         body {
             margin: 0;
             padding: 0;
-            font-family: sans-serif;
-            background-color: #000000; /* ДЕЛАЕМ ЧЕРНЫЙ ФОН ДЛЯ ВСЕГО ЭКРАНА */
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #000000; /* Глубокий черный фон */
             color: #ffffff;
             display: flex;
             flex-direction: column;
@@ -21,40 +20,38 @@
             user-select: none;
         }
 
-        /* КРАСИВАЯ СЕРЕНЬКАЯ РАМКА ДЛЯ ЭНЕРГИИ С ЗОЛОТЫМ СВЕЧЕНИЕМ */
+        /* Верхняя панель состояния с золотой неоновой рамкой */
         .header-panel {
             display: flex;
-            flex-direction: column; /* СТАВИМ ТЕКСТ ДРУГ ПОД ДРУГОМ */
-            align-items: center;
-            justify-content: center;
-            width: 60%; /* ДЕЛАЕМ ПАНЕЛЬ КОРОТКОЙ И АККУРАТНОЙ */
+            justify-content: space-between;
+            width: 90%;
             max-width: 400px;
             background-color: #0d0d0d;
             padding: 14px 20px;
             border-radius: 16px;
-            border: 2px solid #ffd700; /* КРАСИМ РАМКУ В ЗОЛОТОЙ ЦВЕТ */
+            border: 2px solid #ffd700; /* Золотая рамка */
             margin-top: 20px;
             box-sizing: border-box;
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.25);
         }
 
-        /* ТЕКСТ СЛОВА ЭНЕРГИЯ */
-        .energy-text {
-            color: #ffd700;
+        .score-text {
+            color: #ffd700; /* Премиальный золотой цвет текста */
             font-weight: bold;
             font-size: 16px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        /* МАЛЕНЬКИЙ ЖЕЛТЫЙ ТЕКСТ ДЛЯ БУДУЩЕГО ТАЙМЕРА */
-        .timer-text {
-            font-size: 13px;
-            color: #ffd700;
-            margin-top: 5px;
+        .energy-text {
+            color: #ffd700; 
             font-weight: bold;
-            opacity: 0.9;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
+        /* Главная интерактивная игровая зона */
         .game-zone {
             flex: 1;
             display: flex;
@@ -63,36 +60,39 @@
             align-items: center;
             width: 100%;
         }
-        /* РУБАШКА НАШЕЙ ИГРОВОЙ КАРТЫ С ЗОЛОТЫМИ ПОЛОСКАМИ И КРЕСТИКАМИ */
+        /* Файл CSS Графическая рубашка карты в золотом оформлении с узором */
         .card-shirt {
             width: 160px;
             height: 240px;
             background-color: #111111;
-            border: 3px solid #ffd700; /* ЗОЛОТОЙ ОБОДОК КАРТЫ */
+            border: 3px solid #ffd700; /* Золотая рамка карты */
             border-radius: 16px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            box-shadow: 0px 10px 30px rgba(255, 215, 0, 0.15);
+            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.3);
             margin-bottom: 25px;
             position: relative;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s;
+            
+            /* Сложный золотой графический узор рубашки */
             background-image: 
                 radial-gradient(circle at 50% 50%, transparent 10%, rgba(255,215,0,0.05) 11%, transparent 12%),
-                linear-gradient(45deg, transparent 49%, #ffd700 49%, #ffd700 51%, transparent 52%),
-                linear-gradient(-45deg, transparent 49%, #ffd700 49%, #ffd700 51%, transparent 52%);
+                linear-gradient(45deg, transparent 48%, #ffd700 49%, #ffd700 51%, transparent 52%),
+                linear-gradient(-45deg, transparent 48%, #ffd700 49%, #ffd700 51%, transparent 52%);
             background-size: 20px 20px, 20px 20px, 20px 20px;
+            background-position: 0 0, 0 0, 0 0;
         }
 
-        /* ЭФФЕКТ, КОГДА КАРТА ПЕРЕВЕРНУЛАСЬ ЛИЦОМ К НАМ */
+        /* Эффект перевернутой карты (лицевая сторона) */
         .card-shirt.flipped {
-            background-color: #ffffff !important; /* ДЕЛАЕМ ЛИЦО КАРТЫ БЕЛЫМ */
+            background-color: #ffffff !important;
             background-image: none !important;
-            transform: rotateY(180deg); /* КРУТИМ КАРТУ НА 180 ГРАДУСОВ */
+            transform: rotateY(180deg);
         }
 
-        /* ЧТО НАХОДИТСЯ ВНУТРИ ОТКРЫТОЙ КАРТЫ */
+        /* Контент внутри открытой карты */
         .card-front-content {
             font-size: 44px;
             font-weight: bold;
@@ -100,21 +100,22 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transform: rotateY(180deg);
+            transform: rotateY(180deg); /* Компенсация зеркальности при перевороте */
         }
 
         .magic-ball {
             font-size: 45px;
-            filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.5));
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
         }
 
-        /* ЖЕЛТЫЙ ТЕКСТ С ВОПРОСОМ ДЛЯ ИГРОКА */
+        /* Текст вопроса/подсказки */
         .question-text {
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 20px;
             text-align: center;
             color: #ffd700;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
         }
 
         .screen-container {
@@ -126,65 +127,56 @@
             margin-bottom: 30px;
         }
 
-        /* СЕТКИ, ЧТОБЫ КНОПКИ СТОЯЛИ РОВНЫМИ РЯДАМИ */
+        /* Сетки для кнопок выбора */
         .grid-ranks {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 КНОПКИ В ОДИН РЯД */
+            grid-template-columns: repeat(3, 1fr);
             gap: 12px;
             width: 100%;
         }
 
         .grid-suits {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2 КНОПКИ В ОДИН РЯД */
-            gap: 12px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
             width: 100%;
         }
 
-        /* СТИЛЬ ДЛЯ ВСЕХ КНОПОК ИГРЫ */
+        /* Стиль кнопок меню */
         button {
             background-color: #0a0a0a;
-            color: #ffd700; /* ЖЕЛТЫЕ БУКВЫ */
-            border: 2px solid #ffd700; /* ЗОЛОТАЯ ГРАНИЦА КНОПКИ */
+            color: #ffd700;
+            border: 2px solid #ffd700;
             padding: 15px 10px;
             font-size: 18px;
             font-weight: bold;
             border-radius: 12px;
             cursor: pointer;
-            transition: background-color 0.1s, transform 0.1s;
             box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+            transition: background-color 0.1s, transform 0.1s;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* ЭФФЕКТ, КОГДА МЫ НАЖИМАЕМ ПАЛЬЦЕМ НА КНОПКУ */
         button:active {
-            transform: scale(0.95); /* КНОПКА СЛЕГКА СЖИМАЕТСЯ О Т НАЖАТИЯ */
+            transform: scale(0.95);
             background-color: #1a1a1a;
         }
 
-        /* КНОПКА СТАНОВИТСЯ ТЕМНОЙ, ЕСЛИ НА НЕЕ НЕЛЬЗЯ НАЖАТЬ */
-        button:disabled {
-            border-color: #444444;
-            color: #666666;
-            background-color: #020202;
-        }
-
-        /* ЦВЕТА ДЛЯ КНОПОК С МАСТЯМИ */
+        /* Текст и границы для кнопок мастей */
         .suit-btn[data-color="red"] {
-            color: #ff4d4d; /* КРАСНЫЙ ДЛЯ БУБЕЙ И ЧЕРВЕЙ */
+            color: #ff4d4d;
             border-color: #ff4d4d;
         }
-
         .suit-btn[data-color="black"] {
-            color: #ffffff; /* БЕЛЫЙ ДЛЯ ПИК И КРЕСТЕЙ */
+            color: #ffffff;
             border-color: #ffffff;
         }
 
-        /* КРАСИВАЯ СВЕТЯЩАЯСЯ КНОПКА ДЛЯ ВИДЕОРОЛИКА */
+        /* Премиальная пульсирующая кнопка видео */
         .video-btn {
             width: 90%;
             max-width: 400px;
-            background: linear-gradient(135deg, #ffd700, #b3a60b);
+            background: linear-gradient(135deg, #ffd700, #b8860b);
             color: #000000;
             border: none;
             padding: 16px;
@@ -193,7 +185,7 @@
             border-radius: 14px;
             margin-bottom: 35px;
             box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
-            animation: pulseAd 1.5s infinite; /* КНОПКА МЯГКО ПУЛЬСИРУЕТ */
+            animation: pulseAd 1.5s infinite;
         }
 
         @keyframes pulseAd {
@@ -203,30 +195,29 @@
         }
 
         .hidden {
-            display: none !important; /* УБИРАЕТ С ЭКРАНА СЛОВА И КНОПКИ, КОГДА ОНИ НЕ НУЖНЫ */
+            display: none !important;
         }
     </style>
 </head>
 <body>
 
-    <!-- HTML — ЭТО КАРКАС ИГРЫ. ОН РАССТАВЛЯЕТ ВСЕ КНОПКИ И ТЕКСТ НА ЭКРАНЕ -->
-
-    <!-- ВЕРХНЯЯ ПАНЕЛЬКА (ОЧКИ ПОЛНОСТЬЮ СТЁРТЫ) -->
+    <!-- Шапка с игровыми данными -->
     <div class="header-panel">
-        <div class="energy-text" id="energy-display">ЭНЕРГИЯ: 3/3</div>
-        <div class="timer-text" id="energy-timer">⏳ Энергия полная</div>
+        <div class="score-text" id="score-display">Очки: 0</div>
+        <div class="energy-text" id="energy-display">Энергия: 3/3</div>
     </div>
 
+    <!-- Игровой стол -->
     <div class="game-zone">
-        <!-- НАША ИГРАЛЬНАЯ КАРТА, КОТОРУЮ НАДО УГАДАТЬ -->
-        <div class="card-shirt" id="main-game-card">
-            <div class="magic-ball" id="card-icon">🔮</div>
+        <!-- Интерактивная карта с узором рубашки -->
+<div class="card-shirt" id="main-game-card">
+            <div class="magic-ball">🔮</div>
         </div>
-
-        <!-- ТЕКСТ ПОДСКАЗКИ, КОТОРЫЙ ГОВОРИТ ЧТО ДЕЛАТЬ ИГРОКУ -->
+        
+        <!-- Интерактивный заголовок-инструкция -->
         <div class="question-text" id="instruction-title">Какое достоинство у карты?</div>
 
-        <!-- ЭКРАН №1: ТУТ ИГРОК ВЫБИРАЕТ ЦИФРУ КАРТЫ (ОТ 6 ДО ТУЗА) -->
+        <!-- ШАГ 1: Меню выбора достоинства (6-Туз) -->
         <div id="rank-screen" class="screen-container">
             <div class="grid-ranks">
                 <button onclick="chooseRank('6')">6</button>
@@ -241,250 +232,193 @@
             </div>
         </div>
 
-        <!-- ЭКРАН №2: ТУТ ИГРОК ВЫБИРАЕТ МАСТЬ (ИЗНАЧАЛЬНО ОН СКРЫТ) -->
+        <!-- ШАГ 2: Меню выбора масти (изначально скрыто) -->
         <div id="suit-screen" class="screen-container hidden">
             <div class="grid-suits">
-                <button class="suit-btn" data-color="black" onclick="chooseSuit('♠')">♠ Пики</button>
-                <button class="suit-btn" data-color="black" onclick="chooseSuit('♣')">♣ Крести</button>
-                <button class="suit-btn" data-color="red" onclick="chooseSuit('♦')">♦ Буби</button>
-                <button class="suit-btn" data-color="red" onclick="chooseSuit('♥')">♥ Черви</button>
+                <button class="suit-btn" data-color="black" onclick="chooseSuit('♠')">Пики ♠</button>
+                <button class="suit-btn" data-color="black" onclick="chooseSuit('♣')">Крести ♣</button>
+                <button class="suit-btn" data-color="red" onclick="chooseSuit('♦')">Буби ♦</button>
+                <button class="suit-btn" data-color="red" onclick="chooseSuit('♥')">Черви ♥</button>
             </div>
         </div>
 
-        <!-- КНОПКА ДЛЯ ПОДЗАРЯДКИ ЭНЕРГИИ ЧЕРЕЗ ВИДЕО (ТОЖЕ СКРЫТА, ПОКА ЕСТЬ ПОПЫТКИ) -->
+        <!-- Кнопка видеорекламы для восполнения попыток -->
         <button id="video-button" class="video-btn hidden" onclick="watchVideoAd()">🎬 Посмотреть видео (+3 Энергии)</button>
     </div>
+<!-- Подключаем Adsgram SDK -->
+    <script src="https://static.adsgram.ai/js/advadsgram-sdk.js"></script>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <script>
+        const ranks = ['6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+        const suits = ['♠', '♣', '♦', '♥'];
 
-    <!-- ПОДКЛЮЧАЕМ СИСТЕМЫ ИГРЫ ТЕЛЕГРАМА И РЕКЛАМЫ (ВАШИ СТАРЫЕ ССЫЛКИ, КОТОРЫЕ МЫ НЕ ТРОГАЕМ) -->
-    <script src="https://sad.adsgram.live/js/sad.min.js"></script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- JAVASCRIPT — ЭТО МОЗГ НАШЕЙ ИГРЫ. ОН ЗАСТАВЛЯЕТ ВСЁ ДУМАТЬ И НАЖИМАТЬСЯ -->
-<script>
-    // ВКЛЮЧАЕМ СИСТЕМУ ТЕЛЕГРАМА НА СМАРТФОНЕ ИГРОКА
-    if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.ready();
-    }
+        let score = 0;
+        let energy = 3;
+        const maxEnergy = 3;
 
-    // СЛОВАРЬ КАРТ И МАСТЕЙ ДЛЯ КОМПЬЮТЕРА
-    const ranks = ['6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-    const suits = ['♠', '♣', '♦', '♥'];
+        let selectedRank = null;
+        let secretCard = null;
+        let isAnimating = false;
 
-    // ВАЖНЫЕ НАСТРОЙКИ: СКОЛЬКО У ИГРОКА ЭНЕРГИИ ПРЯМО СЕЙЧАС
-    let energy = 3;
-    const maxEnergy = 3;
-    let selectedRank = null;
-    let secretCard = null;
-    let isAnimating = false; // ПРОВЕРКА: КРУТИТСЯ ЛИ КАРТА СЕЙЧАС
-
-    // ПЕРЕМЕННЫЕ ДЛЯ БУДУЩЕГО ТАЙМЕРА (ПАКЕТ СЕКУНД)
-    let energyCooldown = 3600; 
-    let timerInterval = null;
-
-    // ВАШ ОРИГИНАЛЬНЫЙ КОД ДЛЯ РЕКЛАМЫ ADSGRAM
-    const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "YOUR_BLOCK_ID" }) : null;
-
-    // КОМПЬЮТЕР ДУМАЕТ И ПРЯЧЕТ СЛУЧАЙНУЮ КАРТУ
-    function generateSecretCard() {
-        const randomRank = ranks[Math.floor(Math.random() * ranks.length)];
-        const randomSuit = suits[Math.floor(Math.random() * suits.length)];
-        secretCard = { rank: randomRank, suit: randomSuit };
-        console.log(`[Инструкция] Загаданная карта: ${secretCard.rank}${secretCard.suit}`);
-    }
-
-    // КОД СРАБАТЫВАЕТ, КОГДА ИГРОК НАЖИМАЕТ НА ЦИФРУ (НАПРИМЕР ТУЗ)
-    function chooseRank(rank) {
-        if (isAnimating) return; // ЕСЛИ ИДЕТ АНИМАЦИЯ — КНОПКИ ЗАБЛОКИРОВАНЫ
-        
-        if (energy <= 0) {
-            checkEnergyStatus();
-            return;
+        // Инициализация Adsgram
+        let AdController = null;
+        if (window.Adsgram && typeof window.Adsgram.createAdController === 'function') {
+            AdController = window.Adsgram.createAdController({
+                blockId: 'YOUR_BLOCK_ID', 
+                debug: true 
+            });
         }
 
-        selectedRank = rank;
-        document.getElementById('instruction-title').innerText = `Выбрано: ${rank}. Какая масть?`;
-        document.getElementById('rank-screen').classList.add('hidden'); // ПРЯЧЕМ ЭКРАН ЦИФР
-        document.getElementById('suit-screen').classList.remove('hidden'); // ПОКАЗЫВАЕМ ЭКРАН МАСТЕЙ
-    }
-    // КОД СРАБАТЫВАЕТ, КОГДА ИГРОК ВЫБРАЛ МАСТЬ — ИДЕТ ПРОВЕРКА КАРТЫ
-    function chooseSuit(suit) {
-        if (isAnimating) return;
-
-        if (energy <= 0) {
-            checkEnergyStatus();
-            return;
+        function generateSecretCard() {
+            const randomRank = ranks[Math.floor(Math.random() * ranks.length)];
+            const randomSuit = suits[Math.floor(Math.random() * suits.length)];
+            secretCard = { rank: randomRank, suit: randomSuit };
+            console.log(`[Интуиция]: Загаданная карта — ${secretCard.rank}${secretCard.suit}`);
         }
 
-        isAnimating = true;
-        updateLocalEnergy(energy - 1); // МИНУС 1 ЭНЕРГИЯ И СРАЗУ ЗАПИСЫВАЕМ В ПАМЯТЬ ТЕЛЕФОНА
-
-        const cardElement = document.getElementById('main-game-card');
-        const isRed = secretCard.suit === '♦' || secretCard.suit === '♥';
-        const cardColor = isRed ? '#ff4d4d' : '#000000'; // КРАСИМ ЗНАЧКИ В КРАСНЫЙ ИЛИ ЧЕРНЫЙ ЦВЕТ
-
-        if (cardElement) {
-            cardElement.innerHTML = `
-                <div class="card-front-content" style="color: ${cardColor}">
-                    <div>${secretCard.suit}</div>
-                    <div style="font-size: 55px; margin-top: -5px;">${secretCard.rank}</div>
-                </div>
-            `;
-            cardElement.classList.add('flipped'); // КРУТИМ КАРТУ
+        function chooseRank(rank) {
+            if (isAnimating) return;
+            selectedRank = rank;
+            document.getElementById('instruction-title').innerText = `Выбрано: ${rank}. Какая масть?`;
+            document.getElementById('rank-screen').classList.add('hidden');
+            document.getElementById('suit-screen').classList.remove('hidden');
         }
 
-        // КОД УГАДАЛ ИЛИ НЕТ (КОД ОЧКОВ ПОЛНОСТЬЮ СТЁРТ ОТСЮДА!)
-        if (selectedRank === secretCard.rank && suit === secretCard.suit) {
-            document.getElementById('instruction-title').innerText = "🎉 Блестяще! Вы угадали карту!";
-            setTimeout(resetToFirstScreen, 3000); // ПЕРЕЗАПУСК ЧЕРЕЗ 3 СЕКУНДЫ
-        } else {
-            document.getElementById('instruction-title').innerText = "Мимо! Развивайте шестое чувство";
-            setTimeout(() => {
+        function chooseSuit(suit) {
+            if (isAnimating) return;
+            
+            if (energy <= 0) {
                 checkEnergyStatus();
-                resetToFirstScreen(); // ПЕРЕЗАПУСК ЧЕРЕЗ 3 СЕКУНДЫ
-            }, 3000);
-        }
-
-        document.getElementById('suit-screen').classList.add('hidden');
-    }
-
-    // ТУТ МЫ ЧИТАЕМ ЭНЕРГИЮ ИЗ ТЕЛЕФОНА, ЧТОБЫ ОНА НЕ ИСЧЕЗАЛА ПРИ ОБНОВЛЕНИИ ЭКРАНА
-    function initGameEnergy() {
-        let savedEnergy = localStorage.getItem('local_energy');
-        if (savedEnergy !== null) {
-            energy = parseInt(savedEnergy, 10);
-            if (isNaN(energy)) energy = 3;
-        } else {
-            energy = 3;
-        }
-
-        document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/3`;
-
-        if (energy < 3) {
-            startEnergyTimer();
-            let savedTime = localStorage.getItem('local_cooldown');
-            if (savedTime) energyCooldown = parseInt(savedTime, 10) || 3600;
-        } else {
-            document.getElementById('energy-timer').innerText = "⏳ Энергия полная";
-            document.getElementById('video-button').classList.add('hidden');
-        }
-    }
-
-    function updateLocalEnergy(value) {
-        energy = value;
-        localStorage.setItem('local_energy', energy.toString()); // СОХРАНЯЕМ В БРАУЗЕР НА СМАРТФОНЕ
-        document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/3`;
-        
-        if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
-            window.Telegram.WebApp.CloudStorage.setItem('player_energy', energy.toString()); // И В ТЕЛЕГРАМ СИНХРОНИЗИРУЕМ
-        }
-    }
-
-    function checkEnergyStatus() {
-        if (energy < 3) {
-            startEnergyTimer();
-        }
-        if (energy <= 0) {
-            document.getElementById('instruction-title').innerText = "Энергия закончилась. Посмотрите видео!";
-            document.getElementById('video-button').classList.remove('hidden');
-            document.getElementById('video-button').disabled = false;
-        }
-    }
-
-    function resetToFirstScreen() {
-        isAnimating = false;
-        selectedRank = null;
-
-        const cardElement = document.getElementById('main-game-card');
-        if (cardElement) {
-            cardElement.classList.remove('flipped');
-            cardElement.innerHTML = `<div class="magic-ball" id="card-icon">🔮</div>`;
-        }
-
-        if (energy > 0) {
-            document.getElementById('rank-screen').classList.remove('hidden');
-            document.getElementById('instruction-title').innerText = "Какое достоинство у карты?";
-        }
-        generateSecretCard();
-    }
-
-    // ТАЙМЕР: ОН ТИКАЕТ КАЖДУЮ СЕКУНДУ САМ ПО СЕБЕ И ДОБАВЛЯЕТ ЭНЕРГИЮ
-    function startEnergyTimer() {
-        if (timerInterval) return;
-
-        timerInterval = setInterval(() => {
-            if (energy >= maxEnergy) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-                document.getElementById('energy-timer').innerText = "⏳ Энергия полная";
                 return;
             }
 
-            energyCooldown--;
-            localStorage.setItem('local_cooldown', energyCooldown.toString());
+            const cardElement = document.getElementById('main-game-card');
+            if (!cardElement) return;
 
-            if (energyCooldown <= 0) {
-                updateLocalEnergy(energy + 1); // +1 ЭНЕРГИЯ ИГРОКУ САМА ПО СЕБЕ!
-                energyCooldown = 3600; // СБРОС СНОВА НА СЛЕДУЮЩИЙ ЧАС
-                
-                if (energy >= maxEnergy) {
-                    document.getElementById('video-button').classList.add('hidden');
+            isAnimating = true;
+            energy--;
+            document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
+            if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
+    window.Telegram.WebApp.CloudStorage.setItem('player_energy', energy.toString());
                 }
+
+            const isRed = secretCard.suit === '♦' || secretCard.suit === '♥';
+            const cardColor = isRed ? '#ff4d4d' : '#000000';
+
+            // Анимация переворота и показ карты
+            cardElement.innerHTML = `
+                <div class="card-front-content" style="color: ${cardColor}">
+                    <div>${secretCard.rank}</div>
+                    <div style="font-size: 55px; margin-top: -5px;">${secretCard.suit}</div>
+                </div>
+            `;
+            cardElement.classList.add('flipped');
+
+            if (selectedRank === secretCard.rank && suit === secretCard.suit) {
+                score += 100;
+                document.getElementById('score-display').innerText = "Очки: " + score;
+                document.getElementById('instruction-title').innerText = "🎉 Блестяще! Вы угадали карту!";
+if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
+  window.Telegram.WebApp
+    .CloudStorage.setItem(
+      'player_score', 
+      score.toString()
+    );
+                }                
+            } else {
+                document.getElementById('instruction-title').innerText = "Мимо! Развивайте шестое чувство";
             }
 
-            let minutes = Math.floor(energyCooldown / 60);
-            let seconds = energyCooldown % 60;
-            if (seconds < 10) seconds = "0" + seconds;
+            document.getElementById('suit-screen').classList.add('hidden');
 
-            document.getElementById('energy-timer').innerText = `⏳ до +1: ${minutes}:${seconds}`;
-        }, 1000);
-    }
+            setTimeout(() => {
+                cardElement.classList.remove('flipped');
+                cardElement.innerHTML = `<div class="magic-ball">🔮</div>`;
+                
+                isAnimating = false;
+                generateSecretCard();
+                checkEnergyStatus();
+            }, 3000);
+        }
 
-    // СТРОГИЙ КОД РЕКЛАМЫ ADSGRAM (ЕСЛИ ИГРОК ЗАКРЫЛ — ЭНЕРГИЮ НЕ ДАЕМ, МОДЕРАЦИЯ ОДОБРИТ!)
-    function watchVideoAd() {
-        const videoBtn = document.getElementById('video-button');
-        if (videoBtn) videoBtn.disabled = true;
-        
-        document.getElementById('instruction-title').innerText = "Загрузка рекламы...";
-        
-        if (AdController && AdController.blockId !== 'YOUR_BLOCK_ID') {
-            AdController.show()
-                .then(() => {
-                    rewardUser(); // УСПЕХ: НАЧИСЛЯЕМ ПОЛНУЮ ЭНЕРГИЮ
-                })
-                .catch((error) => {
+        function checkEnergyStatus() {
+            if (energy <= 0) {
+                document.getElementById('instruction-title').innerText = "Энергия закончилась. Посмотрите видео!";
+                document.getElementById('rank-screen').classList.add('hidden');
+                document.getElementById('suit-screen').classList.add('hidden');
+                document.getElementById('video-button').classList.remove('hidden');
+            } else {
+                resetToFirstScreen();
+            }
+        }
+
+        function watchVideoAd() {
+            const videoBtn = document.getElementById('video-button');
+            videoBtn.disabled = true;
+            document.getElementById('instruction-title').innerText = "Загрузка рекламы...";
+
+            if (AdController && AdController.blockId !== 'YOUR_BLOCK_ID') {
+                AdController.show().then(() => {
+                    rewardUser();
+                }).catch((error) => {
                     console.error("Adsgram Error:", error);
-                    document.getElementById('instruction-title').innerText = "❌ Видео не досмотрено";
-                    setTimeout(() => {
-                        if (videoBtn) videoBtn.disabled = false;
-                        document.getElementById('instruction-title').innerText = "Энергия закончилась. Посмотрите видео!";
-                    }, 3000);
+                    document.getElementById('instruction-title').innerText = "Ошибка рекламы. Энергия восстановлена.";
+                    setTimeout(rewardUser, 2000); 
                 });
-        } else {
-            // ТЕСТОВЫЙ ИНСТРУМЕНТ (САМ ДАЕТ НАГРАДУ ЗА 2 СЕКУНДЫ, ПОКА СТОИТ ТЕСТОВЫЙ ID БЛОКА)
-            setTimeout(rewardUser, 2000);
+            } else {
+                setTimeout(rewardUser, 3000);
+            }
         }
-    }
 
-    function rewardUser() {
-        const videoBtn = document.getElementById('video-button');
-        
-        updateLocalEnergy(3); // СРАЗУ СТАВИМ ПОЛНЫЙ ЛИМИТ В ПАМЯТЬ ТЕЛЕФОНА
-        energyCooldown = 3600;
-        localStorage.setItem('local_cooldown', '3600');
-        
-        if (timerInterval) {
-            clearInterval(timerInterval);
-            timerInterval = null;
+        function rewardUser() {
+            const videoBtn = document.getElementById('video-button');
+            energy = maxEnergy;
+            document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
+            videoBtn.disabled = false;
+            videoBtn.classList.add('hidden');
+            resetToFirstScreen();
         }
-        
-        document.getElementById('energy-timer').innerText = "⏳ Энергия полная";
-        if (videoBtn) videoBtn.classList.add('hidden');
-        
-        resetToFirstScreen();
-    }
 
-    // ВКЛЮЧАЕМ ИГРУ ПРИ ЗАГРУЗКЕ СТРАНИЦЫ
-    initGameEnergy();
-    generateSecretCard();
-</script>
+        function resetToFirstScreen() {
+            selectedRank = null;
+            document.getElementById('instruction-title').innerText = "Какое достоинство у карты?";
+            document.getElementById('suit-screen').classList.add('hidden');
+            document.getElementById('rank-screen').classList.remove('hidden');
+        }
+
+// Инициализация Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
+        }
+
+        // Загрузка очков при старте
+        if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
+            window.Telegram.WebApp.CloudStorage.getItem('player_score', function(err, value) {
+                if (!err && value) {
+                    score = parseInt(value, 10) || 0;
+                    document.getElementById('score-display').innerText = "Очки: " + score;
+                }
+            });
+        }
+if (
+            window.Telegram && 
+            window.Telegram.WebApp.CloudStorage
+        ) {
+            window.Telegram.WebApp.CloudStorage.getItem(
+                'player_energy', 
+                function(err, value) {
+                    if (!err && value !== null) {
+    energy = parseInt(value, 10);
+    if (isNaN(energy)) { energy = 3; }
+                        document.getElementById('energy-display').innerText = 
+                            "Энергия: " + energy + "/" + maxEnergy;
+                    }
+                }
+            );
+}
+        
+        generateSecretCard();
+    </script>
 </body>
 </html>
