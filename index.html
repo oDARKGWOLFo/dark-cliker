@@ -281,13 +281,7 @@
     let timerInterval = null;
 
     // ВАШ ОРИГИНАЛЬНЫЙ КОД ДЛЯ РЕКЛАМЫ ADSGRAM
-    let AdController = null;
-    if (window.Adsgram && typeof window.Adsgram.createAdController === 'function') {
-        AdController = window.Adsgram.createAdController({
-            blockId: 'YOUR_BLOCK_ID',
-            debug: true
-        });
-    }
+    const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "YOUR_BLOCK_ID" }) : null;
 
     // КОМПЬЮТЕР ДУМАЕТ И ПРЯЧЕТ СЛУЧАЙНУЮ КАРТУ
     function generateSecretCard() {
