@@ -428,12 +428,9 @@ document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}
 }
         
         generateSecretCard();
-        let energyCooldown = 3600; // 60 минут в секундах
-let timerInterval = null;
 
 function startEnergyTimer() {
     if (timerInterval) return;
-    if (energy < 3 && energyCooldown <= 0) { energyCooldown = 3600; }
 
     timerInterval = setInterval(() => {
         if (energy >= 3) {
