@@ -375,6 +375,9 @@
         function rewardUser() {
             const videoBtn = document.getElementById('video-button');
             energy = maxEnergy;
+            energyCooldown = 3600; // Сбрасываем время на 60 минут
+clearInterval(timerInterval); // Останавливаем тиканье
+timerInterval = null; // Очищаем таймер
             document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/3`;
             videoBtn.disabled = false;
             videoBtn.classList.add('hidden');
