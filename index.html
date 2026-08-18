@@ -252,7 +252,6 @@
         const ranks = ['6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
         const suits = ['♠', '♣', '♦', '♥'];
 
-        let score = 0;
         let energy = 3;
         const maxEnergy = 3;
 
@@ -315,15 +314,7 @@
             cardElement.classList.add('flipped');
 
             if (selectedRank === secretCard.rank && suit === secretCard.suit) {
-                score += 100;
-                document.getElementById('score-display').innerText = "Очки: " + score;
                 document.getElementById('instruction-title').innerText = "🎉 Блестяще! Вы угадали карту!";
-if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
-  window.Telegram.WebApp
-    .CloudStorage.setItem(
-      'player_score', 
-      score.toString()
-    );
                 }                
             } else {
                 document.getElementById('instruction-title').innerText = "Мимо! Развивайте шестое чувство";
