@@ -341,23 +341,10 @@ function watchVideoAd() {
     
     document.getElementById('instruction-title').innerText = "Загрузка рекламы...";
     
-    if (typeof AdController !== 'undefined' && AdController && AdController.blockId !== 'YOUR_BLOCK_ID') {
-        AdController.show()
-            .then(() => {
-                rewardUser(); 
-            })
-            .catch((error) => {
-                console.error("Adsgram Error:", error);
-                document.getElementById('instruction-title').innerText = "❌ Реклама недоступна";
-                setTimeout(() => {
-                    if (videoBtn) videoBtn.disabled = false;
-                    document.getElementById('instruction-title').innerText = "Энергия закончилась. Посмотрите видео!";
-                }, 3000);
-            });
-    } else {
-        document.getElementById('instruction-title').innerText = "Тестовый режим: начисление...";
-        setTimeout(rewardUser, 2000);
-    }
+    // Чистая локальная симуляция: без вызова внешних библиотек
+    setTimeout(() => {
+        rewardUser();
+    }, 2000);
 }
 
 function rewardUser() {
@@ -374,16 +361,12 @@ function rewardUser() {
     document.getElementById('energy-display').innerText = "ЭНЕРГИЯ: 3/3";
     document.getElementById('energy-timer').innerText = "⏳ Энергия полная";
     
-    if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
-        window.Telegram.WebApp.CloudStorage.setItem('player_energy', '3');
-    }
-    
     if (videoBtn) {
         videoBtn.style.display = 'none';
     }
 }
 
-// ЛОГИКА ТАЙМЕРА ОБРАТНОГО ОТСЧЕТА
+// ЛОКАЛЬНЫЙ ТАЙМЕР (БЕЗ СЕТЕВЫХ СБОЕВ)
 let energyCooldown = 3600; 
 let timerInterval = null;
 
@@ -404,10 +387,6 @@ function startEnergyTimer() {
             energy++;
             energyCooldown = 3600;
             document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/3`;
-            
-            if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
-                window.Telegram.WebApp.CloudStorage.setItem('player_energy', energy.toString());
-            }
         }
 
         let minutes = Math.floor(energyCooldown / 60);
@@ -418,7 +397,7 @@ function startEnergyTimer() {
     }, 1000);
 }
 
-// Проверка запуска при старте
+// Запуск строго после того, как все функции объявлены
 if (energy < 3) {
     startEnergyTimer();
 }
