@@ -372,17 +372,32 @@
             }
         }
 
-        function rewardUser() {
-            const videoBtn = document.getElementById('video-button');
-            energy = maxEnergy;
-            energyCooldown = 3600; // Сбрасываем время на 60 минут
-clearInterval(timerInterval); // Останавливаем тиканье
-timerInterval = null; // Очищаем таймер
-            document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/3`;
-            videoBtn.disabled = false;
-            videoBtn.classList.add('hidden');
-            resetToFirstScreen();
-        }
+function rewardUser() {
+    const videoBtn = document.getElementById('video-button');
+    
+    energy = 3; // Ставим максимальную энергию
+    energyCooldown = 3600; // Сбрасываем время на 60 минут
+    
+    // Принудительно останавливаем таймер, если он тикал
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+    
+    // Сразу же обновляем ВСЕ тексты на экране
+    document.getElementById('energy-display').innerText = "ЭНЕРГИЯ: 3/3";
+    document.getElementById('energy-timer').innerText = "⏳ Энергия полная";
+    
+    // Сохраняем новую энергию в облако Telegram
+    if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
+        window.Telegram.WebApp.CloudStorage.setItem('player_energy', '3');
+    }
+    
+    // Прячем кнопку рекламы
+    if (videoBtn) {
+        videoBtn.style.display = 'none';
+    }
+}
 
         function resetToFirstScreen() {
             selectedRank = null;
