@@ -23,9 +23,8 @@
         /* Верхняя панель состояния с золотой неоновой рамкой */
         .header-panel {
             display: flex;
-            justify-content: center;
-            flex-direction: column;
-            width: 60%;
+            justify-content: space-between;
+            width: 90%;
             max-width: 400px;
             background-color: #0d0d0d;
             padding: 14px 20px;
@@ -36,28 +35,20 @@
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.25);
         }
 
+        .score-text {
+            color: #ffd700; /* Премиальный золотой цвет текста */
+            font-weight: bold;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         .energy-text {
             color: #ffd700; 
             font-weight: bold;
             font-size: 16px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-        }
-        
-        .timer-text {
-    font-size: 14px;
-    color: #ffd700;
-    margin-top: 5px;
-    font-family: sans-serif;
-    font-weight: bold;
-        }
-        
-        .timer-text {
-    font-size: 14px;
-    color: #ffd700;
-    margin-top: 5px;
-    font-family: sans-serif;
-    font-weight: bold;
         }
 
         /* Главная интерактивная игровая зона */
@@ -212,8 +203,8 @@
 
     <!-- Шапка с игровыми данными -->
     <div class="header-panel">
+        <div class="score-text" id="score-display">Очки: 0</div>
         <div class="energy-text" id="energy-display">Энергия: 3/3</div>
-        <div class="timer-text" id="energy-timer">⏳ до +1: 60:00</div>
     </div>
 
     <!-- Игровой стол -->
@@ -262,6 +253,7 @@
         const ranks = ['6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
         const suits = ['♠', '♣', '♦', '♥'];
 
+        let score = 0;
         let energy = 3;
         const maxEnergy = 3;
 
@@ -307,9 +299,6 @@
             isAnimating = true;
             energy--;
             document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
-            if (energy < 3) {
-    startEnergyTimer();
-            }
             if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
     window.Telegram.WebApp.CloudStorage.setItem('player_energy', energy.toString());
                 }
@@ -322,11 +311,21 @@
                 <div class="card-front-content" style="color: ${cardColor}">
                     <div>${secretCard.rank}</div>
                     <div style="font-size: 55px; margin-top: -5px;">${secretCard.suit}</div>
-                </div>`;
+                </div>
+            `;
             cardElement.classList.add('flipped');
 
             if (selectedRank === secretCard.rank && suit === secretCard.suit) {
-                document.getElementById('instruction-title').innerText = "🎉 Блестяще! Вы угадали карту!";                
+                score += 100;
+                document.getElementById('score-display').innerText = "Очки: " + score;
+                document.getElementById('instruction-title').innerText = "🎉 Блестяще! Вы угадали карту!";
+if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
+  window.Telegram.WebApp
+    .CloudStorage.setItem(
+      'player_score', 
+      score.toString()
+    );
+                }                
             } else {
                 document.getElementById('instruction-title').innerText = "Мимо! Развивайте шестое чувство";
             }
@@ -372,32 +371,14 @@
             }
         }
 
-function rewardUser() {
-    const videoBtn = document.getElementById('video-button');
-    
-    energy = 3; // Ставим максимальную энергию
-    energyCooldown = 3600; // Сбрасываем время на 60 минут
-    
-    // Принудительно останавливаем таймер, если он тикал
-    if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
-    }
-    
-    // Сразу же обновляем ВСЕ тексты на экране
-    document.getElementById('energy-display').innerText = "ЭНЕРГИЯ: 3/3";
-    document.getElementById('energy-timer').innerText = "⏳ Энергия полная";
-    
-    // Сохраняем новую энергию в облако Telegram
-    if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
-        window.Telegram.WebApp.CloudStorage.setItem('player_energy', '3');
-    }
-    
-    // Прячем кнопку рекламы
-    if (videoBtn) {
-        videoBtn.style.display = 'none';
-    }
-}
+        function rewardUser() {
+            const videoBtn = document.getElementById('video-button');
+            energy = maxEnergy;
+            document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
+            videoBtn.disabled = false;
+            videoBtn.classList.add('hidden');
+            resetToFirstScreen();
+        }
 
         function resetToFirstScreen() {
             selectedRank = null;
@@ -410,6 +391,16 @@ function rewardUser() {
         if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.ready();
         }
+
+        // Загрузка очков при старте
+        if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
+            window.Telegram.WebApp.CloudStorage.getItem('player_score', function(err, value) {
+                if (!err && value) {
+                    score = parseInt(value, 10) || 0;
+                    document.getElementById('score-display').innerText = "Очки: " + score;
+                }
+            });
+        }
 if (
             window.Telegram && 
             window.Telegram.WebApp.CloudStorage
@@ -420,51 +411,14 @@ if (
                     if (!err && value !== null) {
     energy = parseInt(value, 10);
     if (isNaN(energy)) { energy = 3; }
-document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/3`;
-                        if (energy < 3) startEnergyTimer();
+                        document.getElementById('energy-display').innerText = 
+                            "Энергия: " + energy + "/" + maxEnergy;
                     }
                 }
             );
 }
         
         generateSecretCard();
-
-function startEnergyTimer() {
-    if (timerInterval) return;
-
-    timerInterval = setInterval(() => {
-        if (energy >= 3) {
-            clearInterval(timerInterval);
-            timerInterval = null;
-            document.getElementById('energy-timer').innerText = "⏳ Энергия полная";
-            return;
-        }
-
-        energyCooldown--;
-
-        if (energyCooldown <= 0) {
-            energy++;
-            energyCooldown = 3600;
-            
-            if (typeof updateEnergyDisplay === "function") {
-                updateEnergyDisplay();
-            } else {
-                document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/3`;
-            }
-        }
-
-        let minutes = Math.floor(energyCooldown / 60);
-        let seconds = energyCooldown % 60;
-        if (seconds < 10) seconds = "0" + seconds;
-
-        document.getElementById('energy-timer').innerText = `⏳ до +1: ${minutes}:${seconds}`;
-    }, 1000);
-}
-
-// Запуск проверки при старте игры
-if (energy < 3) {
-    startEnergyTimer();
-        }
     </script>
 </body>
     </html>
