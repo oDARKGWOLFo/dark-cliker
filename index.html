@@ -200,108 +200,12 @@
     </style>
 </head>
 <body>
-   <!-- ГЛАВНОЕ МЕНЮ ИГРЫ В ЗОЛОТОЙ РАМКЕ -->
-<div id="main-menu-screen" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; min-height: 90vh; padding: 20px; box-sizing: border-box; font-family: 'Arial Black', sans-serif;">
-    
-    <!-- Общая золотая панель меню -->
-    <div style="width: 100%; max-width: 320px; padding: 30px 20px; border: 2px solid #ffcc00; border-radius: 20px; box-shadow: 0 0 15px #ffcc00; background: #000000; box-sizing: border-box; display: flex; flex-direction: column; align-items: center;">
-        
-        <!-- Заголовок внутри рамки -->
-        <h2 style="color: #ffcc00; text-align: center; margin-top: 0; margin-bottom: 30px; font-size: 20px; text-shadow: 0 0 8px #ffcc00; font-weight: bold; letter-spacing: 1px;">ВЫБЕРИТЕ РЕЖИМ</h2>
 
-        <!-- Кнопка: ТРЕНИРОВКА БЕЗ СЕТИ (Серая плитка) -->
-        <button onclick="selectGameMode('training')" style="
-            width: 100%; 
-            height: 110px; 
-            background: linear-gradient(to bottom, #7a8a9e 0%, #435165 50%, #2b3747 100%); 
-            border: 4px solid #1a232f; 
-            border-radius: 14px; 
-            box-shadow: inset 0 2px 5px rgba(255,255,255,0.4), 0 4px 10px rgba(0,0,0,0.5); 
-            color: #ffffff; 
-            font-size: 20px; 
-            font-weight: 900; 
-            text-transform: uppercase; 
-            text-shadow: 2px 2px 0px #1a232f;
-            cursor: pointer; 
-            margin-bottom: 20px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
-            letter-spacing: 0.5px;
-            line-height: 1.2;
-            font-family: inherit;">
-            <div>ТРЕНИРОВКА</div>
-            <div style="font-size: 16px; color: #cbd5e1; font-weight: normal; margin-top: 4px; text-shadow: 1px 1px 0px #1a232f;">БЕЗ СЕТИ</div>
-        </button>
-
-        <!-- Кнопка: ИГРА 1 НА 1 (Зеленая плитка) -->
-        <button onclick="selectGameMode('pvp')" style="
-            width: 100%; 
-            height: 110px; 
-            background: linear-gradient(to bottom, #79d021 0%, #4fa112 50%, #2f6a04 100%); 
-            border: 4px solid #1a3d02; 
-            border-radius: 14px; 
-            box-shadow: inset 0 2px 5px rgba(255,255,255,0.5), 0 4px 10px rgba(0,0,0,0.5); 
-            color: #ffffff; 
-            font-size: 26px; 
-            font-weight: 900; 
-            text-transform: uppercase; 
-            text-shadow: 2px 2px 0px #1a3d02;
-            cursor: pointer; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
-            letter-spacing: 0.5px;
-            line-height: 1.2;
-            font-family: inherit;">
-            <div>ИГРА</div>
-            <div style="font-size: 20px; color: #e1f5fe; font-weight: bold; margin-top: 2px; text-shadow: 1px 1px 0px #1a3d02;">1 на 1</div>
-        </button>
-
+    <!-- Шапка с игровыми данными -->
+    <div class="header-panel">
+        <div class="score-text" id="score-display">Очки: 0</div>
+        <div class="energy-text" id="energy-display">Энергия: 3/3</div>
     </div>
-</div>
-    
-<div id="training-room-screen" class="hidden">
-
-    <!-- Квадратная кнопка Назад в Меню -->  
-<!-- Квадратная кнопка МЕНЮ жестко закреплена в левом верхнем углу -->
-<button onclick="goBackToMenu()" style="
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    width: 55px; 
-    height: 52px; 
-    background: #000; 
-    border: 2px solid #ffcc00; 
-    color: #ffcc00; 
-    border-radius: 12px; 
-    font-size: 10px; 
-    font-weight: bold; 
-    text-transform: uppercase; 
-    cursor: pointer; 
-    font-family: sans-serif; 
-    box-shadow: 0 0 8px #ffcc00; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: center; 
-    gap: 2px;
-    z-index: 100;
-    box-sizing: border-box;">
-    <span style="font-size: 13px;">🏠</span>
-    <div>МЕНЮ</div>
-</button>
-
-<!-- Очищенная минималистичная шапка с восстановлением структуры -->
-<div style="display: flex; justify-content: flex-end; align-items: center; padding: 10px 20px; border: 2px solid #ffcc00; border-radius: 15px; box-shadow: 0 0 10px #ffcc00; margin: 15px 15px 25px 15px; box-sizing: border-box; background: #000; width: calc(100% - 30px); min-height: 52px;">
-    <!-- Единственный блок по центру свободного места справа от кнопки -->
-    <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; box-sizing: border-box;">
-        <div id="energy-display" style="color: #ffcc00; font-weight: bold; font-size: 15px; text-shadow: 0 0 5px #ffcc00; font-family: sans-serif; white-space: nowrap; letter-spacing: 0.5px;">ЭНЕРГИЯ: 3/3</div>
-        <div id="energy-timer" style="color: #ffcc00; font-size: 11px; margin-top: 3px; text-shadow: 0 0 3px #ffcc00; opacity: 0.9; font-family: sans-serif; font-weight: bold; white-space: nowrap;"></div>
-    </div>
-</div>
 
     <!-- Игровой стол -->
     <div class="game-zone">
@@ -341,22 +245,6 @@
         <!-- Кнопка видеорекламы для восполнения попыток -->
         <button id="video-button" class="video-btn hidden" onclick="watchVideoAd()">🎬 Посмотреть видео (+3 Энергии)</button>
     </div>
-    <!-- Модальное окно рейтинга Топ-100 -->
-<div id="rating-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; font-family: sans-serif; box-sizing: border-box; padding: 20px;">
-    <div style="background: #000; border: 3px solid #ffcc00; border-radius: 20px; width: 100%; max-width: 360px; max-height: 80vh; box-shadow: 0 0 20px #ffcc00; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box;">
-        
-        <!-- Заголовок -->
-        <h2 style="color: #ffcc00; text-align: center; margin-top: 0; margin-bottom: 15px; font-size: 20px; text-shadow: 0 0 8px #ffcc00; font-weight: bold; letter-spacing: 1px;">ТАБЛИЦА ЛИДЕРОВ</h2>
-        
-        <!-- Скроллируемый список игроков -->
-        <div id="rating-list" style="overflow-y: auto; flex-grow: 1; padding-right: 5px; margin-bottom: 15px; display: flex; flex-direction: column;">
-            <!-- Сюда JavaScript автоматически вставит Топ-100 игроков -->
-        </div>
-
-        <!-- Кнопка Закрыть -->
-        <button onclick="closeRatingModal()" style="background: #ffcc00; color: #000; border: none; border-radius: 12px; padding: 12px; width: 100%; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 0 10px #ffcc00; font-family: inherit; transition: transform 0.1s;">ЗАКРЫТЬ</button>
-    </div>
-</div>
 <!-- Подключаем Adsgram SDK -->
     <script src="https://static.adsgram.ai/js/advadsgram-sdk.js"></script>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -365,30 +253,13 @@
         const ranks = ['6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
         const suits = ['♠', '♣', '♦', '♥'];
 
+        let score = 0;
         let energy = 3;
         const maxEnergy = 3;
 
         let selectedRank = null;
         let secretCard = null;
         let isAnimating = false;
-        let lastEnergyTime = Date.now(); // Время последнего изменения энергии
-const RECOVERY_TIME = 60 * 60 * 1000; // Время восстановления (60 минут в миллисекундах)
-        
-        // Функция переключения режимов игры из Главного меню
-function selectGameMode(mode) {
-    if (mode === 'training') {
-        document.getElementById('main-menu-screen').style.setProperty('display', 'none', 'important');
-        document.getElementById('training-room-screen').style.setProperty('display', 'block', 'important');
-        document.getElementById('training-room-screen').classList.remove('hidden');
-    } else if (mode === 'pvp') {
-        alert('Режим "Игра 1 на 1" находится в разработке! Скоро добавим выбор ставок.');
-    }
-}
-
-function goBackToMenu() {
-    document.getElementById('training-room-screen').style.setProperty('display', 'none', 'important');
-    document.getElementById('main-menu-screen').style.setProperty('display', 'flex', 'important');
-        }
 
         // Инициализация Adsgram
         let AdController = null;
@@ -426,11 +297,11 @@ function goBackToMenu() {
             if (!cardElement) return;
 
             isAnimating = true;
-if (energy === maxEnergy) {
-    lastEnergyTime = Date.now(); // Запускаем таймер с нуля только при первой трате
-}
-energy--;
-document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/${maxEnergy}`;
+            energy--;
+            document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
+            if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
+    window.Telegram.WebApp.CloudStorage.setItem('player_energy', energy.toString());
+                }
 
             const isRed = secretCard.suit === '♦' || secretCard.suit === '♥';
             const cardColor = isRed ? '#ff4d4d' : '#000000';
@@ -445,8 +316,16 @@ document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}
             cardElement.classList.add('flipped');
 
             if (selectedRank === secretCard.rank && suit === secretCard.suit) {
+                score += 100;
+                document.getElementById('score-display').innerText = "Очки: " + score;
                 document.getElementById('instruction-title').innerText = "🎉 Блестяще! Вы угадали карту!";
-
+if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
+  window.Telegram.WebApp
+    .CloudStorage.setItem(
+      'player_score', 
+      score.toString()
+    );
+                }                
             } else {
                 document.getElementById('instruction-title').innerText = "Мимо! Развивайте шестое чувство";
             }
@@ -474,101 +353,32 @@ document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}
             }
         }
 
-        // Функция запуска таймера и пассивного восстановления энергии (+1 в час)
-function startEnergyTimer() {
-    setInterval(() => {
-        if (energy >= maxEnergy) {
-            document.getElementById('energy-timer').innerText = ""; // Если энергия полная, таймер скрыт
-            return;
+        function watchVideoAd() {
+            const videoBtn = document.getElementById('video-button');
+            videoBtn.disabled = true;
+            document.getElementById('instruction-title').innerText = "Загрузка рекламы...";
+
+            if (AdController && AdController.blockId !== 'YOUR_BLOCK_ID') {
+                AdController.show().then(() => {
+                    rewardUser();
+                }).catch((error) => {
+                    console.error("Adsgram Error:", error);
+                    document.getElementById('instruction-title').innerText = "Ошибка рекламы. Энергия восстановлена.";
+                    setTimeout(rewardUser, 2000); 
+                });
+            } else {
+                setTimeout(rewardUser, 3000);
+            }
         }
 
-        const now = Date.now();
-        const timePassed = now - lastEnergyTime;
-
-        // Если прошел час или больше, начисляем энергию
-        if (timePassed >= RECOVERY_TIME) {
-            const recovered = Math.floor(timePassed / RECOVERY_TIME);
-            energy = Math.min(maxEnergy, energy + recovered);
-            lastEnergyTime = lastEnergyTime + (recovered * RECOVERY_TIME); // Сдвигаем точку отсчета времени
-            
-            document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/${maxEnergy}`;
-            
-            // Сохраняем новое состояние энергии и времени в Telegram CloudStorage
-            saveEnergyToCloud();
-        }
-
-        // Вычисляем, сколько минут и секунд осталось до получения следующей энергии
-        const timeRemaining = RECOVERY_TIME - (now - lastEnergyTime);
-        if (timeRemaining > 0) {
-            const minutes = Math.floor(timeRemaining / 60000);
-            const seconds = Math.floor((timeRemaining % 60000) / 1000);
-            
-            // Форматируем в красивый вид (например: 59:05)
-            const displayMin = minutes < 10 ? '0' + minutes : minutes;
-            const displaySec = seconds < 10 ? '0' + seconds : seconds;
-            document.getElementById('energy-timer').innerText = `⏳ До +1: ${displayMin}:${displaySec}`;
-        }
-    }, 1000); // Таймер обновляется каждую секунду
-}
-
-// Вспомогательная функция для сохранения энергии и времени в облако
-function saveEnergyToCloud() {
-    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.CloudStorage) {
-        window.Telegram.WebApp.CloudStorage.setItem('player_energy', energy.toString());
-        window.Telegram.WebApp.CloudStorage.setItem('last_energy_time', lastEnergyTime.toString());
-    }
-}
-
-        // Функция открытия модального окна и генерации списка Топ-100 Рейтинга
-function openRatingModal() {
-    const modal = document.getElementById('rating-modal');
-    const listContainer = document.getElementById('rating-list');
-    listContainer.innerHTML = ""; // Очищаем список перед открытием
-    
-    // Базовые демо-данные для наполнения списка. 
-    // На первое место временно выводим текущего игрока с его реальными очками 'score'
-    const demoPlayers = [
-        { name: "Вы (Текущий игрок)", score: score },
-        { name: "dark_master", score: 2500 },
-        { name: "intuition_king", score: 1800 },
-        { name: "crypto_cliker", score: 1200 },
-        { name: "alex_777", score: 900 },
-        { name: "user_4920", score: 400 }
-    ];
-    
-function watchVideoAd() {
-    const videoBtn = document.getElementById('video-button');
-    videoBtn.disabled = true;
-    document.getElementById('instruction-title').innerText = "Загрузка рекламы...";
-
-    if (AdController) {
-        AdController.show().then(() => {
-            rewardUser();
-        }).catch((error) => {
-            console.error("Adsgram Error:", error);
-            document.getElementById('instruction-title').innerText = "Реклама не загрузилась. Попробуйте еще раз.";
+        function rewardUser() {
+            const videoBtn = document.getElementById('video-button');
+            energy = maxEnergy;
+            document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
             videoBtn.disabled = false;
-        });
-    } else {
-        setTimeout(rewardUser, 2000);
-    }
+            videoBtn.classList.add('hidden');
+            resetToFirstScreen();
         }
-
-function rewardUser() {
-    const videoBtn = document.getElementById('video-button');
-    energy = maxEnergy;
-    document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
-    
-    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.CloudStorage) {
-        window.Telegram.WebApp.CloudStorage.setItem('player_energy', energy.toString(), function(err, success) {
-            if (err) console.error("Ошибка сохранения энергии после рекламы:", err);
-        });
-    }
-
-    videoBtn.disabled = false;
-    videoBtn.classList.add('hidden');
-    resetToFirstScreen();
-}
 
         function resetToFirstScreen() {
             selectedRank = null;
@@ -578,37 +388,37 @@ function rewardUser() {
         }
 
 // Инициализация Telegram WebApp
-if (window.Telegram && window.Telegram.WebApp) {
-    window.Telegram.WebApp.ready();
-    document.getElementById('video-button').classList.add('hidden');
-        
-        window.Telegram.WebApp.CloudStorage.getItem('player_energy', function(errEnergy, valueEnergy) {
-            if (!errEnergy && valueEnergy !== null && valueEnergy !== undefined) {
-                energy = parseInt(valueEnergy, 10);
-            } else {
-                energy = maxEnergy;
-            }
-            
-            window.Telegram.WebApp.CloudStorage.getItem('last_energy_time', function(errTime, valueTime) {
-                if (!errTime && valueTime) {
-                    lastEnergyTime = parseInt(valueTime, 10) || Date.now();
-                } else {
-                    lastEnergyTime = Date.now();
-                }
-                
-                document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/${maxEnergy}`;
-                generateSecretCard();
-                checkEnergyStatus();
-                startEnergyTimer(); // Запуск таймера восстановления энергии
-            });
-        });
-    });
-} else {
-    document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/${maxEnergy}`;
-    generateSecretCard();
-    checkEnergyStatus();
-    startEnergyTimer(); // Запуск таймера в обычном браузере
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
         }
+
+        // Загрузка очков при старте
+        if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
+            window.Telegram.WebApp.CloudStorage.getItem('player_score', function(err, value) {
+                if (!err && value) {
+                    score = parseInt(value, 10) || 0;
+                    document.getElementById('score-display').innerText = "Очки: " + score;
+                }
+            });
+        }
+if (
+            window.Telegram && 
+            window.Telegram.WebApp.CloudStorage
+        ) {
+            window.Telegram.WebApp.CloudStorage.getItem(
+                'player_energy', 
+                function(err, value) {
+                    if (!err && value !== null) {
+    energy = parseInt(value, 10);
+    if (isNaN(energy)) { energy = 3; }
+                        document.getElementById('energy-display').innerText = 
+                            "Энергия: " + energy + "/" + maxEnergy;
+                    }
+                }
+            );
+}
+        
+        generateSecretCard();
     </script>
 </body>
-</html>
+    </html>
