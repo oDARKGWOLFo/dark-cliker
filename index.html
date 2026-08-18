@@ -335,82 +335,95 @@
                 resetToFirstScreen();
             }
         }
-
 function watchVideoAd() {
     const videoBtn = document.getElementById('video-button');
     if (videoBtn) videoBtn.disabled = true;
     
     document.getElementById('instruction-title').innerText = "Загрузка рекламы...";
     
-    // Проверяем, настроен ли блок рекламы Adsgram
-    if (typeof AdController !== 'undefined' && AdController.blockId && AdController.blockId !== 'YOUR_BLOCK_ID') {
+    if (typeof AdController !== 'undefined' && AdController && AdController.blockId !== 'YOUR_BLOCK_ID') {
         AdController.show()
             .then(() => {
-                // Игрок ПОЛНОСТЬЮ посмотрел рекламу — только тут даем энергию
                 rewardUser(); 
             })
             .catch((error) => {
                 console.error("Adsgram Error:", error);
-                // Реклама сломалась или её закрыли — пишем ошибку, ничего не начисляем
-                document.getElementById('instruction-title').innerText = "❌ Реклама не досмотрена или недоступна";
-                
-                // Через 3 секунды возвращаем кнопку рекламы в рабочее состояние
+                document.getElementById('instruction-title').innerText = "❌ Реклама недоступна";
                 setTimeout(() => {
                     if (videoBtn) videoBtn.disabled = false;
                     document.getElementById('instruction-title').innerText = "Энергия закончилась. Посмотрите видео!";
                 }, 3000);
             });
     } else {
-        // Этот блок сработает ТОЛЬКО на вашем ПК/телефоне, пока стоит 'YOUR_BLOCK_ID'
-        // Как только вставите реальный ID от Adsgram, этот блок никогда не запустится
         document.getElementById('instruction-title').innerText = "Тестовый режим: начисление...";
         setTimeout(rewardUser, 2000);
     }
-        }
+}
 
 function rewardUser() {
     const videoBtn = document.getElementById('video-button');
     
-    energy = 3; // Даем полную энергию
-    document.getElementById('energy-display').innerText = "ЭНЕРГИЯ: 3/3";
+    energy = 3; 
+    energyCooldown = 3600;
     
-    // ЖЕСТКО сохраняем тройку в Telegram, чтобы она не пропадала при обновлении
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+    
+    document.getElementById('energy-display').innerText = "ЭНЕРГИЯ: 3/3";
+    document.getElementById('energy-timer').innerText = "⏳ Энергия полная";
+    
     if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
-        window.Telegram.WebApp.CloudStorage.setItem('player_energy', '3', function(err, success) {
-            if (err) {
-                console.error("Ошибка сохранения энергии:", err);
-            }
-        });
+        window.Telegram.WebApp.CloudStorage.setItem('player_energy', '3');
     }
     
     if (videoBtn) {
-        videoBtn.style.display = 'none'; // Прячем кнопку
+        videoBtn.style.display = 'none';
     }
-        }
-
-        function resetToFirstScreen() {
-            selectedRank = null;
-            document.getElementById('instruction-title').innerText = "Какое достоинство у карты?";
-            document.getElementById('suit-screen').classList.add('hidden');
-            document.getElementById('rank-screen').classList.remove('hidden');
-        }
-
-// Инициализация Telegram WebApp
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.ready();
-        }
-
-if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
-    window.Telegram.WebApp.CloudStorage.getItem('player_energy', function(err, value) {
-        if (!err && value !== null) {
-            energy = parseInt(value, 10);
-            if (isNaN(energy)) { energy = 3; }
-            document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/3`;
-        }
-    });
 }
-        
-        generateSecretCard();
-    </script>
+
+// ЛОГИКА ТАЙМЕРА ОБРАТНОГО ОТСЧЕТА
+let energyCooldown = 3600; 
+let timerInterval = null;
+
+function startEnergyTimer() {
+    if (timerInterval) return;
+
+    timerInterval = setInterval(() => {
+        if (energy >= 3) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            document.getElementById('energy-timer').innerText = "⏳ Энергия полная";
+            return;
+        }
+
+        energyCooldown--;
+
+        if (energyCooldown <= 0) {
+            energy++;
+            energyCooldown = 3600;
+            document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/3`;
+            
+            if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
+                window.Telegram.WebApp.CloudStorage.setItem('player_energy', energy.toString());
+            }
+        }
+
+        let minutes = Math.floor(energyCooldown / 60);
+        let seconds = energyCooldown % 60;
+        if (seconds < 10) seconds = "0" + seconds;
+
+        document.getElementById('energy-timer').innerText = `⏳ до +1: ${minutes}:${seconds}`;
+    }, 1000);
+}
+
+// Проверка запуска при старте
+if (energy < 3) {
+    startEnergyTimer();
+}
+
+generateSecretCard();
+</script>
 </body>
     </html>
