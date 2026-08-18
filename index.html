@@ -24,7 +24,8 @@
         .header-panel {
             display: flex;
             justify-content: center;
-            width: 45%;
+            flex-direction: column;
+            width: 60%;
             max-width: 400px;
             background-color: #0d0d0d;
             padding: 14px 20px;
@@ -41,6 +42,22 @@
             font-size: 16px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+        }
+        
+        .timer-text {
+    font-size: 14px;
+    color: #ffd700;
+    margin-top: 5px;
+    font-family: sans-serif;
+    font-weight: bold;
+        }
+        
+        .timer-text {
+    font-size: 14px;
+    color: #ffd700;
+    margin-top: 5px;
+    font-family: sans-serif;
+    font-weight: bold;
         }
 
         /* Главная интерактивная игровая зона */
@@ -196,6 +213,7 @@
     <!-- Шапка с игровыми данными -->
     <div class="header-panel">
         <div class="energy-text" id="energy-display">Энергия: 3/3</div>
+        <div class="timer-text" id="energy-timer">⏳ до +1: 60:00</div>
     </div>
 
     <!-- Игровой стол -->
@@ -383,12 +401,52 @@ if (
     if (isNaN(energy)) { energy = 3; }
                         document.getElementById('energy-display').innerText = 
                             "Энергия: " + energy + "/" + maxEnergy;
+                        if (energy < 3) startEnergyTimer();
                     }
                 }
             );
 }
         
         generateSecretCard();
+        let energyCooldown = 3600; // 60 минут в секундах
+let timerInterval = null;
+
+function startEnergyTimer() {
+    if (timerInterval) return;
+
+    timerInterval = setInterval(() => {
+        if (energy >= 3) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            document.getElementById('energy-timer').innerText = "⏳ Энергия полная";
+            return;
+        }
+
+        energyCooldown--;
+
+        if (energyCooldown <= 0) {
+            energy++;
+            energyCooldown = 3600;
+            
+            if (typeof updateEnergyDisplay === "function") {
+                updateEnergyDisplay();
+            } else {
+                document.getElementById('energy-display').innerText = `ЭНЕРГИЯ: ${energy}/3`;
+            }
+        }
+
+        let minutes = Math.floor(energyCooldown / 60);
+        let seconds = energyCooldown % 60;
+        if (seconds < 10) seconds = "0" + seconds;
+
+        document.getElementById('energy-timer').innerText = `⏳ до +1: ${minutes}:${seconds}`;
+    }, 1000);
+}
+
+// Запуск проверки при старте игры
+if (energy < 3) {
+    startEnergyTimer();
+        }
     </script>
 </body>
     </html>
