@@ -307,6 +307,9 @@
             isAnimating = true;
             energy--;
             document.getElementById('energy-display').innerText = `Энергия: ${energy}/${maxEnergy}`;
+            if (energy < 3) {
+    startEnergyTimer();
+            }
             if (window.Telegram && window.Telegram.WebApp.CloudStorage) {
     window.Telegram.WebApp.CloudStorage.setItem('player_energy', energy.toString());
                 }
@@ -412,6 +415,7 @@ let timerInterval = null;
 
 function startEnergyTimer() {
     if (timerInterval) return;
+    if (energy < 3 && energyCooldown <= 0) { energyCooldown = 3600; }
 
     timerInterval = setInterval(() => {
         if (energy >= 3) {
