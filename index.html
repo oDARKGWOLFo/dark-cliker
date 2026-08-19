@@ -445,7 +445,7 @@
         
         document.getElementById('instruction-title').innerText = "Загрузка рекламы...";
         
-        if (AdController && AdController.blockId !== 'YOUR_BLOCK_ID') {
+        if (AdController && AdController.blockId === '43482') {
             AdController.show()
                 .then(() => {
                     rewardUser(); // УСПЕХ: НАЧИСЛЯЕМ ПОЛНУЮ ЭНЕРГИЮ
