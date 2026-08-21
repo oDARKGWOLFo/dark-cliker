@@ -15,7 +15,7 @@ from worker import run_auto_mining
 with open("config.json", "r", encoding="utf-8") as f:
     config = json.load(f)
 
-BOT_TOKEN = config["TELEGRAM_BOT_TOKEN"]
+BOT_TOKEN = config["8917279281:AAFZKSHlh2oD1IJe824oPLlr_gEaUk8ALTY"]
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
