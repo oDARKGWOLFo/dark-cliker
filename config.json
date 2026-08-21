@@ -1,0 +1,14 @@
+{
+  "TELEGRAM_BOT_TOKEN": "ВСТАВЬ_СЮДА_ТОКЕН_ГЛАВНОГО_БОТА",
+  "PROXY": {
+    "ROTATE_URL": "https://proxy-provider.com",
+    "SERVER": "http://proxy_ip:port",
+    "USERNAME": "твой_логин_прокси",
+    "PASSWORD": "твой_пароль_прокси"
+  },
+  "MINI_APPS_DONORS": [
+    "my_ads_miniapp_bot_1",
+    "my_ads_miniapp_bot_2",
+    "my_ads_miniapp_bot_3"
+  ]
+}
