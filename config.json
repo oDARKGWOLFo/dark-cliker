@@ -1,10 +1,10 @@
 {
   "TELEGRAM_BOT_TOKEN": "8917279281:AAFZKSHlh2oD1IJe824oPLlr_gEaUk8ALTY",
   "PROXY": {
-    "ROTATE_URL": "https://proxy-provider.com",
-    "SERVER": "http://proxy_ip:port",
-    "USERNAME": "твой_логин_прокси",
-    "PASSWORD": "твой_пароль_прокси"
+    "ROTATE_URL": "https://asocks-list.org/r7hM8bY1InXB5F2HWo2s9fVHnTk4lf8y.json?template_id=4",
+    "SERVER": "http://proxy.asocks.com:9000",
+    "USERNAME": "r7hM8bY1InXB5F2HWo2s9fVHnTk4lf8y",
+    "PASSWORD": "x"
   },
   "MINI_APPS_DONORS": [
     "my_ads_miniapp_bot_1",
