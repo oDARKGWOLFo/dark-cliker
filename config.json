@@ -1,14 +1,18 @@
+cat << 'EOF' > config.json
 {
   "TELEGRAM_BOT_TOKEN": "8917279281:AAFZKSHlh2oD1IJe824oPLlr_gEaUk8ALTY",
   "PROXY": {
-    "ROTATE_URL": "https://asocks-list.org/r7hM8bY1InXB5F2HWo2s9fVHnTk4lf8y.json?template_id=4",
-    "SERVER": "http://proxy.asocks.com:9000",
-    "USERNAME": "r7hM8bY1InXB5F2HWo2s9fVHnTk4lf8y",
-    "PASSWORD": "x"
+    "ROTATE_URL": "https://asocks-list.org/r7hM8bY1InXB5F2HWo2s9fVHnTk4lf8y.json?type=mob&template_id=4&country=RU",
+    "SERVER": "",
+    "USERNAME": "",
+    "PASSWORD": ""
   },
   "MINI_APPS_DONORS": [
-    "my_ads_miniapp_bot_1",
-    "my_ads_miniapp_bot_2",
-    "my_ads_miniapp_bot_3"
+    "test_ads_bot_1",
+    "test_ads_bot_2",
+    "test_ads_bot_3",
+    "test_ads_bot_4",
+    "test_ads_bot_5"
   ]
 }
+EOF
