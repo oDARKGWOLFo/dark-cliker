@@ -98,10 +98,10 @@ async def run_auto_mining(user_id):
                     watch_time = random.randint(32, 38)
                     await asyncio.sleep(watch_time)
                     
-                    # Реклама просмотрена! Начисляем награду (например, 15.5 золота) в базу данных
-                    reward_amount = 15.5
+                    # Реклама просмотрена! Начисляем награду (например, 0.0.5 ₽) в базу данных
+                    reward_amount = 0.0.5
                     update_balance(user_id, reward_amount)
-                    print(f"🪙 Начислено {reward_amount} золота пользователю {user_id} за просмотр.")
+                    print(f"🪙 Начислено {reward_amount} Рублей пользователю {user_id} за просмотр.")
                 else:
                     print("⚠️ Кнопка просмотра видео не найдена на экране приложения. Возможно, интерфейс не загрузился.")
                 
