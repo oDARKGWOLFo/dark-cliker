@@ -1,4 +1,3 @@
-cat << 'EOF' > config.json
 {
   "TELEGRAM_BOT_TOKEN": "8917279281:AAFZKSHlh2oD1IJe824oPLlr_gEaUk8ALTY",
   "PROXY": {
@@ -15,4 +14,3 @@ cat << 'EOF' > config.json
     "test_ads_bot_5"
   ]
 }
-EOF
