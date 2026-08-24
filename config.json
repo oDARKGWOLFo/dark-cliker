@@ -1,16 +1,19 @@
+cat << 'EOF' > config.json
 {
   "TELEGRAM_BOT_TOKEN": "8917279281:AAFZKSHlh2oD1IJe824oPLlr_gEaUk8ALTY",
   "PROXY": {
-    "ROTATE_URL": "https://asocks-list.org/r7hM8bY1InXB5F2HWo2s9fVHnTk4lf8y.json?type=mob&template_id=4&country=RU",
+    "ROTATE_URL": "https://asocks-list.org",
     "SERVER": "",
     "USERNAME": "",
     "PASSWORD": ""
   },
   "MINI_APPS_DONORS": [
-    "test_ads_bot_1",
-    "test_ads_bot_2",
-    "test_ads_bot_3",
-    "test_ads_bot_4",
-    "test_ads_bot_5"
+    "test_ads_bot_1"
+  ],
+  "VIDEO_LINKS": [
+    "https://matreshka.tv/video/EQHgnvIDzQY?s=ba",
+    "https://matreshka.tv/video/FAOAwvtujAc?s=ba",
+    "https://matreshka.tv/video/_AJgEJd0sQc?s=bb"
   ]
 }
+EOF
