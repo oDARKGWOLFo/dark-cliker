@@ -23,9 +23,9 @@ async def fetch_socks_proxy_url(proxy_url):
             if response.status_code == 200:
                 data = response.json()
                 return {
-                    "server": f"socks5://{data.get('host')}:{data.get('port')}",
-                    "username": data.get("user"),
-                    "password": data.get("pass")
+                "server": f"socks5://{data[0].get('host')}:{data[0].get('port')}",
+                "username": data[0].get("user"),
+                "password": data[0].get("pass")
                 }
     except Exception as e:
         print(f"[ERROR] Ошибка загрузки SOCKS5: {e}")
