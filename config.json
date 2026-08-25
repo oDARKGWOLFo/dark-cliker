@@ -1,5 +1,6 @@
+cat << 'EOF' > config.json
 {
-  "TELEGRAM_BOT_TOKEN": "8917279281:AAFZKSHlh2oD1IJe824oPLlr_gEaUk8ALTY",
+  "TELEGRAM_BOT_TOKEN": "8917279281:AAGalAe0Bil99QpmSSzvKG-Ag2ZqHmyJ0_g",
   "PROXY": {
     "ROTATE_URL": "https://asocks-list.org",
     "SERVER": "",
@@ -10,6 +11,7 @@
     "test_ads_bot_1"
   ],
   "VIDEO_LINKS": [
-    "http://t.me/XRP_G_PRO_TV_bot/myapp",
+    "http://t.me/XRP_G_PRO_TV_bot/myapp"
   ]
 }
+EOF
