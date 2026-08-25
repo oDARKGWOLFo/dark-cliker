@@ -83,8 +83,10 @@ async def run_auto_mining(user_id):
                 # Плавный скроллинг статьи на протяжении всего watch_time
                 while elapsed_time < watch_time:
                     user_status = get_user_data(user_id)
-                    if user_status.get("status") != "is_mining":
-                        break
+                    # Проверяем, активен ли статус. Если статус "stopped" или отсутствует, то выходим
+if user_status.get("status") in ["stopped", "none", None]:
+    print(f"[WORKER] Заработок для {user_id} не запущен в боте. Выходим.")
+    break
                         
                     # Крутим страницу вниз на случайное расстояние
                     scroll_step = random.randint(120, 280)
