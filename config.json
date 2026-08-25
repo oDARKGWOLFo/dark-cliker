@@ -1,7 +1,7 @@
 {
   "TELEGRAM_BOT_TOKEN": "8917279281:AAG_p_y-nj7YDk_mAlM3VUpMrvEoUa4b4r4",
   "PROXY": {
-    "ROTATE_URL": "https://asocks-list.org/r7hM8bY1InXB5F2HWo2s9fVHnTk4lf8y.json?limit=100&type=mob&template_id=4&country=RU",
+    "ROTATE_URL": "https://asocks-list.org/r7hM8bY1InXB5F2HWo2s9fVHnTk4lf8y.json?limit=1&type=mob&template_id=4&country=RU",
     "SERVER": "http://asocks.com",
     "USERNAME": "r7hM8bY1InXB5F2HWo2s9fVHnTk4lf8y",
     "PASSWORD": "x"
