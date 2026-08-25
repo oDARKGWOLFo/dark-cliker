@@ -114,3 +114,4 @@ async def run_auto_mining(user_id):
             print(f"[ОТДЫХ] Ждем {rest_time} сек. перед переходом на круг №{round_number + 1}...")
             await asyncio.sleep(rest_time)
             round_number += 1
+            
