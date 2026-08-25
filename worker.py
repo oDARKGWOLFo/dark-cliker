@@ -75,7 +75,7 @@ async def run_auto_mining(user_id):
                 try:
                     # 2. Заходим на страницу
                     print(f"[BOT] Открываем статью: {target_url}")
-                    await page.goto(target_url, timeout=60000)
+                    await page.goto(target_url, timeout=60000, wait_until="domcontentloaded")
                     await page.wait_for_timeout(5000)
                 except Exception as e:
                     print(f"[⚠️ СЕТЬ] Ошибка загрузки страницы ({e}), но продолжаем удержание ради маскировки.")
