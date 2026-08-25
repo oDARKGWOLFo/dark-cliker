@@ -21,11 +21,13 @@ async def fetch_socks_proxy_url(proxy_url):
             response = await client.get(proxy_url, timeout=15)
             if response.status_code == 200:
                 data = response.json()
-                # Исправлено: корректно берем первый элемент из списка прокси
+                # Корректно берем первый элемент из списка прокси
+                if isinstance(data, list) and len(data) > 0:
+                    data = data[0]
                 return {
-                    "server": f"socks5://{data[0].get('host')}:{data[0].get('port')}",
-                    "username": data[0].get("user"),
-                    "password": data[0].get("pass")
+                    "server": f"socks5://{data.get('host')}:{data.get('port')}",
+                    "username": data.get("user"),
+                    "password": data.get("pass")
                 }
     except Exception as e:
         print(f"[ERROR] Ошибка загрузки SOCKS5: {e}")
@@ -65,11 +67,6 @@ async def run_auto_mining(user_id):
             target_url = random.choice(links)
             
             try:
-                # Проверяем не выключил ли юзер майнинг
-                user_status = get_user_data(user_id)
-                if user_status.get("status") != "is_mining":
-                    return
-                    
                 print(f"[BOT] Скрытый браузер открывает статью: {target_url}")
                 await page.goto(target_url, timeout=45000)
                 await page.wait_for_timeout(3000)
@@ -83,10 +80,11 @@ async def run_auto_mining(user_id):
                 # Плавный скроллинг статьи на протяжении всего watch_time
                 while elapsed_time < watch_time:
                     user_status = get_user_data(user_id)
-                    # Проверяем, активен ли статус. Если статус "stopped" или отсутствует, то выходим
-if user_status.get("status") in ["stopped", "none", None]:
-    print(f"[WORKER] Заработок для {user_id} не запущен в боте. Выходим.")
-    break
+                    
+                    # Ваша проверка статуса перенесена сюда (внутрь try-блока)
+                    if user_status.get("status") in ["stopped", "none", None] or user_status.get("status") != "is_mining":
+                        print(f"[WORKER] Заработок для {user_id} не запущен в боте. Выходим.")
+                        break
                         
                     # Крутим страницу вниз на случайное расстояние
                     scroll_step = random.randint(120, 280)
