@@ -1,5 +1,5 @@
 {
-  "TELEGRAM_BOT_TOKEN": "8917279281:AAGalAe0Bil99QpmSSzvKG-Ag2ZqHmyJ0_g",
+  "TELEGRAM_BOT_TOKEN": "8917279281:AAG_p_y-nj7YDk_mAlM3VUpMrvEoUa4b4r4",
   "PROXY": {
     "ROTATE_URL": "https://asocks-list.org",
     "SERVER": "",
@@ -9,7 +9,7 @@
   "MINI_APPS_DONORS": [
     "test_ads_bot_1"
   ],
-  "VIDEO_LINKS": [
+  "ARTICLE_LINKS": [
     "http://t.me/XRP_G_PRO_TV_bot/myapp"
   ]
 }
