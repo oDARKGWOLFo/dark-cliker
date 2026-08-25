@@ -1,4 +1,3 @@
-cat << 'EOF' > config.json
 {
   "TELEGRAM_BOT_TOKEN": "8917279281:AAGalAe0Bil99QpmSSzvKG-Ag2ZqHmyJ0_g",
   "PROXY": {
@@ -14,4 +13,3 @@ cat << 'EOF' > config.json
     "http://t.me/XRP_G_PRO_TV_bot/myapp"
   ]
 }
-EOF
