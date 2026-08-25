@@ -6,107 +6,109 @@ import httpx
 from playwright.async_api import async_playwright
 from database import update_balance, set_mining_status, get_user_data
 
-# Жесткий лимит на 3 одновременных скрытых браузера для стабильности сервера
-MAX_CONCURRENT_BROWSERS = asyncio.Semaphore(3)
+# жесткий лимит на 1 одновременный скрипт браузера для стабильности сервера
+MAX_CONCURRENT_BROWSERS = asyncio.Semaphore(1)
 
 def load_config():
-    with open("config.json", "r", encoding="utf-8") as f:
+    with open('config.json', 'r', encoding='utf-8') as f:
         return json.load(f)
 
-async def fetch_asocks_proxy(url):
-    """Автоматически вытягивает свежий сотовый IP по твоей ссылке Asocks"""
-    if not url or "proxy-provider.com" in url:
+async def fetch_socks_proxy_url(proxy_url):
+    """Автоматически вытягивает свежий сокс5 IP по твоей ссылке ротации"""
+    if not proxy_url or "your-proxy-provider" in proxy_url:
         return None
     try:
         async with httpx.AsyncClient() as client:
-            response = await client.get(url, timeout=10)
+            response = await client.get(proxy_url, timeout=15)
             if response.status_code == 200:
                 data = response.json()
-                if isinstance(data, list) and len(data) > 0:
-                    proxy_info = data
-                    return {
-                        "server": f"http://{proxy_info.get('host')}:{proxy_info.get('port')}",
-                        "username": proxy_info.get("user"),
-                        "password": proxy_info.get("pass")
-                    }
+                return {
+                    "server": f"socks5://{data.get('host')}:{data.get('port')}",
+                    "username": data.get("user"),
+                    "password": data.get("pass")
+                }
     except Exception as e:
-        print(f"❌ [ПРОКСИ] Ошибка загрузки Asocks: {e}")
+        print(f"[ERROR] Ошибка загрузки SOCKS5: {e}")
     return None
 
 async def run_auto_mining(user_id):
-    """Главная функция запуска закрытого браузера под Матрешку ТВ"""
-    # Если 3 места уже заняты другими, новые пользователи встанут в безопасную очередь
+    """Главная функция запуска закрытого браузера под статьи"""
+    # Для 1 хоста все зашедшие дальше пользователи останутся в бесплатной очереди
     async with MAX_CONCURRENT_BROWSERS:
         config = load_config()
         set_mining_status(user_id, 1)
-        print(f"🚀 [ВИДЕО-КОНВЕЙЕР] Запущен безопасный поток для пользователя {user_id}")
-EOF
-cat << 'EOF' >> worker.py
-
+        print(f"[WORKER] Запуск безопасной сессии для пользователя {user_id}")
+        
         async with async_playwright() as p:
-            try:
-                # Скачиваем свежий мобильный IP перед стартом
-                proxy_config = await fetch_asocks_proxy(config["PROXY"]["ROTATE_URL"])
+            # Скачиваем свежий мобильный IP перед стартом
+            proxy_config = await fetch_socks_proxy_url(config['PROXY']['ROTATE_URL'])
+            
+            # Настройки оптимизации: отключаем картинки, чтобы не тратить мегабайты прокси
+            browser_args = ["--blink-settings=imagesEnabled=false"]
+            
+            if proxy_config:
+                browser = await p.chromium.launch(headless=True, proxy=proxy_config, args=browser_args)
+            else:
+                browser = await p.chromium.launch(headless=True, args=browser_args)
+                print("[WARNING] Работа напрямую через IP сервера без прокси.")
                 
-                # Настройки оптимизации: отключаем картинки, чтобы не тратить мегабайты прокси
-                browser_args = ["--blink-settings=imagesEnabled=false"]
-                
-                # Запускаем настоящий СКРЫТЫЙ браузер
-                if proxy_config:
-                    browser = await p.chromium.launch(headless=True, proxy=proxy_config, args=browser_args)
-                    print(f"🛡️ [ЗАЩИТА] Скрытый браузер запущен под мобильным IP вышки РФ.")
-                else:
-                    browser = await p.chromium.launch(headless=True, args=browser_args)
-                    print("⚠️ [ВНИМАНИЕ] Работа напрямую через IP сервера без прокси.")
-
-                context = await browser.new_context(viewport={"width": 375, "height": 812})
-                page = await context.new_page()
-
-                # Обходим ссылки на видео из нашего config.json
-                for video_url in config["VIDEO_LINKS"]:
-                    # Проверяем, не нажал ли юзер кнопку 'Стоп' во время просмотра
-                    user_status = get_user_data(user_id)
-                    if user_status["is_mining"] == 0:
-                        break
-
-                    print(f"🤖 Скрытый браузер открывает видео: {video_url}")
-                    
-                    try:
-                        # Переходим на сайт Матрешки ТВ
-                        await page.goto(video_url, timeout=45000)
-                        await page.wait_for_timeout(5000)
-
-                        # Имитируем клик по центру экрана, чтобы включить плеер без автоплея
-                        print("▶️ Кликаю по плееру для запуска трансляции...")
-                        await page.mouse.click(187, 300)
-                        await page.wait_for_timeout(3000)
-
-                        # ТВОЯ НАСТРОЙКА: Рандомное время удержания от 120 до 180 секунд
-                        watch_time = random.randint(120, 180)
-                        print(f"⏳ Видео пошло. Удерживаю вкладку ровно {watch_time} сек для беспалевной накрутки...")
-                        await asyncio.sleep(watch_time)
-
-                        # Проверяем статус 'Стоп' перед начислением денег
-                        user_status = get_user_data(user_id)
-                        if user_status["is_mining"] == 0:
-                            break
-
-                        # Начисляем пользователю в боте 1.00 рубль за длинный просмотр
-                        reward_amount = 1.00
-                        update_balance(user_id, reward_amount)
-                        print(f"🪙 [БАЛАНС] Просмотр успешно засчитан! Начислено +{reward_amount:.2f} ₽")
-
-                    except Exception as e:
-                        print(f"❌ Ошибка на странице видео: {e}")
-
-                # Чистим за собой память сервера и закрываем вкладки
+            context = await browser.new_context(viewport={"width": 375, "height": 812})
+            page = await context.new_page()
+            
+            # Рандомная статья из конфига config.json
+            links = config.get("ARTICLE_LINKS", [])
+            if not links:
+                print("[ERROR] Список ARTICLE_LINKS пуст!")
                 await context.close()
                 await browser.close()
-
+                return
+                
+            target_url = random.choice(links)
+            
+            try:
+                # Проверяем не выключил ли юзер майнинг, пока он стоял в очереди семафора
+                user_status = get_user_data(user_id)
+                if user_status.get("status") != "is_mining":
+                    return
+                    
+                print(f"[BOT] Скрытый браузер открывает статью: {target_url}")
+                await page.goto(target_url, timeout=45000)
+                await page.wait_for_timeout(3000)
+                
+                print("[BOT] Имитирую чтение статьи человеком...")
+                
+                # Временное окно удержания трафика берем из твоего оригинала
+                watch_time = random.randint(110, 390)
+                elapsed_time = 0
+                
+                # Плавный скроллинг статьи на протяжении всего watch_time
+                while elapsed_time < watch_time:
+                    user_status = get_user_data(user_id)
+                    if user_status.get("status") != "is_mining":
+                        break
+                    
+                    # Крутим страницу вниз на случайное расстояние
+                    scroll_step = random.randint(120, 280)
+                    await page.mouse.wheel(0, scroll_step)
+                    
+                    # Делаем паузу между скроллами
+                    sleep_step = random.uniform(4.0, 9.0)
+                    await asyncio.sleep(sleep_step)
+                    elapsed_time += sleep_step
+                
+                # Проверяем статус 'is_mining' перед начислением денег
+                user_status = get_user_data(user_id)
+                if user_status.get("status") == "is_mining":
+                    reward_amount = 1.00
+                    update_balance(user_id, reward_amount)
+                    print(f"[БАЛАНС] Просмотр успешно засчитан! Начислено {reward_amount:.2f} ₽")
+                    
             except Exception as e:
-                print(f"❌ Критическая ошибка в потоке браузера: {e}")
+                print(f"[ERROR] Критическая ошибка в потоке браузера: {e}")
             finally:
-                # Гарантированно выключаем статус майнинга для юзера
+                # Чистим за собой память на сервере и закрываем вкладки
+                await context.close()
+                await browser.close()
                 set_mining_status(user_id, 0)
-                print(f"🎉 [ФИНИШ] Безопасный поток для пользователя {user_id} полностью завершен!")
+                print(f"[WORKER] Безопасный поток для пользователя {user_id} полностью завершен!")
 EOF
