@@ -1,49 +1,28 @@
-cat << 'EOF' > worker.py
-import time
-import random
-import requests
+import time, random, requests
 
 def ran_auto_mining():
-    print("✅ Бот-воркер успешно запущен без использования Telegram API!")
-    url = "https://githubusercontent.com"
-    round_counter = 1
-    
+    print("✅ Бот-воркер успешно запущен!")
+    url = "https://raw.githubusercontent.com/oDARKGWoLFo/dark-cliker/main/config.json"
+    rc = 1
     while True:
-        print(f"\n--- Круг №{round_counter} ---")
+        print(f"\n--- Круг {rc} ---")
         try:
-            # Скачиваем ваш конфиг с GitHub
-            response = requests.get(url, timeout=10)
-            config = response.json()
-            
-            # Извлекаем ссылку из MINI_APPS_DONORS
-            donors = config.get("MINI_APPS_DONORS", [])
-            if not donors:
-                print("⚠️ Список MINI_APPS_DONORS пуст!")
+            cfg = requests.get(url, timeout=10).json()
+            lnk = cfg.get("MINI_APPS_DONORS", [])
+            if not lnk:
+                print("⚠️ Список доноров пуст!")
                 time.sleep(20)
                 continue
-                
-            target_url = donors[0] if isinstance(donors, list) else donors
-            print(f"🌐 Подключение к источнику: {target_url}")
-            
-            # Имитируем заход на сайт
-            headers = {"User-Agent": "Mozilla/5.0 (Linux; Android 10; SM-G973F) AppleWebKit/537.36"}
-            requests.get(target_url, headers=headers, timeout=15)
-            print("鼠标 Виртуальный клик выполнен. Сессия просмотра активна.")
-            
-            # Таймер удержания от 120 до 180 секунд
-            view_time = random.randint(120, 180)
-            print(f"⏳ Удержание страницы... Ожидание {view_time} секунд.")
-            time.sleep(view_time)
-            
-            print("❌ Круг просмотра успешно завершен.")
-            print("💤 Ожидание 30 секунд перед переходом на следующий круг...")
+            target = lnk[0] if isinstance(lnk, list) else lnk
+            print(f"🌐 Подключение: {target}")
+            requests.get(target, timeout=15)
+            print("鼠标 Клик выполнен.")
+            vt = random.randint(120, 180)
+            print(f"⏳ Ожидание {vt} секунд.")
+            time.sleep(vt)
+            print("❌ Круг завершен. Пауза 30 секунд...")
             time.sleep(30)
-            round_counter += 1
-            
+            rc += 1
         except Exception as e:
-            print(f"🔴 Ошибка во время выполнения круга: {e}")
+            print(f"🔴 Ошибка: {e}")
             time.sleep(15)
-
-if __name__ == "__main__":
-    ran_auto_mining()
-    EOF
