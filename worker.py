@@ -1,3 +1,4 @@
+cat << 'EOF' > worker.py
 import asyncio
 import json
 import random
@@ -68,3 +69,4 @@ async def run_auto_mining(user_id):
         print(f"[ОТДЫХ] Ждем {sleep_time} сек. перед переходом на круг №{round_number + 1}...")
         await asyncio.sleep(sleep_time)
         round_number += 1
+        EOF
