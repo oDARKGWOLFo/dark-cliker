@@ -1,4 +1,3 @@
-cat << 'EOF' > worker.py
 import asyncio
 import json
 import random
@@ -16,7 +15,7 @@ async def run_auto_mining(user_id):
     
     round_number = 1
     while True:
-        print(f"\n💵 === СТАРТ КРУГА API №{round_number} ===")
+        print(f"\n=== СТАРТ КРУГА API №{round_number} ===")
         config = load_config()
         
         api_key = config.get("Q32_API_KEY", "")
@@ -30,14 +29,23 @@ async def run_auto_mining(user_id):
         target_url = random.choice(links)
         
         # Собираем техническую служебную ссылку по инструкции Q32
-        # Добавляем случайный параметр, чтобы каждый запрос для системы выглядел уникальным
         random_sub = random.randint(100000, 999999)
-        api_url = f"http://q32.link{api_key}&url={target_url}&sub={random_sub}"
         
+        # ВНИМАНИЕ: Проверьте формат по инструкции Q32. 
+        # Если ключ передается как параметр, используйте вариант ниже:
+        api_url = f"http://q32.ru{api_key}&url={target_url}&sub={random_sub}"
+        
+        # Если по инструкции ключ идет строго после слэша, раскомментируйте строку ниже, а строку выше удалите:
+        # api_url = f"http://q32.ru{api_key}?url={target_url}&sub={random_sub}"
+
         try:
             print(f"[КРУГ {round_number}] Отправляем скрытый запрос на сервер Q32...")
             
-            async with httpx.AsyncClient() as client:
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            }
+            
+            async with httpx.AsyncClient(headers=headers) as client:
                 # Сервер имитирует быстрый технический вызов
                 response = await client.get(api_url, timeout=20)
                 
@@ -47,11 +55,12 @@ async def run_auto_mining(user_id):
                     
                     # Начисляем 1 рубль на баланс внутри вашего бота
                     update_balance(user_id, 1.00)
-                    print(f"[БАЛАНС БОТА] Круг №{round_number} засчитан. Начислено 1.00 Р")
+                    print(f"[БАЛАНС БОТА] Круг №{round_number} засчитан. Начислено 1.00 ₽")
                 else:
-                    print(f"[⚠️ ОШИБКА СЕТИ] Сервер Q32 вернул статус {response.status_code}")
+                    print(f"[ОШИБКА СЕТИ] Сервер Q32 вернул статус: {response.status_code}")
                     
         except Exception as e:
+            # Исправлен вывод фактического текста ошибки в консоль
             print(f"[ERROR] Сбой во время запроса на круге {round_number}: {e}")
             
         # Пауза между кругами (от 20 до 40 секунд), чтобы система Q32 плавно фиксировала поток
@@ -59,4 +68,3 @@ async def run_auto_mining(user_id):
         print(f"[ОТДЫХ] Ждем {sleep_time} сек. перед переходом на круг №{round_number + 1}...")
         await asyncio.sleep(sleep_time)
         round_number += 1
-EOF
