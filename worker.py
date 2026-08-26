@@ -1,3 +1,4 @@
+cat << 'EOF' > worker.py
 import time
 import random
 import requests
@@ -45,3 +46,4 @@ def ran_auto_mining():
 
 if __name__ == "__main__":
     ran_auto_mining()
+    EOF
